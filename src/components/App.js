@@ -1,26 +1,12 @@
 import '../styles/App.css';
-import firebase from "firebase/compat/app";
 import firebaseApp from "../config/initFirebase";
 import {Route, Routes} from "react-router-dom";
-import {StyledFirebaseAuth} from "react-firebaseui";
+
 import {useEffect, useState} from "react";
 import Form from "./Form";
 import Login from "./Login";
 import Users from "./Users";
 import Home from "./Home";
-
-
-// Configure FirebaseUI.
-const uiConfig = {
-    // Popup signin flow rather than redirect flow.
-    signInFlow: "popup",
-    // We will display Google and Facebook as auth providers.
-    signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
-    callbacks: {
-        // Avoid redirects after sign-in.
-        signInSuccessWithAuthResult: () => false,
-    },
-};
 
 function App() {
     // Local signed-in state.
@@ -51,10 +37,8 @@ function App() {
     if (!isSignedIn)
         return (
             <div className="App">
-                <StyledFirebaseAuth
-                    uiConfig={uiConfig}
-                    firebaseAuth={firebaseApp.auth()}
-                />
+                <Login/>
+                <Users/>
             </div>
         );
 

@@ -1,18 +1,26 @@
 import {useEffect, useState} from "react";
-import {collection, onSnapshot} from "firebase/firestore";
-import db from "../config/initFirebase";
+import {collection, query, getDocs} from "firebase/firestore";
+import firebaseApp from "../config/initFirebase";
+import { getFirestore } from "firebase/firestore";
+
+const db = getFirestore(firebaseApp);
 
 function Users(){
     const [users, setUsers] = useState([]);
 
-    useEffect(
-        () =>
-            onSnapshot(collection(db, "users"),(snapshot) =>
-                setUsers(snapshot.docs.map((doc) => doc.data()))
-            ),
-        []
+    const getUsers = async () => {
+        return await getDocs(query(collection(db, "users")))
+    }
+
+    useEffect(() => {
+        getUsers().then(response => {
+            setUsers(response.docs.map((doc) => ({
+                ...doc.data(), //Set all attributes found in a user
+                id: doc.id //The id isn't set on the user object in Firestore, it's the document that has it, used for key in <li>
+            })))
+        })},[]
     );
-    
+
     return (
         <ul>
             {users.map((user) => (
