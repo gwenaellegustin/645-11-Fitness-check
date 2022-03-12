@@ -7,6 +7,9 @@ import Form from "./Form";
 import Login from "./Login";
 import Users from "./Users";
 import Home from "./Home";
+import {getFirestore} from "firebase/firestore";
+
+export const db = getFirestore();
 
 function App() {
     // Local signed-in state.
@@ -38,7 +41,6 @@ function App() {
         return (
             <div className="App">
                 <Login/>
-                <Users/>
             </div>
         );
 
@@ -48,6 +50,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/form" element={<Form />} />
+                <Route path="/users" element={<Users />} /> // Test page TODO: delete when no more needed
             </Routes>
         </div>
     );
