@@ -1,14 +1,15 @@
 import '../styles/App.css';
-import firebase from "firebase/compat/app";
 import firebaseApp from "../config/initFirebase";
+import {doc, getDoc, getFirestore, setDoc} from "firebase/firestore";
+import {getAuth} from "firebase/auth";
 import {Route, Routes} from "react-router-dom";
-import {StyledFirebaseAuth} from "react-firebaseui";
+import { Navbar } from 'reactstrap'; // DOC: https://reactstrap.github.io/?path=/docs/components-navbar--navbar
 import {useEffect, useState} from "react";
 import Form from "./Form";
-import Chart from "./Chart";
 import Login from "./Login";
 import Users from "./Users";
 import Home from "./Home";
+import Chart from "./Chart";
 
 export const db = getFirestore();
 export const auth = getAuth();
@@ -73,8 +74,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/form" element={<Form />} />
-                <Route path="/users" element={<Users />} /> // Test page TODO: delete when no more needed
                 <Route path="/chart" element={<Chart />} />
+                <Route path="/users" element={<Users />} /> // Test page TODO: delete when no more needed
             </Routes>
         </div>
     );
