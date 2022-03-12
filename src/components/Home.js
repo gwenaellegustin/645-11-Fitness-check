@@ -1,8 +1,7 @@
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import firebaseApp from "../config/initFirebase";
 
 export default function Home() {
-
     // Sign out
     const handleSignOutClick = async () => {
         await firebaseApp.auth().signOut();
@@ -14,7 +13,9 @@ export default function Home() {
             <p>
                 <Link to="/form">Go To Form</Link>
             </p>
-
+            <p>
+                <Link to="/chart">Go To Chart</Link>
+            </p>
             <button onClick={handleSignOutClick}>Sign Out</button>
         </div>
     );
