@@ -1,6 +1,6 @@
 import '../styles/App.css';
 import firebaseApp from "../config/initFirebase";
-import {getFirestore} from "firebase/firestore";
+import {doc, getDoc, getFirestore, setDoc} from "firebase/firestore";
 import {getAuth} from "firebase/auth";
 import {Route, Routes} from "react-router-dom";
 import { Navbar } from 'reactstrap'; // DOC: https://reactstrap.github.io/?path=/docs/components-navbar--navbar
@@ -10,12 +10,22 @@ import Login from "./Login";
 import Users from "./Users";
 import Home from "./Home";
 
-
 export const db = getFirestore();
 export const auth = getAuth();
 
-function App() {
+let createUserFirestore = async () => {
+    // If a user is connected (so exist in Authentication), get the UID
+        const docRef = doc(db, 'users', auth.currentUser.uid);
+        const documentUser = await getDoc(docRef);
+        // If the user doesn't exist in Firestore, creation
+        if (!documentUser.exists()){
+            await setDoc(doc(db, 'users', auth.currentUser.uid), {
+                name: auth.currentUser.displayName
+            });
+        }
+}
 
+function App() {
     // Local signed-in state.
     const [isSignedIn, setIsSignedIn] = useState(null);
 
@@ -40,12 +50,19 @@ function App() {
     }
 
     // Not signed in - Render auth screen
-    if (!isSignedIn)
+    if (!isSignedIn){
         return (
             <div className="App">
                 <Login/>
             </div>
         );
+    // Signed in - Create user in Firestore if not already exist
+    } else {
+        createUserFirestore().then(r =>{} ) // TODO: obligé de mettre en async
+        // TODO: ne devrait pas aller plus loin avant création dans firestore ?
+        // TODO: je n'arrive pas à mettre ca dans le use effect de App
+    }
+
 
     // Signed in - Render app
     return (
