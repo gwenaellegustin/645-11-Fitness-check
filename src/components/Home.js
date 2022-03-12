@@ -1,4 +1,5 @@
 import {Link} from "react-router-dom";
+import firebaseApp from "../config/initFirebase";
 
 export default function Home() {
     // Sign out
