@@ -6,7 +6,7 @@ import firebase from "firebase/compat/app";
 const uiConfig = {
     // Popup signin flow rather than redirect flow.
     signInFlow: "popup",
-    // We will display Google and Facebook as auth providers.
+    // We will display email auth
     signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
     callbacks: {
         // Avoid redirects after sign-in.
