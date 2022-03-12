@@ -12,6 +12,7 @@ const uiConfig = {
         // Avoid redirects after sign-in.
         signInSuccessWithAuthResult: () => false,
     },
+
 };
 
 function Login(){
