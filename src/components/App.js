@@ -1,6 +1,6 @@
 import '../styles/App.css';
-import firebaseApp from "../config/initFirebase";
-import {doc, getDoc, getFirestore, setDoc} from "firebase/firestore";
+import {db, firebaseApp} from "../config/initFirebase";
+import {doc, getDoc, setDoc} from "firebase/firestore";
 import {getAuth} from "firebase/auth";
 import {Route, Routes} from "react-router-dom";
 import { Navbar } from 'reactstrap'; // DOC: https://reactstrap.github.io/?path=/docs/components-navbar--navbar
@@ -11,7 +11,6 @@ import Users from "./Users";
 import Home from "./Home";
 import Chart from "./Chart";
 
-export const db = getFirestore();
 export const auth = getAuth();
 
 let createUserFirestore = async () => {
@@ -75,7 +74,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/form" element={<Form />} />
                 <Route path="/chart" element={<Chart />} />
-                <Route path="/users" element={<Users />} /> // Test page TODO: delete when no more needed
+                <Route path="/users" element={<Users />} /> {/* Test page TODO: delete when no more needed */}
             </Routes>
         </div>
     );

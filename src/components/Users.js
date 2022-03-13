@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {collection, query, getDocs} from "firebase/firestore";
-import {db} from "./App";
+import {db} from "../config/initFirebase";
 // Test page TODO: delete when no more needed
 function Users(){
     const [users, setUsers] = useState([]);

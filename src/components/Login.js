@@ -1,4 +1,4 @@
-import firebaseApp from "../config/initFirebase";
+import {firebaseApp} from "../config/initFirebase";
 import {StyledFirebaseAuth} from "react-firebaseui";
 import firebase from "firebase/compat/app";
 
