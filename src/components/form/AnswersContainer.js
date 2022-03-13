@@ -1,5 +1,4 @@
 export function AnswersContainer({answers}){
-    console.log(answers)
     return (
         <ul>
             {answers.map((answer, index) => (
