@@ -1,26 +1,30 @@
 import '../styles/App.css';
-import firebase from "firebase/compat/app";
 import firebaseApp from "../config/initFirebase";
+import {doc, getDoc, getFirestore, setDoc} from "firebase/firestore";
+import {getAuth} from "firebase/auth";
 import {Route, Routes} from "react-router-dom";
-import {StyledFirebaseAuth} from "react-firebaseui";
+import { Navbar } from 'reactstrap'; // DOC: https://reactstrap.github.io/?path=/docs/components-navbar--navbar
 import {useEffect, useState} from "react";
 import {Form} from "./form/Form";
 import Login from "./Login";
 import Users from "./Users";
 import Home from "./Home";
+import Chart from "./Chart";
 
+export const db = getFirestore();
+export const auth = getAuth();
 
-// Configure FirebaseUI.
-const uiConfig = {
-    // Popup signin flow rather than redirect flow.
-    signInFlow: "popup",
-    // We will display Google and Facebook as auth providers.
-    signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
-    callbacks: {
-        // Avoid redirects after sign-in.
-        signInSuccessWithAuthResult: () => false,
-    },
-};
+let createUserFirestore = async () => {
+    // If a user is connected (so exist in Authentication), get the UID
+        const docRef = doc(db, 'users', auth.currentUser.uid);
+        const documentUser = await getDoc(docRef);
+        // If the user doesn't exist in Firestore, creation
+        if (!documentUser.exists()){
+            await setDoc(doc(db, 'users', auth.currentUser.uid), {
+                name: auth.currentUser.displayName
+            });
+        }
+}
 
 function App() {
     // Local signed-in state.
@@ -31,9 +35,8 @@ function App() {
         const unregisterAuthObserver = firebaseApp
             .auth()
             .onAuthStateChanged((user) => {
-                setIsSignedIn(!!user); // si il y a un user, met à true sinon à false
+                setIsSignedIn(!!user); // if there is a user, set to true
             });
-
         // Make sure we un-register Firebase observers when the component unmounts.
         return () => unregisterAuthObserver();
     }, []);
@@ -48,22 +51,31 @@ function App() {
     }
 
     // Not signed in - Render auth screen
-    if (!isSignedIn)
+    if (!isSignedIn){
         return (
             <div className="App">
-                <StyledFirebaseAuth
-                    uiConfig={uiConfig}
-                    firebaseAuth={firebaseApp.auth()}
-                />
+                <Login/>
             </div>
         );
+    // Signed in - Create user in Firestore if not already exist
+    } else {
+        createUserFirestore().then(r =>{} ) // TODO: obligé de mettre en async
+        // TODO: ne devrait pas aller plus loin avant création dans firestore ?
+        // TODO: je n'arrive pas à mettre ca dans le use effect de App
+    }
+
 
     // Signed in - Render app
     return (
         <div className="App">
+            <Navbar>
+                <p>UID current user : {auth.currentUser.uid}</p>
+            </Navbar>
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/form" element={<Form />} />
+                <Route path="/chart" element={<Chart />} />
+                <Route path="/users" element={<Users />} /> // Test page TODO: delete when no more needed
             </Routes>
         </div>
     );

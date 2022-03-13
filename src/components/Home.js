@@ -13,6 +13,9 @@ export default function Home() {
             <p>
                 <Link to="/form">Go To Form</Link>
             </p>
+            <p>
+                <Link to="/chart">Go To Chart</Link>
+            </p>
             <button onClick={handleSignOutClick}>Sign Out</button>
         </div>
     );
