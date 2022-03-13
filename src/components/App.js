@@ -4,7 +4,7 @@ import firebaseApp from "../config/initFirebase";
 import {Route, Routes} from "react-router-dom";
 import {StyledFirebaseAuth} from "react-firebaseui";
 import {useEffect, useState} from "react";
-import Form from "./Form";
+import {Form} from "./form/Form";
 import Login from "./Login";
 import Users from "./Users";
 import Home from "./Home";
