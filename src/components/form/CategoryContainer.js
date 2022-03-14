@@ -3,12 +3,14 @@ import {collection, getDoc, getDocs, query, where} from "firebase/firestore";
 import {db} from "../../config/initFirebase";
 import {useEffect, useState} from "react";
 
-export function CategoryContainer({category, questions}){
+export function CategoryContainer({category, allQuestions}){
+    const [questions, setQuestions] = useState([]);
 
     useEffect(() => {
-        console.log(category);
-        console.log(questions.filter(question => question.category.id === category.id))
-    })
+        let questionsByCategory = allQuestions.filter(question => question.category.id === category.id);
+        setQuestions(questionsByCategory)
+        console.log(allQuestions)
+    }, [allQuestions])
 
     //Questions
     /*
@@ -36,10 +38,16 @@ export function CategoryContainer({category, questions}){
 
     return (
         <div>
-            {/*category.label + ' ' + category.id}
-            {questions.map(question => (
-                <QuestionContainer key={question.id} question={question}/>
-            ))*/}
+            <ul>
+                {category.label}
+                {questions.map(question => (
+                    <li key={question.id}>{question.label}</li>
+                ))}
+            </ul>
+            {/*
+{category.label}
+
+            */}
         </div>
 
     )

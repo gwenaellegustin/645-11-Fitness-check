@@ -5,7 +5,7 @@ import {db} from "../../config/initFirebase";
 
 export function Form(){
     const [categories, setCategories] = useState([]);
-    const [questions, setQuestions] = useState([]);
+    const [otherQuestions, setOtherQuestions] = useState([]);
 
     //Categories
     const getCategories = async () => {
@@ -27,9 +27,10 @@ export function Form(){
 
     useEffect(() => {
         getQuestions().then(response => {
-            setQuestions(response.docs.map(doc => ({
+            setOtherQuestions(response.docs.map(doc => ({
                 ...doc.data(),
-                id: doc.id
+                id: doc.id,
+                answer0: doc.data().arrayanswers ? doc.data().arrayanswers[4].point : null
             })))
         })
     }, [])
@@ -37,7 +38,7 @@ export function Form(){
     return (
         <>
             {categories.map(category => (
-                <CategoryContainer category={category} questions={questions}/>
+                <CategoryContainer key={category.id} category={category} allQuestions={otherQuestions}/>
             ))}
             {/*
             <ul>
