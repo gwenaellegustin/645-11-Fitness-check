@@ -1,58 +1,45 @@
-import {useEffect, useState} from "react";
-import {collection, getDoc, getDocs, query} from "firebase/firestore";
+import {QuestionContainer} from "./QuestionContainer";
+import {collection, getDoc, getDocs, query, where} from "firebase/firestore";
 import {db} from "../../config/initFirebase";
+import {useEffect, useState} from "react";
 
-export function CategoryContainer({category}){
-    let [questions, setQuestions] = useState([]);
-
-    const getQuestions = async () => {
-        return await getDocs(query(collection(db, "questions")))
-    }
+export function CategoryContainer({category, questions}){
 
     useEffect(() => {
-        let newQuestions = [];
-        getQuestions().then(response => {
-            response.forEach(doc => {
-                let newQuestion = doc.data();
-                newQuestion.id = doc.id;
-                if(newQuestion.category){
-                    getDoc(newQuestion.category).then(response => {
-                        newQuestion.categoryRef = response.data();
-                    })
-                    .catch(err => console.error(err));
-                }
-                newQuestions.push(newQuestion);
+        console.log(category);
+        console.log(questions.filter(question => question.category.id === category.id))
+    })
+
+    //Questions
+    /*
+    const getQuestions = async () => {
+        await getDocs(query(collection(db, "questions"), where("category", "==", category.id)));
+        /*
+        await questionsSnapshot.docs.forEach(doc => {
+            let newQuestion = doc.data();
+            newQuestion.id = doc.id;
+            getDoc(newQuestion)
+            getCategory(newQuestion).then(r => {
+                setQuestions([r]);
             })
         })
-        .catch(err => { console.error(err) });
+    };
 
-        setQuestions(newQuestions);
-    }, [])
-
-    const questionsByCategory = () => {
-        /*
-        setQuestions(questions.filter(question => ({
-            console.log(question)
-        })))
-         */
-        questions.map(question => (
-            console.log(question)
-        ))
+    const getCategory = async (question) => {
+        await getDoc(question.category).then(doc => {
+            question.categoryRef = doc.data();
+            question.categoryRef.id = doc.id;
+            return question;
+        })
     }
-
-    questionsByCategory();
+    */
 
     return (
         <div>
-            {category.label}
-            {/*Render list of questionContainer for each question*/}
-            {/*
-            {questions.map((question, index) =>
-                (
-                    <QuestionContainer key={index} question={question}/>
-                )
-            )}
-            */}
+            {/*category.label + ' ' + category.id}
+            {questions.map(question => (
+                <QuestionContainer key={question.id} question={question}/>
+            ))*/}
         </div>
 
     )
