@@ -1,7 +1,7 @@
 export function AnswersContainer({answers}){
     return (
         <ul>
-            {answers.map((answer, index) => (
+            {answers && answers.length > 0 && answers.map((answer, index) => (
                 <li key={index}>
                     <p>{answer.label}</p>
                 </li>

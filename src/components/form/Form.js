@@ -8,34 +8,35 @@ export function Form(){
     const [questions, setQuestions] = useState([]);
 
     //Categories
-    const getCategories = async () => {
-        return await getDocs(query(collection(db, "categories")))
+    async function getCategories(){
+        //Get all categories from database
+        const categoriesCollection = await getDocs(query(collection(db, "categories")))
+        //Fill categories with objects containing all data from Firestore object + id
+        const categoriesArray = categoriesCollection.docs.map(doc => ({
+            ...doc.data(),
+            id: doc.id
+        }))
+        setCategories(categoriesArray)
     }
 
     useEffect(() => {
-        getCategories().then(response => {
-            //Fill categories with objects containing all data from Firestore object + id
-            setCategories(response.docs.map(doc => ({
-                ...doc.data(),
-                id: doc.id
-            })))
-        })
+        getCategories();
     }, [])
 
     //Questions
-    const getQuestions = async () => {
-        return await getDocs(query(collection(db, "questions")));
-    };
+    async function getQuestion(){
+        //Get all questions from database
+        const questionsCollection = await getDocs(query(collection(db, "questions")));
+        //Fill questions with objects containing all data from Firestore object + id
+        const questionsArray = questionsCollection.docs.map(doc => ({
+            ...doc.data(),
+            id: doc.id
+        }))
+        setQuestions(questionsArray)
+    }
 
     useEffect(() => {
-        getQuestions().then(response => {
-            //Fill questions with objects containing all data from Firestore object + id
-            setQuestions(response.docs.map(doc => ({
-                ...doc.data(),
-                id: doc.id,
-                answer0: doc.data().arrayanswers ? doc.data().arrayanswers[4].point : null //TODO: just to test
-            })))
-        })
+        getQuestion();
     }, [])
 
     //Return a category container with only the questions related to this category (in order to sort it by category)
@@ -46,6 +47,5 @@ export function Form(){
                 <CategoryContainer key={category.id} category={category} questions={questions.filter(question => question.category.id === category.id)}/>
             ))}
         </>
-
     )
 }
