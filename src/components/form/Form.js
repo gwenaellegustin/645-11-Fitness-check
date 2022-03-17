@@ -11,13 +11,13 @@ export function Form(){
     useEffect(() => {
         async function getCategories(){
             //Get all categories from database
-            let categoriesCollection = await getDocs(query(collection(db, "categories")))
+            let categoriesCollection = await getDocs(query(collection(db, "categories")));
             //Fill categories with objects containing all data from Firestore object + id
             let categoriesArray = categoriesCollection.docs.map(doc => ({
                 ...doc.data(),
                 id: doc.id
             }))
-            setCategories(categoriesArray)
+            setCategories(categoriesArray);
         }
         getCategories();
     }, [])
@@ -32,7 +32,7 @@ export function Form(){
                 ...doc.data(),
                 id: doc.id
             }))
-            setQuestions(questionsArray)
+            setQuestions(questionsArray);
         }
         getQuestions();
     }, [])
