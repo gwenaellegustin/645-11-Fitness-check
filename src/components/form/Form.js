@@ -8,35 +8,33 @@ export function Form(){
     const [questions, setQuestions] = useState([]);
 
     //Categories
-    async function getCategories(){
-        //Get all categories from database
-        const categoriesCollection = await getDocs(query(collection(db, "categories")))
-        //Fill categories with objects containing all data from Firestore object + id
-        const categoriesArray = categoriesCollection.docs.map(doc => ({
-            ...doc.data(),
-            id: doc.id
-        }))
-        setCategories(categoriesArray)
-    }
-
     useEffect(() => {
+        async function getCategories(){
+            //Get all categories from database
+            let categoriesCollection = await getDocs(query(collection(db, "categories")))
+            //Fill categories with objects containing all data from Firestore object + id
+            let categoriesArray = categoriesCollection.docs.map(doc => ({
+                ...doc.data(),
+                id: doc.id
+            }))
+            setCategories(categoriesArray)
+        }
         getCategories();
     }, [])
 
     //Questions
-    async function getQuestion(){
-        //Get all questions from database
-        const questionsCollection = await getDocs(query(collection(db, "questions")));
-        //Fill questions with objects containing all data from Firestore object + id
-        const questionsArray = questionsCollection.docs.map(doc => ({
-            ...doc.data(),
-            id: doc.id
-        }))
-        setQuestions(questionsArray)
-    }
-
     useEffect(() => {
-        getQuestion();
+        async function getQuestions(){
+            //Get all questions from database
+            let questionsCollection = await getDocs(query(collection(db, "questions")));
+            //Fill questions with objects containing all data from Firestore object + id
+            let questionsArray = questionsCollection.docs.map(doc => ({
+                ...doc.data(),
+                id: doc.id
+            }))
+            setQuestions(questionsArray)
+        }
+        getQuestions();
     }, [])
 
     //Return a category container with only the questions related to this category (in order to sort it by category)
