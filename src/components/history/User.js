@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {collection, doc, getDoc, getDocs, query} from "firebase/firestore";
-import {auth, db, getCategories} from "../../config/initFirebase";
+import {auth, db, getCategories, getCategory, getCompletedForms} from "../../config/initFirebase";
 
 export function User(){
     const [categories, setCategories] = useState([]);
@@ -13,7 +13,7 @@ export function User(){
 
     // User
     useEffect(() => {
-        async function getUser(){
+        async function getUser(){ // TODO: move to context ?
             //userDoc = await getDoc(query(doc(db, "users", auth.currentUser.uid)));
             userDoc = await getDoc(query(doc(db, "users", 'IqZpEaqXCn2xfcCjWCza'))); //TODO: for test
             let user = {
@@ -22,31 +22,15 @@ export function User(){
             }
             setUser(user);
         }
-        getUser().then(getCompletedForms);
+        getUser().then(getCompletedForms().then(r => setCompletedForms(r)));
     }, [])
 
     //Categories
     useEffect(() => {
         getCategories().then(r => setCategories(r));
+
     }, [])
 
-    async function getCompletedForms(){
-        let completedFormsCollection = await getDocs(query(collection(userDoc.ref, "completedForms")));
-        let completedFormsArray = completedFormsCollection.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id,
-        }))
-        setCompletedForms(completedFormsArray)
-    }
-
-    async function getCategory(idCategory){
-        let categoryDoc = await getDoc(query(doc(db, "categories", idCategory)));
-        let cat = {
-            ...categoryDoc.data(),
-            id: categoryDoc.id
-        }
-        return cat;
-    }
 
     //Return a category container with only the questions related to this category (in order to sort it by category)
     //The filter method returns another array filling the condition (= true)

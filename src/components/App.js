@@ -1,7 +1,6 @@
 import '../styles/App.css';
-import {auth, db, firebaseApp} from "../config/initFirebase";
+import {auth, db, firebaseApp, getCategories} from "../config/initFirebase";
 import {doc, getDoc, setDoc} from "firebase/firestore";
-import {getAuth} from "firebase/auth";
 import {Route, Routes} from "react-router-dom";
 import { Navbar } from 'reactstrap'; // DOC: https://reactstrap.github.io/?path=/docs/components-navbar--navbar
 import {useEffect, useState} from "react";
