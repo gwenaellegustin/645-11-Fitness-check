@@ -7,7 +7,6 @@ export function QuestionWithAnswers({answeredQuestion}){
 
     useEffect(() => {
         getQuestion(answeredQuestion.question.id).then(r => setQuestion(r));
-        //getAnswer(answeredQuestion.path).then(r =>setAnswer(r));
     }, [])
 
     return (
@@ -15,14 +14,14 @@ export function QuestionWithAnswers({answeredQuestion}){
             <p>{question.label}</p>
             {answeredQuestion.answers.map((answer, index) => (
                 <li key={index}>
-                    {<Answer2 answerpath={answer.path}/>}
+                    {<Answer answerpath={answer.path}/>}
                 </li>
             ))}
         </ul>
     )
 }
 
-export function Answer2({answerpath}){
+export function Answer({answerpath}){
     const [myanswer, setAnswer] = useState([]);
     useEffect(() => {
         getAnswer(answerpath).then(r =>setAnswer(r));
@@ -32,6 +31,5 @@ export function Answer2({answerpath}){
         <>
             <p>{myanswer.label} vaut {myanswer.point} points</p>
         </>
-
     )
 }

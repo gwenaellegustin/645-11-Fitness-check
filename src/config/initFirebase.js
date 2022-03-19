@@ -49,8 +49,9 @@ export async function getQuestion(idQuestion){
     return question;
 }
 
-export async function getAnswer(path){
-    let answerDoc = await getDoc(query(doc(db, path)));
+export async function getAnswer(answerPath){
+    // answerPath is for example "/questions/xtoQ5mbOMrhzyoAtXji9/answers/jgs87lCWZTkwYvONFmxA"
+    let answerDoc = await getDoc(query(doc(db, answerPath)));
     let answer = {
         ...answerDoc.data(),
         id: answerDoc.id

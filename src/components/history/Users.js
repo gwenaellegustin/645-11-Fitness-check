@@ -24,8 +24,9 @@ function Users(){
 
     return (
         <>
+            <h2>Example of a user with forms completed</h2>
             <User/>
-            <h1>ALL USER</h1>
+            <h2>ALL USER</h2>
             <ul>
                 {users.map(user => (
                     <li key={user.id}>

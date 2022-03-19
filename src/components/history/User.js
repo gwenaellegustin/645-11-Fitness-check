@@ -31,11 +31,11 @@ export function User(){
     //The filter method returns another array filling the condition (= true)
     return (
         <>
-            <h3>Test sur le user IqZpEaqXCn2xfcCjWCza Gwen</h3>
+            <h2>Test sur le user IqZpEaqXCn2xfcCjWCza Gwen</h2>
             <ul>
                 {completedForms.map(completedForm => (
                     <li key={completedForm.id}>
-                        <p>{completedForm.datetime.toLocaleString()}</p>
+                        <h3>ID du formulaire: {completedForm.id} <br/> avec le datetime : {completedForm.datetime.toLocaleString()}</h3>
                         <ul>
                             {completedForm.answeredQuestions.map((answeredQuestion, index) => (
                                 <li key={index}>
@@ -43,6 +43,7 @@ export function User(){
                                 </li>
                             ))}
                         </ul>
+                        <hr/>
                     </li>
                 ))}
             </ul>
