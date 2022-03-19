@@ -1,6 +1,6 @@
 import {AnsweredQuestionContainer} from "./AnsweredQuestionContainer";
 import {collection, getDoc, getDocs, query} from "firebase/firestore";
-import {db} from "../config/initFirebase";
+import {db} from "../../config/initFirebase";
 
 export function FormsCompletedContainer({completedForms}){
 
@@ -32,9 +32,9 @@ export function FormsCompletedContainer({completedForms}){
             {completedForms.length>0 && completedForms.map((form, index) => (
                 <li key={index}>
                     <p>{form.datetime.toLocaleString()}</p>
-                    {form.questions.map(question => (
+                   {/*form.questions.map(question => (
                         <AnsweredQuestionContainer key={question.id} question={getQuestions()}/>
-                    ))}
+                    ))*/}
                 </li>
             ))}
         </ul>

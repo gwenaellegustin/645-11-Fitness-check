@@ -7,7 +7,7 @@ import { Navbar } from 'reactstrap'; // DOC: https://reactstrap.github.io/?path=
 import {useEffect, useState} from "react";
 import {Form} from "./form/Form";
 import Login from "./Login";
-import Users from "./Users";
+import Users from "./history/Users";
 import Home from "./Home";
 import Chart from "./Chart";
 
