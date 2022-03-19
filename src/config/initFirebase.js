@@ -40,10 +40,33 @@ export async function getCategory(idCategory){
     return category;
 }
 
-export async function getCompletedForms(){
-    let userDoc = await getDoc(query(doc(db, "users", auth.currentUser.uid)));
-    // for test use:
-    userDoc = await getDoc(query(doc(db, "users", 'IqZpEaqXCn2xfcCjWCza')));
+export async function getQuestion(idQuestion){
+    let questionDoc = await getDoc(query(doc(db, "questions", idQuestion)));
+    let question = {
+        ...questionDoc.data(),
+        id: questionDoc.id
+    }
+    return question;
+}
+
+export async function getAnswer(path){
+    let answerDoc = await getDoc(query(doc(db, path)));
+    let answer = {
+        ...answerDoc.data(),
+        id: answerDoc.id
+    }
+    return answer;
+}
+
+export async function getCompletedForms(user2){
+    let userDoc;
+    // TODO: delete for test
+    if (user2){
+         userDoc = await getDoc(query(doc(db, "users", 'IqZpEaqXCn2xfcCjWCza')));
+    } else {
+         userDoc = await getDoc(query(doc(db, "users", auth.currentUser.uid)));
+    }
+
     let completedFormsCollection = await getDocs(query(collection(userDoc.ref, "completedForms")));
     let completedFormsArray = completedFormsCollection.docs.map((doc) => ({
         ...doc.data(),
