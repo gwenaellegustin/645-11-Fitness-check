@@ -1,19 +1,37 @@
 import {useEffect, useState} from "react";
 import {getAnswer, getQuestion} from "../../config/initFirebase";
+import {CategoryContainer} from "../form/CategoryContainer";
 
 export function QuestionWithAnswers({answeredQuestion}){
-    const [answer, setAnswer] = useState([]);
     const [question, setQuestion] = useState([]);
 
     useEffect(() => {
-        getQuestion(answeredQuestion.parent.parent.id).then(r => setQuestion(r));
-        getAnswer(answeredQuestion.path).then(r =>setAnswer(r));
+        getQuestion(answeredQuestion.question.id).then(r => setQuestion(r));
+        //getAnswer(answeredQuestion.path).then(r =>setAnswer(r));
+    }, [])
+
+    return (
+        <ul>
+            <p>{question.label}</p>
+            {answeredQuestion.answers.map((answer, index) => (
+                <li key={index}>
+                    {<Answer2 answerpath={answer.path}/>}
+                </li>
+            ))}
+        </ul>
+    )
+}
+
+export function Answer2({answerpath}){
+    const [myanswer, setAnswer] = useState([]);
+    useEffect(() => {
+        getAnswer(answerpath).then(r =>setAnswer(r));
     }, [])
 
     return (
         <>
-            <p>{question.label}</p>
-            <p>{answer.label} vaut {answer.point} points</p>
+            <p>{myanswer.label} vaut {myanswer.point} points</p>
         </>
+
     )
 }

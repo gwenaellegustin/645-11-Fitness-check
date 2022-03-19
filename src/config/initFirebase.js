@@ -58,15 +58,7 @@ export async function getAnswer(path){
     return answer;
 }
 
-export async function getCompletedForms(user2){
-    let userDoc;
-    // TODO: delete for test
-    if (user2){
-         userDoc = await getDoc(query(doc(db, "users", 'IqZpEaqXCn2xfcCjWCza')));
-    } else {
-         userDoc = await getDoc(query(doc(db, "users", auth.currentUser.uid)));
-    }
-
+export async function getCompletedForms(userDoc){
     let completedFormsCollection = await getDocs(query(collection(userDoc.ref, "completedForms")));
     let completedFormsArray = completedFormsCollection.docs.map((doc) => ({
         ...doc.data(),
