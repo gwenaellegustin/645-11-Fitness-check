@@ -1,23 +1,19 @@
 import '../styles/App.css';
-import {db, firebaseApp} from "../config/initFirebase";
+import {auth, db, firebaseApp, getCategories} from "../config/initFirebase";
 import {doc, getDoc, setDoc} from "firebase/firestore";
-import {getAuth} from "firebase/auth";
 import {Route, Routes} from "react-router-dom";
 import { Navbar } from 'reactstrap'; // DOC: https://reactstrap.github.io/?path=/docs/components-navbar--navbar
 import {useEffect, useState} from "react";
 import {Form} from "./form/Form";
 import Login from "./Login";
-import Users from "./Users";
+import Users from "./history/Users";
 import Home from "./Home";
 import Chart from "./Chart";
-
-export const auth = getAuth();
-export let documentUser;
 
 let createUserFirestore = async () => {
     // If a user is connected (so exist in Authentication), get the UID
         const docRef = doc(db, 'users', auth.currentUser.uid);
-        documentUser = await getDoc(docRef);
+        const documentUser = await getDoc(docRef);
         // If the user doesn't exist in Firestore, creation
         if (!documentUser.exists()){
             await setDoc(doc(db, 'users', auth.currentUser.uid), {
@@ -59,7 +55,7 @@ function App() {
         );
     // Signed in - Create user in Firestore if not already exist
     } else {
-        createUserFirestore().then(r =>{} ) // TODO: obligé de mettre en async
+        createUserFirestore();
         // TODO: ne devrait pas aller plus loin avant création dans firestore ?
         // TODO: je n'arrive pas à mettre ca dans le use effect de App
     }

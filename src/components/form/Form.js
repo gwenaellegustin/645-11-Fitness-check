@@ -1,5 +1,5 @@
-import {createContext, useEffect, useState} from "react";
-import {collection, doc, getDoc, getDocs, query, addDoc } from "firebase/firestore";
+import {useEffect, useState} from "react";
+import {collection, doc, getDoc, getDocs, query, addDoc} from "firebase/firestore";
 import {CategoryContainer} from "./CategoryContainer";
 import {db} from "../../config/initFirebase";
 import {documentUser} from "../App";
