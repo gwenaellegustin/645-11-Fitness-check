@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {collection, getDocs, query} from "firebase/firestore";
 import {CategoryContainer} from "./CategoryContainer";
-import {db} from "../../config/initFirebase";
+import {db, getCategories, setCategories} from "../../config/initFirebase";
 
 export function Form(){
     const [categories, setCategories] = useState([]);
@@ -9,17 +9,7 @@ export function Form(){
 
     //Categories
     useEffect(() => {
-        async function getCategories(){
-            //Get all categories from database
-            let categoriesCollection = await getDocs(query(collection(db, "categories")));
-            //Fill categories with objects containing all data from Firestore object + id
-            let categoriesArray = categoriesCollection.docs.map(doc => ({
-                ...doc.data(),
-                id: doc.id
-            }))
-            setCategories(categoriesArray);
-        }
-        getCategories();
+        getCategories().then(r => setCategories(r));
     }, [])
 
     //Questions

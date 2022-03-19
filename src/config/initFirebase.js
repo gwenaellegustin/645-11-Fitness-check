@@ -1,8 +1,9 @@
 // Import the functions you need from the SDKs you need
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import {getFirestore} from "firebase/firestore";
+import {collection, getDocs, getFirestore, query} from "firebase/firestore";
 import {getAuth} from "firebase/auth";
+import {useState} from "react";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,3 +19,14 @@ const firebaseConfig = {
 export const firebaseApp = firebase.initializeApp(firebaseConfig);
 export const db = getFirestore();
 export const auth = getAuth();
+
+export async function getCategories(){
+    //Get all categories from database
+    let categoriesCollection = await getDocs(query(collection(db, "categories")));
+    //Fill categories with objects containing all data from Firestore object + id
+    let categoriesArray = categoriesCollection.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+    }))
+    return categoriesArray;
+}
