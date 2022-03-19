@@ -10,11 +10,12 @@ import Users from "./history/Users";
 import Home from "./Home";
 import Chart from "./Chart";
 
+export let documentUser;
 
 let createUserFirestore = async () => {
     // If a user is connected (so exist in Authentication), get the UID
         const docRef = doc(db, 'users', auth.currentUser.uid);
-        const documentUser = await getDoc(docRef);
+        documentUser = await getDoc(docRef);
         // If the user doesn't exist in Firestore, creation
         if (!documentUser.exists()){
             await setDoc(doc(db, 'users', auth.currentUser.uid), {

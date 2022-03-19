@@ -4,6 +4,9 @@ import './styles/index.css';
 import reportWebVitals from './reportWebVitals';
 import AppWrapper from "./components/AppWrapper";
 
+// Importing the Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 ReactDOM.render(
   <React.StrictMode>
       <AppWrapper />
