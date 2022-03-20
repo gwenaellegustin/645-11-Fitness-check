@@ -1,8 +1,7 @@
 import {useEffect, useState} from "react";
-import {collection, getDocs, query} from "firebase/firestore";
-import {db} from "../../config/initFirebase";
+import {getCategories, getQuestion, getQuestions} from "../../config/initFirebase";
 import {CategoryContainer} from "../form/CategoryContainer";
-import {FormContext} from "../form/Form";
+
 
 export function FormCompleted({completedForm}){
     const [categories, setCategories] = useState([]);
@@ -11,59 +10,42 @@ export function FormCompleted({completedForm}){
 
     //Categories
     useEffect(() => {
-        async function getCategories(){
-            //Get all categories from database
-            let categoriesCollection = await getDocs(query(collection(db, "categories")));
-            //Fill categories with objects containing all data from Firestore object + id
-            let categoriesArray = categoriesCollection.docs.map(doc => ({
-                ...doc.data(),
-                id: doc.id
-            }))
-            setCategories(categoriesArray);
-        }
-        getCategories();
+        getCategories().then(r => setCategories(r));
     }, [])
 
     //Questions
     useEffect(() => {
-        async function getQuestions(){
-            //Get all questions from database
-            let questionsCollection = await getDocs(query(collection(db, "questionsTest")));
-            //Fill questions with objects containing all data from Firestore object + id
-            let questionsArray = questionsCollection.docs.map(doc => ({
-                ...doc.data(),
-                id: doc.id
-            }))
-            setQuestions(questionsArray);
-            console.log(questionsArray)
-        }
-
-        getQuestions();
+        getQuestions().then(r => setQuestions(r));
     }, [])
 
 
     // Answered questions
     useEffect(() => {
-        async function getQuestionsOfFrom(){
+        async function getQuestionsFromCompletedFrom() {
             //Get all questions from database
-            let questionsCollection = await getDocs(query(collection(db, "questions")));
+            //let questionsCollection = await getDocs(query(collection(db, "questions")));
             //Fill questions with objects containing all data from Firestore object + id
-            let answeredQuestionsArray = completedForm.answeredQuestions.map(answeredQuestions)
+            console.log(completedForm.answeredQuestions)
+            let answeredQuestionsArray = completedForm.answeredQuestions.map(q => ({
+                    question : getQuestion(q.question.id)
+            }
+            ))
             setAnsweredQuestions(answeredQuestionsArray);
-            console.log(answeredQuestionsArray)
         }
-        getQuestionsOfFrom();
+        getQuestionsFromCompletedFrom().then(console.log(answeredQuestions))
     }, [])
-
 
     return (
             <form>
                 {categories.map(category => (
-                    <CategoryContainer key={category.id} category={category} questions={answeredQuestions.filter(question => question.category.id === category.id)}/>
-                ))}
-                <input type="submit" />
+                    <CategoryContainer key={category.id} category={category} questions={questions.filter(question => question.category.id === category.id)} isDisplayMode={true}/>
+                ))/*TODO: fitler*/}
+                {/*categories.map(category => (
+                    <CategoryContainer key={category.id} category={category} questions={completedForm.answeredQuestions.filter
+                    (answeredQuestion =>
+                        answeredQuestion.question.category.id === category.id)}/>
+                ))*/}
             </form>
-
     )
 
 }

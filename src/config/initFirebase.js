@@ -3,7 +3,6 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import {collection, doc, getDoc, getDocs, getFirestore, query} from "firebase/firestore";
 import {getAuth} from "firebase/auth";
-import {useState} from "react";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -38,6 +37,17 @@ export async function getCategory(idCategory){
         id: categoryDoc.id
     }
     return category;
+}
+
+export async function getQuestions(){
+    //Get all questions from database
+    let questionsCollection = await getDocs(query(collection(db, "questions")));
+    //Fill questions with objects containing all data from Firestore object + id
+    let questionsArray = questionsCollection.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+    }))
+    return questionsArray;
 }
 
 export async function getQuestion(idQuestion){

@@ -1,7 +1,7 @@
 import {createContext, useEffect, useState} from "react";
-import {collection, doc, getDoc, getDocs, query, addDoc, Timestamp} from "firebase/firestore";
+import {collection, doc, getDoc, query, addDoc, Timestamp} from "firebase/firestore";
 import {CategoryContainer} from "./CategoryContainer";
-import {db} from "../../config/initFirebase";
+import {db, getCategories, getQuestions} from "../../config/initFirebase";
 import {documentUser} from "../App";
 
 export const FormContext = createContext();
@@ -12,32 +12,12 @@ export function Form(){
 
     //Categories
     useEffect(() => {
-        async function getCategories(){
-            //Get all categories from database
-            let categoriesCollection = await getDocs(query(collection(db, "categories")));
-            //Fill categories with objects containing all data from Firestore object + id
-            let categoriesArray = categoriesCollection.docs.map(doc => ({
-                ...doc.data(),
-                id: doc.id
-            }))
-            setCategories(categoriesArray);
-        }
-        getCategories();
+        getCategories().then(r => setCategories(r));
     }, [])
 
     //Questions
     useEffect(() => {
-        async function getQuestions(){
-            //Get all questions from database
-            let questionsCollection = await getDocs(query(collection(db, "questions")));
-            //Fill questions with objects containing all data from Firestore object + id
-            let questionsArray = questionsCollection.docs.map(doc => ({
-                ...doc.data(),
-                id: doc.id
-            }))
-            setQuestions(questionsArray);
-        }
-        getQuestions();
+        getQuestions().then(r => setQuestions(r));
     }, [])
 
     let formCompleted = {
@@ -110,9 +90,10 @@ export function Form(){
     //The filter method returns another array filling the condition (= true)
     return (
         <FormContext.Provider value={handleFormInputChange}>
+
             <form onSubmit={handleFormSubmit}>
                 {categories.map(category => (
-                    <CategoryContainer key={category.id} category={category} questions={questions.filter(question => question.category.id === category.id)}/>
+                    <CategoryContainer key={category.id} category={category} questions={questions.filter(question => question.category.id === category.id)} isDisplayMode={false}/>
                 ))}
                 <input type="submit" />
             </form>

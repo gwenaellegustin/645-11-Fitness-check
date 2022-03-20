@@ -4,9 +4,10 @@ import {FormGroup} from "react-bootstrap";
 import {collection, doc, getDoc, getDocs, query} from "firebase/firestore";
 import {db} from "../../config/initFirebase";
 
-export function AnswersContainer({question, uniqueAnswer}){
+export function AnswersContainer({question, uniqueAnswer, isDisplayMode}){
     const onChange = useContext(FormContext)
     const [answers, setAnswers] = useState([]);
+    const [completedAnswers, setCompletedAnswers] = useState([])
 
     const answerType = uniqueAnswer ? 'radio' : 'checkbox';
 
@@ -26,6 +27,24 @@ export function AnswersContainer({question, uniqueAnswer}){
         getAnswers();
     }, [question.id])
 
+    useEffect(() => {
+        async function getCompletedAnswers(){
+            let questionDoc = await getDoc(query(doc(db, "questions", question.id)));
+
+            //Get all answers for that question from database
+            let answersCollection = await getDocs(query(collection(questionDoc.ref, "answers")));
+            //Fill answers with objects containing all data from Firestore object + id
+            let answersArray = answersCollection.docs.map(doc => ({
+                ...doc.data(),
+                id: doc.id
+            }))
+            setCompletedAnswers(answersArray)
+        }
+        if (isDisplayMode){
+            getCompletedAnswers();
+        }
+    }, [question.id])
+
     return (
         <FormGroup key={question.id}>
             {answers
@@ -33,6 +52,7 @@ export function AnswersContainer({question, uniqueAnswer}){
                 .map(answer => (
                     <Fragment key={answer.id}>
                         <input
+                            disabled={isDisplayMode}
                             type={answerType}
                             name={question.id} //Need to be same for all grouped answers
                             id={question.id.concat("-").concat(answer.id)}
