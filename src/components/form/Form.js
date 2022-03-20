@@ -1,5 +1,5 @@
 import {createContext, useEffect, useState} from "react";
-import {collection, doc, getDoc, getDocs, query, addDoc} from "firebase/firestore";
+import {collection, doc, getDoc, getDocs, query, addDoc, Timestamp} from "firebase/firestore";
 import {CategoryContainer} from "./CategoryContainer";
 import {db} from "../../config/initFirebase";
 import {documentUser} from "../App";
@@ -29,16 +29,14 @@ export function Form(){
     useEffect(() => {
         async function getQuestions(){
             //Get all questions from database
-            let questionsCollection = await getDocs(query(collection(db, "questionsTest")));
+            let questionsCollection = await getDocs(query(collection(db, "questions")));
             //Fill questions with objects containing all data from Firestore object + id
             let questionsArray = questionsCollection.docs.map(doc => ({
                 ...doc.data(),
                 id: doc.id
             }))
             setQuestions(questionsArray);
-            console.log(questionsArray)
         }
-
         getQuestions();
     }, [])
 
@@ -47,6 +45,7 @@ export function Form(){
         answeredQuestions : []
     }
 
+    //TODO: TO DELETE, just to represent the objet inside the array above "answeredQuestions"
     let answeredQuestion = {
         question: "QUESTIONID",
         answers: ["REF"]
@@ -57,62 +56,54 @@ export function Form(){
         const questionId = target.name;
         const answerId = target.value;
 
-        const answeredQuestionAlreadyExist = formCompleted.answeredQuestions.find(answeredQuestion => answeredQuestion.question === questionId);
+        //Found the document in order to persist the reference
+        let questionDoc = await getDoc(query(doc(db, "questions", questionId)));
+        let answerDoc = await getDoc(query(doc(questionDoc.ref, "answers", answerId)));
+
+        //Check if the answeredQuestion object exist in the array, otherwise, create it
+        const answeredQuestionAlreadyExist = formCompleted.answeredQuestions.find(answeredQuestion => answeredQuestion.question.id === questionId);
 
         if(answeredQuestionAlreadyExist){
-            formCompleted.answeredQuestions.map(answeredQuestion => {
-                if(answeredQuestion.question === questionId){
-                    if(target.checked){
-                        answeredQuestion.answers.push(answerId);
+            formCompleted.answeredQuestions.forEach(answeredQuestion => {
+                if(answeredQuestion.question.id === questionId){
+                    //If 'radio', only 1 response need to be saved
+                    if(target.type === 'radio'){
+                        answeredQuestion.answers = [answerDoc.ref];
                     } else {
-                        answeredQuestion.answers = answeredQuestion.answers.filter(answer => answer !== answerId)
+                        //If 'checkbox'
+                        //If checked, add the answer to saved ones
+                        if(target.checked){
+                            answeredQuestion.answers.push(answerDoc.ref);
+                        } else { //Otherwise, remove the answer from saved ones
+                            answeredQuestion.answers = answeredQuestion.answers.filter(answer => answer.id !== answerId)
+                        }
                     }
                 }}
             )
         } else {
+            //Otherwise, create the answeredQuestion object
             formCompleted.answeredQuestions.push({
-                question: questionId,
-                answers: [answerId]
+                question: questionDoc.ref,
+                answers: [answerDoc.ref]
             })
         }
-
-        console.log(formCompleted)
     }
 
-    const handleFormSubmit = async e => {
+    const handleFormSubmit = e => {
         e.preventDefault(); //TODO: Needed?
 
-        //let questionDoc = await getDoc(query(doc(db, "questionsTest", questionId)));
-        //let answerDoc = await getDoc(query(doc(questionDoc.ref, "answersTest", answerId)));
+        //Set the date and time when submitting the form
+        formCompleted.dateTime = Timestamp.fromDate(new Date());
 
-        const form = modifyFormBeforeSubmit();
+        async function addCompletedFormToFirestore(){
+            return await addDoc(collection(documentUser.ref, "completedForms"), formCompleted);
+        }
 
-        addDoc(collection(documentUser.ref, "completedForms"), form);
-
-        console.log(formCompleted);
-
-
-    }
-
-    function modifyFormBeforeSubmit(){
-        formCompleted.dateTime = new Date().getTime();
-
-        formCompleted.answeredQuestions.map(answeredQuestion => {
-                console.log(answeredQuestion)
-                getDoc(query(doc(db, "questionsTest", answeredQuestion.question))).then(r => {
-                    console.log(r.ref)
-                    answeredQuestion.question = r.ref;
-
-                    answeredQuestion.answers.map(answer => {
-                        console.log(answer)
-                        getDoc(query(doc(r.ref, "answersTest", answer))).then(res => {
-                            console.log(res.ref)
-                            return formCompleted;
-                        })
-                    })
-                });
+        addCompletedFormToFirestore().then(completedFormRef => {
+            if(completedFormRef != null){
+                console.log("ADD COMPLETED FORM SUCCESSFUL, id : " + completedFormRef.id);
             }
-        )
+        });
     }
 
     //Return a category container with only the questions related to this category (in order to sort it by category)
@@ -126,6 +117,5 @@ export function Form(){
                 <input type="submit" />
             </form>
         </FormContext.Provider>
-
     )
 }
