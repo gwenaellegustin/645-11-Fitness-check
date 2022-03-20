@@ -6,13 +6,14 @@ import {
     getCompletedForms,
 } from "../../config/initFirebase";
 import {QuestionWithAnswers} from "./QuestionWithAnswers";
-import {FormCompleted} from "./FormCompleted";
+import {FormCompleted2} from "./FormCompleted2";
+import {FormCompletedContainer} from "./FormCompletedContainer";
 
 // WE WILL USE THIS ONE
 export function User(){
     const [completedForms, setCompletedForms] = useState([])
 
-    // User
+    // CompletedForms
     useEffect(() => {
         getDoc(query(doc(db, "users", auth.currentUser.uid)))
         //getDoc(query(doc(db, "users", '4mnfc4FBnaStGX5jdOoNNCu7ZHp2'))) //TODO: for test
@@ -28,17 +29,10 @@ export function User(){
             <ul>
                 {completedForms.map(completedForm => (
                     <li key={completedForm.id}>
-                        <h3>ID du formulaire: {completedForm.id} <br/> avec le datetime : {completedForm.datetime}</h3>
-                        <b>Only answer completed</b>
-                        <ul>
-                            {completedForm.answeredQuestions.map((answeredQuestion, index) => (
-                                <li key={index}>
-                                    {<QuestionWithAnswers answeredQuestion={answeredQuestion}/>}
-                                </li>
-                            ))}
-                        </ul>
+                        <h3>Only answer completed</h3>
+                        {<FormCompletedContainer completedForm={completedForm}/>}
                         <h3>All answers</h3>
-                        {<FormCompleted completedForm={completedForm}></FormCompleted>}
+                        {<FormCompleted2 completedForm={completedForm}></FormCompleted2>}
                         <hr/>
                     </li>
                 ))}

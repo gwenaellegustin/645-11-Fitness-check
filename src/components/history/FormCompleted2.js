@@ -3,7 +3,7 @@ import {getCategories, getQuestion, getQuestions} from "../../config/initFirebas
 import {CategoryContainer} from "../form/CategoryContainer";
 
 
-export function FormCompleted({completedForm}){
+export function FormCompleted2({completedForm}){
     const [categories, setCategories] = useState([]);
     const [questions, setQuestions] = useState([]);
     const [answeredQuestions, setAnsweredQuestions] = useState([]);

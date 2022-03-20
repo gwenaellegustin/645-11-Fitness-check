@@ -17,6 +17,9 @@ export default function Home() {
                 <Link to="/chart">Go To Chart</Link>
             </p>
             <p>
+                <Link to="/history">Go To history</Link>
+            </p>
+            <p>
                 <Link to="/users">Go To users</Link>
             </p>
             <button onClick={handleSignOutClick}>Sign Out</button>

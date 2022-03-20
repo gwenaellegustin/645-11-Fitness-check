@@ -9,6 +9,7 @@ import Login from "./Login";
 import Users from "./history/Users";
 import Home from "./Home";
 import Chart from "./Chart";
+import {History} from "./History";
 
 export let documentUser;
 
@@ -73,6 +74,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/form" element={<Form />} />
                 <Route path="/chart" element={<Chart />} />
+                <Route path="/history" element={<History />} />
                 <Route path="/users" element={<Users />} /> {/* Test page TODO: delete when no more needed */}
             </Routes>
         </div>
