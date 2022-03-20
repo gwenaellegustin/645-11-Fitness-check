@@ -8,17 +8,28 @@ import {auth, db, getCompletedForms} from "../config/initFirebase";
 export function History(){
     const [completedForms, setCompletedForms] = useState()
 
+
     // CompletedForms
     useEffect(() => {
         getDoc(query(doc(db, "users", auth.currentUser.uid)))
-            .then(r => getCompletedForms(r)
-                .then(r => setCompletedForms(r)));
-    }, )
+            .then(u => getCompletedForms(u)
+                .then(f => setCompletedForms(f)));
+    }, [])
 
     return(
         <div className="row">
-
-            <div className="column">{completedForms && completedForms.length > -1  && <FormCompletedContainer completedForm={completedForms[0]}/>}</div>
+            <div className="column">
+                <select>
+                    {completedForms && completedForms.length > -1 && completedForms.map(completedForm => (
+                        <option
+                            key={completedForm.id}
+                            value={completedForm.datetime}
+                        >
+                            {completedForm.datetime}
+                        </option>
+                    ))}
+                </select>
+                {completedForms && completedForms.length > -1  && <FormCompletedContainer completedForm={completedForms[0]}/>}</div>
             <div className="column">{<Chart></Chart>}</div>
         </div>
     )
