@@ -6,7 +6,7 @@ export function CategoryContainer({category, questions}){
     return (
         <div>
             <ul>
-                {category.label}
+                <b>{category.label}</b>
                 {questions.map(question => (
                     <QuestionContainer key={question.id} question={question}/>
                 ))}

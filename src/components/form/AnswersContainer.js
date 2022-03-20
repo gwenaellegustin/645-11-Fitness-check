@@ -12,10 +12,10 @@ export function AnswersContainer({question, uniqueAnswer}){
 
     useEffect(() => {
         async function getAnswers(){
-            let questionDoc = await getDoc(query(doc(db, "questionsTest", question.id)));
+            let questionDoc = await getDoc(query(doc(db, "questions", question.id)));
 
             //Get all answers for that question from database
-            let answersCollection = await getDocs(query(collection(questionDoc.ref, "answersTest")));
+            let answersCollection = await getDocs(query(collection(questionDoc.ref, "answers")));
             //Fill answers with objects containing all data from Firestore object + id
             let answersArray = answersCollection.docs.map(doc => ({
                 ...doc.data(),
