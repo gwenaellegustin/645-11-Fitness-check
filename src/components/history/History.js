@@ -28,11 +28,9 @@ export function History(){
     },[completedForms])
 
     const onchangeSelect = (e) => {
-        //setCurrentCountry(null);
-        //setRegion(item);
+        // TODO: update the value shown on the dropdown
         setSelectedForm(completedForms.find(completedForm => completedForm.id === e.target.value))
     };
-
 
     function Dropdown() {
         return (
@@ -50,6 +48,7 @@ export function History(){
         );
     }
 
+    // This is not working, but perhaps better to use Select from react than select from html
     function DropdownReact() {
         return (
             <Select
@@ -66,7 +65,8 @@ export function History(){
         );
     }
 
-    if (completedForms === null){
+    // Loading screen
+    if (selectedForm === null){
         return (
             <div className="App">
                 <p>Loading...</p>
@@ -74,6 +74,7 @@ export function History(){
         );
     }
 
+    // No history screen
     if (completedForms.length === 0){
         return (
             <div className="History">
@@ -88,15 +89,18 @@ export function History(){
         )
     }
 
-
+    // History screen
     return(
         <div className="row">
             <div className="column">
+                <p><b>DON'T CLICK ON SECOND DROPDOWN</b></p>
                 <Dropdown/>
                 <DropdownReact/>
                 {selectedForm && <FormCompleted key={selectedForm.id} completedForm={selectedForm}/>}
             </div>
-            <div className="column">{<Chart/>}</div>
+            <div className="column">
+                {<Chart/>}
+            </div>
         </div>
     )
 }
