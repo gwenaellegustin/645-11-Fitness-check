@@ -1,12 +1,11 @@
 import {useEffect, useState} from "react";
-import {getAnswer, getQuestion} from "../../config/initFirebase";
-import {CategoryContainer} from "../form/CategoryContainer";
+import {getAnswer} from "../../config/initFirebase";
 
 export function QuestionWithAnswers({answeredQuestion}){
     const [question, setQuestion] = useState([]);
 
     useEffect(() => {
-        getQuestion(answeredQuestion.question.id).then(r => setQuestion(r));
+        //getQuestion(answeredQuestion.question.id).then(r => setQuestion(r));
     }, [])
 
     return (
@@ -24,8 +23,9 @@ export function QuestionWithAnswers({answeredQuestion}){
 export function Answer({answerpath}){
     const [myanswer, setAnswer] = useState([]);
     useEffect(() => {
+        console.log(answerpath)
         getAnswer(answerpath).then(r =>setAnswer(r));
-    }, [])
+    }, [answerpath])
 
     return (
         <>
