@@ -52,6 +52,9 @@ export function FormCompleted({completedForm}){
 
     return (
         <form>
+            <h3>Date : {(new Date(completedForm.dateTime.seconds * 1000 + completedForm.dateTime.nanoseconds/1000)).toLocaleDateString()
+                + " "
+                + (new Date(completedForm.dateTime.seconds * 1000 + completedForm.dateTime.nanoseconds/1000)).toLocaleTimeString()}</h3>
             {answeredCategories.map(category => (
                 <CategoryContainer key={category.id} category={category} questions={answeredQuestions.filter(question => question.category.id === category.id)} isDisplayMode={true} completedAnswersId={answeredAnswersIds}/>
             ))}

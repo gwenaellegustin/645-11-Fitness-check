@@ -6,11 +6,8 @@ import { Navbar } from 'reactstrap'; // DOC: https://reactstrap.github.io/?path=
 import {useEffect, useState} from "react";
 import {Form} from "./form/Form";
 import Login from "./Login";
-import Users from "./history/Users";
 import Home from "./Home";
-import Chart from "./Chart";
-import {History} from "./History";
-import {User} from "./history/User";
+import {History} from "./history/History";
 
 export let documentUser;
 
@@ -74,10 +71,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/form" element={<Form />} />
-                <Route path="/chart" element={<Chart />} />
                 <Route path="/history" element={<History />} />
-                <Route path="/users" element={<Users />} /> {/* Test page TODO: delete when no more needed */}
-                <Route path="/user" element={<User />} /> {/* Test page TODO: delete when no more needed */}
             </Routes>
         </div>
     );

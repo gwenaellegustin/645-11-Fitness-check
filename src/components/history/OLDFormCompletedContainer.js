@@ -1,6 +1,6 @@
-import {QuestionWithAnswers} from "./QuestionWithAnswers";
+import {OLDQuestionWithAnswers} from "./OLDQuestionWithAnswers";
 
-export function FormCompletedContainer({completedForm}){
+export function OLDFormCompletedContainer({completedForm}){
 
     return (
         <>
@@ -8,7 +8,7 @@ export function FormCompletedContainer({completedForm}){
             <ul>
                 {completedForm.answeredQuestions.map((answeredQuestion, index) => (
                     <li key={index}>
-                        {<QuestionWithAnswers answeredQuestion={answeredQuestion}/>}
+                        {<OLDQuestionWithAnswers answeredQuestion={answeredQuestion}/>}
                     </li>
                 ))}
             </ul>

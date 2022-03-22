@@ -44,6 +44,15 @@ export async function getCategoriesWithIds(categoriesId){
     return categories;
 }
 
+export async function getQuestion(idQuestion){
+    let questionDoc = await getDoc(query(doc(db, "questions", idQuestion)));
+    let question = {
+        ...questionDoc.data(),
+        id: questionDoc.id
+    }
+    return question;
+}
+
 export async function getQuestions(){
     //Get all questions from database
     let questionsCollection = await getDocs(query(collection(db, "questions")));

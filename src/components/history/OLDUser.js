@@ -1,8 +1,7 @@
 import {useEffect, useState} from "react";
 import {doc, getDoc} from "firebase/firestore";
-import {auth, db, getCompletedFormByDate} from "../../config/initFirebase";
+import {auth, db, getAnswer, getCompletedFormByDate} from "../../config/initFirebase";
 import {FormCompleted} from "./FormCompleted";
-import {Answer} from "./QuestionWithAnswers";
 import {useLocation} from "react-router-dom";
 
 // WE WILL USE THIS ONE
@@ -48,6 +47,20 @@ export function User(){
             ))}
             <h2>COMPLETED FORM</h2>
             {<FormCompleted key={completedForm.id} completedForm={completedForm}/>}
+        </>
+    )
+}
+
+export function Answer({answerpath}){
+    const [myanswer, setAnswer] = useState([]);
+    useEffect(() => {
+        console.log(answerpath)
+        getAnswer(answerpath).then(r =>setAnswer(r));
+    }, [answerpath])
+
+    return (
+        <>
+            <p>{myanswer.label} vaut {myanswer.point} points</p>
         </>
     )
 }

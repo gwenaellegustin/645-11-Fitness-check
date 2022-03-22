@@ -1,16 +1,16 @@
-import '../styles/App.css';
-import React, {useEffect, useState, Fragment } from 'react';
-import {FormCompletedContainer} from "./history/FormCompletedContainer";
+import '../../styles/App.css';
+import React, {useEffect, useState} from 'react';
 import Chart from "./Chart";
 import {doc, getDoc, query} from "firebase/firestore";
-import {auth, db, getCompletedForms} from "../config/initFirebase";
+import {auth, db, getCompletedForms} from "../../config/initFirebase";
+import {FormCompleted} from "./FormCompleted";
+import {Link} from "react-router-dom";
 
 export function History(){
     const [completedForms, setCompletedForms] = useState([])
     const [selectedForm, setSelectedForm] = useState();
 
-
-    // CompletedForms
+    // Get all completed froms of a user
     useEffect(() => {
         getDoc(query(doc(db, "users", auth.currentUser.uid)))
             .then(u => getCompletedForms(u)
@@ -24,10 +24,6 @@ export function History(){
             setSelectedForm(completedForms[0])
         }
     },[completedForms])
-
-    /*const HandleOnChangeDropdown = e => {
-        setSelectedForm(e.target.value)
-    } */
 
     function Dropdown() {
         return (
@@ -43,29 +39,38 @@ export function History(){
                 ))}
             </select>
         );
-    };
+    }
+
+    if (completedForms === null){
+        return (
+            <div className="App">
+                <p>Loading...</p>
+            </div>
+        );
+    }
+
+    if (completedForms.length === 0){
+        return (
+            <div className="History">
+                <p>No history</p>
+                <p>
+                    <Link to="/form">Go To Form</Link>
+                </p>
+                <p>
+                    <Link to="/">Go To Home</Link>
+                </p>
+            </div>
+        )
+    }
+
 
     return(
         <div className="row">
             <div className="column">
-                {/*<Dropdown completedForms={completedForms} selectedOption={selectedOption} onChange={HandleOnChangeDropdown}/>*/}
-                <Dropdown></Dropdown>
-                {selectedForm  && <FormCompletedContainer completedForm={selectedForm}/>}
+                <Dropdown/>
+                {selectedForm && <FormCompleted key={selectedForm.id} completedForm={selectedForm}/>}
             </div>
-            <div className="column">{<Chart></Chart>}</div>
+            <div className="column">{<Chart/>}</div>
         </div>
     )
-}
-
-function Dropdown({completedForms, selectedOption, onChange}) {
-
-    return (
-        <select
-            value={selectedOption}
-            onChange={onChange}>
-            {completedForms.map((o) => (
-                <option key={o.id} value={o.id}>{(new Date(o.dateTime.seconds * 1000 + o.dateTime.nanoseconds/1000)).toLocaleDateString()}</option>
-            ))}
-        </select>
-    );
 }
