@@ -4,6 +4,7 @@ import {CategoryContainer} from "./CategoryContainer";
 import {db, getCategories, getQuestions} from "../../config/initFirebase";
 import {documentUser} from "../App";
 import {FormError} from "./FormError";
+import {useNavigate} from "react-router-dom";
 
 export const FormContext = createContext();
 
@@ -12,6 +13,8 @@ export function Form(){
     const [questions, setQuestions] = useState([]);
     const [isValidForm, setIsValidForm] = useState(true);
     const [completedForm] = useState({dateTime: null, answeredQuestions : []})
+
+    const navigate = useNavigate();
 
     //Categories
     useEffect(() => {
@@ -90,7 +93,8 @@ export function Form(){
 
             console.log("All questions have been answered");
             //Set the date and time when submitting the form
-            completedForm.dateTime = Timestamp.fromDate(new Date());
+            const formDate = new Date();
+            completedForm.dateTime = Timestamp.fromDate(formDate);
 
             async function addCompletedFormToFirestore(){
                 return await addDoc(collection(documentUser.ref, "completedForms"), completedForm);
@@ -99,6 +103,8 @@ export function Form(){
             addCompletedFormToFirestore().then(completedFormRef => {
                 if(completedFormRef != null){
                     console.log("ADD COMPLETED FORM SUCCESSFUL, id : " + completedFormRef.id);
+                    console.log(completedForm.dateTime)
+                    navigate("/user", {state: {formDate: formDate}})
                 }
             });
         } else {
