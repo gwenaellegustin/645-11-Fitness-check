@@ -3,12 +3,15 @@ import {collection, doc, getDoc, query, addDoc, Timestamp} from "firebase/firest
 import {CategoryContainer} from "./CategoryContainer";
 import {db, getCategories, getQuestions} from "../../config/initFirebase";
 import {documentUser} from "../App";
+import {FormError} from "./FormError";
 
 export const FormContext = createContext();
 
 export function Form(){
     const [categories, setCategories] = useState([]);
     const [questions, setQuestions] = useState([]);
+    const [isValidForm, setIsValidForm] = useState(true);
+    const [completedForm] = useState({dateTime: null, answeredQuestions : []})
 
     //Categories
     useEffect(() => {
@@ -17,13 +20,12 @@ export function Form(){
 
     //Questions
     useEffect(() => {
+
+
         getQuestions().then(r => setQuestions(r));
     }, [])
 
-    let formCompleted = {
-        dateTime: null,
-        answeredQuestions : []
-    }
+
 
     //TODO: TO DELETE, just to represent the objet inside the array above "answeredQuestions"
     let answeredQuestion = {
@@ -41,13 +43,14 @@ export function Form(){
         let answerDoc = await getDoc(query(doc(questionDoc.ref, "answers", answerId)));
 
         //Check if the answeredQuestion object exist in the array, otherwise, create it
-        const answeredQuestionAlreadyExist = formCompleted.answeredQuestions.find(answeredQuestion => answeredQuestion.question.id === questionId);
+        const answeredQuestionAlreadyExist = completedForm.answeredQuestions.find(answeredQuestion => answeredQuestion.question.id === questionId);
 
         if(answeredQuestionAlreadyExist){
-            formCompleted.answeredQuestions.forEach(answeredQuestion => {
+            completedForm.answeredQuestions.forEach((answeredQuestion, index) => {
                 if(answeredQuestion.question.id === questionId){
                     //If 'radio', only 1 response need to be saved
                     if(target.type === 'radio'){
+                        console.log("Add radio answer")
                         answeredQuestion.answers = [answerDoc.ref];
                     } else {
                         //If 'checkbox'
@@ -55,14 +58,19 @@ export function Form(){
                         if(target.checked){
                             answeredQuestion.answers.push(answerDoc.ref);
                         } else { //Otherwise, remove the answer from saved ones
-                            answeredQuestion.answers = answeredQuestion.answers.filter(answer => answer.id !== answerId)
+                            answeredQuestion.answers = answeredQuestion.answers.filter(answer => answer.id !== answerId);
+                            if(answeredQuestion.answers.length === 0){
+                                console.log("delete answered question")
+                                completedForm.answeredQuestions.splice(index, 1);
+                            }
                         }
                     }
                 }}
             )
         } else {
+            console.log("Add radio answer")
             //Otherwise, create the answeredQuestion object
-            formCompleted.answeredQuestions.push({
+            completedForm.answeredQuestions.push({
                 question: questionDoc.ref,
                 answers: [answerDoc.ref]
             })
@@ -72,18 +80,32 @@ export function Form(){
     const handleFormSubmit = e => {
         e.preventDefault(); //TODO: Needed?
 
-        //Set the date and time when submitting the form
-        formCompleted.dateTime = Timestamp.fromDate(new Date());
+        console.log("Questions")
+        console.log(questions);
 
-        async function addCompletedFormToFirestore(){
-            return await addDoc(collection(documentUser.ref, "completedForms"), formCompleted);
-        }
 
-        addCompletedFormToFirestore().then(completedFormRef => {
-            if(completedFormRef != null){
-                console.log("ADD COMPLETED FORM SUCCESSFUL, id : " + completedFormRef.id);
+        //Check all questions have been answered
+        if(questions.length === completedForm.answeredQuestions.length){
+            setIsValidForm(true);
+
+            console.log("All questions have been answered");
+            //Set the date and time when submitting the form
+            completedForm.dateTime = Timestamp.fromDate(new Date());
+
+            async function addCompletedFormToFirestore(){
+                return await addDoc(collection(documentUser.ref, "completedForms"), completedForm);
             }
-        });
+
+            addCompletedFormToFirestore().then(completedFormRef => {
+                if(completedFormRef != null){
+                    console.log("ADD COMPLETED FORM SUCCESSFUL, id : " + completedFormRef.id);
+                }
+            });
+        } else {
+            setIsValidForm(false);
+            console.log("Answered questions");
+            console.log(completedForm.answeredQuestions)
+        }
     }
 
     //Return a category container with only the questions related to this category (in order to sort it by category)
@@ -95,7 +117,8 @@ export function Form(){
                 {categories.map(category => (
                     <CategoryContainer key={category.id} category={category} questions={questions.filter(question => question.category.id === category.id)} isDisplayMode={false}/>
                 ))}
-                <input type="submit" />
+                <FormError isValidForm={isValidForm}/>
+                <button type="submit">Submit</button>
             </form>
         </FormContext.Provider>
     )
