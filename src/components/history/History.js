@@ -1,10 +1,12 @@
 import '../../styles/App.css';
 import React, {useEffect, useState} from 'react';
+import AsyncSelect from 'react-select/async'
 import Chart from "./Chart";
 import {doc, getDoc, query} from "firebase/firestore";
 import {auth, db, getCompletedForms} from "../../config/initFirebase";
 import {FormCompleted} from "./FormCompleted";
 import {Link} from "react-router-dom";
+import Select from "react-select/base";
 
 export function History(){
     const [completedForms, setCompletedForms] = useState([])
@@ -25,11 +27,18 @@ export function History(){
         }
     },[completedForms])
 
+    const onchangeSelect = (e) => {
+        //setCurrentCountry(null);
+        //setRegion(item);
+        setSelectedForm(completedForms.find(completedForm => completedForm.id === e.target.value))
+    };
+
+
     function Dropdown() {
         return (
             <select
                 value={selectedForm}
-                onChange={e => setSelectedForm(completedForms.find(completedForm => completedForm.id === e.target.value))}>
+                onChange={onchangeSelect}>
                 {completedForms.map(o => (
                     <option key={o.id} value={o.id}>
                         {(new Date(o.dateTime.seconds * 1000 + o.dateTime.nanoseconds/1000)).toLocaleDateString()
@@ -38,6 +47,22 @@ export function History(){
                     </option>
                 ))}
             </select>
+        );
+    }
+
+    function DropdownReact() {
+        return (
+            <Select
+                value={selectedForm}
+                onChange={onchangeSelect}
+                options={completedForms}
+                getOptionValue={(option) => option.id}
+                getOptionLabel={(o) =>
+                    (new Date(o.dateTime.seconds * 1000 + o.dateTime.nanoseconds/1000)).toLocaleDateString()
+                    + " "
+                    + (new Date(o.dateTime.seconds * 1000 + o.dateTime.nanoseconds/1000)).toLocaleTimeString()
+            }
+            />
         );
     }
 
@@ -68,6 +93,7 @@ export function History(){
         <div className="row">
             <div className="column">
                 <Dropdown/>
+                <DropdownReact/>
                 {selectedForm && <FormCompleted key={selectedForm.id} completedForm={selectedForm}/>}
             </div>
             <div className="column">{<Chart/>}</div>
