@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import {collection, doc, getDoc, getDocs, getFirestore, query} from "firebase/firestore";
+import {collection, doc, getDoc, getDocs, getFirestore, query, where} from "firebase/firestore";
 import {getAuth} from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -91,4 +91,18 @@ export async function getCompletedForm(userDoc){
         ...completedFormDoc.data(),
         id: completedFormDoc.id
     };
+}
+
+export async function getCompletedFormByDate(userDoc, formDate){
+    //TODO: Is it possible to get only 1 form instead of all docs where it's that date time ?
+
+    console.log(formDate)
+    let completedFormsCollection = await getDocs(query(collection(userDoc.ref, "completedForms"), where("dateTime", "==", formDate)));
+    let completedFormsArray = completedFormsCollection.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+    }))
+
+    console.log(completedFormsArray[0])
+    return completedFormsArray[0];
 }
