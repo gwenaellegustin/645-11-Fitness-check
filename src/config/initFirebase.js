@@ -23,57 +23,72 @@ export async function getCategories(){
     //Get all categories from database
     let categoriesCollection = await getDocs(query(collection(db, "categories")));
     //Fill categories with objects containing all data from Firestore object + id
-    let categoriesArray = categoriesCollection.docs.map(doc => ({
+    return categoriesCollection.docs.map(doc => ({
         ...doc.data(),
         id: doc.id
-    }))
-    return categoriesArray;
+    }));
 }
 
-export async function getCategory(idCategory){
-    let categoryDoc = await getDoc(query(doc(db, "categories", idCategory)));
-    let category = {
-        ...categoryDoc.data(),
-        id: categoryDoc.id
+export async function getCategoriesWithIds(categoriesId){
+    const categories = [];
+
+    for (const categoryId of categoriesId){
+        let categoryDoc = await getDoc(doc(db, "categories", categoryId));
+        let category = {
+            ...categoryDoc.data(),
+            id: categoryDoc.id
+        }
+        categories.push(category);
     }
-    return category;
+
+    return categories;
 }
 
 export async function getQuestions(){
     //Get all questions from database
     let questionsCollection = await getDocs(query(collection(db, "questions")));
     //Fill questions with objects containing all data from Firestore object + id
-    let questionsArray = questionsCollection.docs.map(doc => ({
+    return questionsCollection.docs.map(doc => ({
         ...doc.data(),
         id: doc.id
-    }))
-    return questionsArray;
+    }));
 }
 
-export async function getQuestion(idQuestion){
-    let questionDoc = await getDoc(query(doc(db, "questions", idQuestion)));
-    let question = {
-        ...questionDoc.data(),
-        id: questionDoc.id
+export async function getQuestionsWithIds(questionsId){
+    const questions = [];
+
+    for (const questionId of questionsId) {
+        let questionDoc = await getDoc(doc(db, "questions", questionId));
+        let question = {
+            ...questionDoc.data(),
+            id: questionDoc.id
+        }
+        questions.push(question);
     }
-    return question;
+    return questions;
 }
 
 export async function getAnswer(answerPath){
     // answerPath is for example "/questions/xtoQ5mbOMrhzyoAtXji9/answers/jgs87lCWZTkwYvONFmxA"
-    let answerDoc = await getDoc(query(doc(db, answerPath)));
-    let answer = {
+    let answerDoc = await getDoc((doc(db, answerPath)));
+    return {
         ...answerDoc.data(),
         id: answerDoc.id
-    }
-    return answer;
+    };
 }
 
 export async function getCompletedForms(userDoc){
     let completedFormsCollection = await getDocs(query(collection(userDoc.ref, "completedForms")));
-    let completedFormsArray = completedFormsCollection.docs.map((doc) => ({
+    return completedFormsCollection.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
-    }))
-    return completedFormsArray;
+    }));
+}
+
+export async function getCompletedForm(userDoc){
+    let completedFormDoc = await getDoc(doc(collection(userDoc.ref, "completedForms"), "DoekfjZKXmnfmemzJ70m"));
+    return {
+        ...completedFormDoc.data(),
+        id: completedFormDoc.id
+    };
 }

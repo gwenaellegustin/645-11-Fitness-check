@@ -1,5 +1,5 @@
 import '../styles/App.css';
-import {auth, db, firebaseApp, getCategories} from "../config/initFirebase";
+import {auth, db, firebaseApp} from "../config/initFirebase";
 import {doc, getDoc, setDoc} from "firebase/firestore";
 import {Route, Routes} from "react-router-dom";
 import { Navbar } from 'reactstrap'; // DOC: https://reactstrap.github.io/?path=/docs/components-navbar--navbar
@@ -10,6 +10,7 @@ import Users from "./history/Users";
 import Home from "./Home";
 import Chart from "./Chart";
 import {History} from "./History";
+import {User} from "./history/User";
 
 export let documentUser;
 
@@ -76,6 +77,7 @@ function App() {
                 <Route path="/chart" element={<Chart />} />
                 <Route path="/history" element={<History />} />
                 <Route path="/users" element={<Users />} /> {/* Test page TODO: delete when no more needed */}
+                <Route path="/user" element={<User />} /> {/* Test page TODO: delete when no more needed */}
             </Routes>
         </div>
     );
