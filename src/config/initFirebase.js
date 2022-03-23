@@ -19,13 +19,27 @@ export const firebaseApp = firebase.initializeApp(firebaseConfig);
 export const db = getFirestore();
 export const auth = getAuth();
 
+export async function getForm(){
+    let formCollection = await getDocs(query(collection(db, "form")));
+    let formArray = formCollection.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+    }))
+
+    //There's only 1 form
+    console.log(formArray[0])
+
+    return formArray[0];
+}
+
 export async function getCategories(){
     //Get all categories from database
     let categoriesCollection = await getDocs(query(collection(db, "categories")));
     //Fill categories with objects containing all data from Firestore object + id
     return categoriesCollection.docs.map(doc => ({
         ...doc.data(),
-        id: doc.id
+        id: doc.id,
+        categoryRef: doc.ref
     }));
 }
 
@@ -70,7 +84,8 @@ export async function getQuestionsWithIds(questionsId){
         let questionDoc = await getDoc(doc(db, "questions", questionId));
         let question = {
             ...questionDoc.data(),
-            id: questionDoc.id
+            id: questionDoc.id,
+            questionRef: questionDoc.ref
         }
         questions.push(question);
     }
