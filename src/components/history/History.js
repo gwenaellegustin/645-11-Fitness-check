@@ -8,11 +8,11 @@ import {FormCompleted} from "./FormCompleted";
 import {Link} from "react-router-dom";
 import Select from "react-select/base";
 
-export function History(){
+export function History({formDate}){
     const [completedForms, setCompletedForms] = useState([])
     const [selectedForm, setSelectedForm] = useState();
 
-    // Get all completed froms of a user
+    // Get all completed forms of a user
     useEffect(() => {
         getDoc(query(doc(db, "users", auth.currentUser.uid)))
             .then(u => getCompletedForms(u)
@@ -30,13 +30,15 @@ export function History(){
     const onchangeSelect = (e) => {
         // TODO: update the value shown on the dropdown
         setSelectedForm(completedForms.find(completedForm => completedForm.id === e.target.value))
+        console.log(e.target.value)
     };
 
     function Dropdown() {
         return (
             <select
                 value={selectedForm}
-                onChange={onchangeSelect}>
+                onChange={onchangeSelect}
+                defaultValue={formDate}>
                 {completedForms.map(o => (
                     <option key={o.id} value={o.id}>
                         {(new Date(o.dateTime.seconds * 1000 + o.dateTime.nanoseconds/1000)).toLocaleDateString()
@@ -55,6 +57,7 @@ export function History(){
                 value={selectedForm}
                 onChange={onchangeSelect}
                 options={completedForms}
+                defaultValue={formDate}
                 getOptionValue={(option) => option.id}
                 getOptionLabel={(o) =>
                     (new Date(o.dateTime.seconds * 1000 + o.dateTime.nanoseconds/1000)).toLocaleDateString()
