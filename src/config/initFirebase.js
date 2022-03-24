@@ -1,8 +1,9 @@
 // Import the functions you need from the SDKs you need
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import {collection, doc, getDoc, getDocs, getFirestore, query, where} from "firebase/firestore";
+import {addDoc, collection, doc, getDoc, getDocs, getFirestore, query, where} from "firebase/firestore";
 import {getAuth} from "firebase/auth";
+import {documentUser} from "../components/App";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -20,6 +21,8 @@ export const db = getFirestore();
 export const auth = getAuth();
 
 export async function getForm(){
+    console.log("Firestore called getForm");
+
     let formCollection = await getDocs(query(collection(db, "form")));
     let formArray = formCollection.docs.map(doc => ({
         ...doc.data(),
@@ -32,7 +35,22 @@ export async function getForm(){
     return formArray[0];
 }
 
+export async function getAnswersByQuestion(questionRef){
+    console.log("Firestore called getAnswers");
+
+    //Get all answers for that question from database
+    let answersCollection = await getDocs(query(collection(questionRef, "answers")));
+    //Fill answers with objects containing all data from Firestore object + id
+    return answersCollection.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+        answerRef: doc.ref
+    }));
+}
+
 export async function getCategories(){
+    console.log("Firestore called getCategories");
+
     //Get all categories from database
     let categoriesCollection = await getDocs(query(collection(db, "categories")));
     //Fill categories with objects containing all data from Firestore object + id
@@ -44,6 +62,8 @@ export async function getCategories(){
 }
 
 export async function getCategoriesWithIds(categoriesId){
+    console.log("Firestore called getCategoriesWithIds");
+
     const categories = [];
 
     for (const categoryId of categoriesId){
@@ -58,16 +78,9 @@ export async function getCategoriesWithIds(categoriesId){
     return categories;
 }
 
-export async function getQuestion(idQuestion){
-    let questionDoc = await getDoc(query(doc(db, "questions", idQuestion)));
-    let question = {
-        ...questionDoc.data(),
-        id: questionDoc.id
-    }
-    return question;
-}
-
 export async function getQuestions(){
+    console.log("Firestore called getQuestions");
+
     //Get all questions from database
     let questionsCollection = await getDocs(query(collection(db, "questions")));
     //Fill questions with objects containing all data from Firestore object + id
@@ -78,6 +91,8 @@ export async function getQuestions(){
 }
 
 export async function getQuestionsWithIds(questionsId){
+    console.log("Firestore called getQuestionsWithIds");
+
     const questions = [];
 
     for (const questionId of questionsId) {
@@ -85,23 +100,17 @@ export async function getQuestionsWithIds(questionsId){
         let question = {
             ...questionDoc.data(),
             id: questionDoc.id,
-            questionRef: questionDoc.ref
+            questionRef: questionDoc.ref,
+            categoryId: questionDoc.data().category.id
         }
         questions.push(question);
     }
     return questions;
 }
 
-export async function getAnswer(answerPath){
-    // answerPath is for example "/questions/xtoQ5mbOMrhzyoAtXji9/answers/jgs87lCWZTkwYvONFmxA"
-    let answerDoc = await getDoc((doc(db, answerPath)));
-    return {
-        ...answerDoc.data(),
-        id: answerDoc.id
-    };
-}
-
 export async function getCompletedForms(userDoc){
+    console.log("Firestore called getCompletedForms");
+
     let completedFormsCollection = await getDocs(query(collection(userDoc.ref, "completedForms")));
     return completedFormsCollection.docs.map((doc) => ({
         ...doc.data(),
@@ -110,6 +119,8 @@ export async function getCompletedForms(userDoc){
 }
 
 export async function getCompletedForm(userDoc){
+    console.log("Firestore called getCompletedForm");
+
     let completedFormDoc = await getDoc(doc(collection(userDoc.ref, "completedForms"), "DoekfjZKXmnfmemzJ70m"));
     return {
         ...completedFormDoc.data(),
@@ -120,6 +131,8 @@ export async function getCompletedForm(userDoc){
 export async function getCompletedFormByDate(userDoc, formDate){
     //TODO: Is it possible to get only 1 form instead of all docs where it's that date time ?
 
+    console.log("Firestore called getCompletedFormByDate");
+
     console.log(formDate)
     let completedFormsCollection = await getDocs(query(collection(userDoc.ref, "completedForms"), where("dateTime", "==", formDate)));
     let completedFormsArray = completedFormsCollection.docs.map(doc => ({
@@ -129,4 +142,8 @@ export async function getCompletedFormByDate(userDoc, formDate){
 
     console.log(completedFormsArray[0])
     return completedFormsArray[0];
+}
+
+export async function addCompletedFormToFirestore(completedForm){
+    return await addDoc(collection(documentUser.ref, "completedForms"), completedForm);
 }
