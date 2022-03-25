@@ -1,13 +1,12 @@
 import {createContext, useEffect, useState} from "react";
-import {collection, doc, getDoc, query, addDoc, Timestamp} from "firebase/firestore";
+import {Timestamp} from "firebase/firestore";
 import {CategoryContainer} from "./CategoryContainer";
 import {
-    db,
+    addCompletedFormToFirestore,
     getCategories,
     getForm,
     getQuestionsWithIds
 } from "../../config/initFirebase";
-import {documentUser} from "../App";
 import {FormError} from "./FormError";
 import {useNavigate} from "react-router-dom";
 
@@ -64,35 +63,49 @@ export function Form(){
                 points: 0
             })
         })
-    }, [categories])
+    }, [categories, completedForm])
 
     const handleFormInputChange = async e => {
         const target = e.target;
         const questionId = target.name;
         const answerId = target.value;
 
-        //Found the document in order to persist the reference
-        const questionDoc = await getDoc(query(doc(db, "questions", questionId)));
-        const answerDoc = await getDoc(query(doc(questionDoc.ref, "answers", answerId)));
+        let questionRef;
+        let answerRef;
+        let categoryId;
+        let answerPoint;
+
+        //As we have all info from the questions, we can set our variables
+        questions.forEach(question => {
+            if(question.id === questionId){
+                questionRef = question.questionRef;
+                categoryId = question.categoryId;
+                question.answers.forEach(answer => {
+                    if(answer.id === answerId){
+                        answerRef = answer.answerRef;
+                        answerPoint = answer.point
+                        return;
+                    }
+                })
+                return;
+            }
+        })
 
         //Check if the answeredQuestion object exist in the array, otherwise, create it
         const answeredQuestionAlreadyExist = completedForm.answeredQuestions.find(answeredQuestion => answeredQuestion.question.id === questionId);
-
-        const answerPoint = answerDoc.data().point;
-        const categoryId = questionDoc.data().category.id;
 
         if(answeredQuestionAlreadyExist){
             completedForm.answeredQuestions.forEach((answeredQuestion, index) => {
                 if(answeredQuestion.question.id === questionId){
                     //If 'radio', only 1 response and 1 point need to be saved
                     if(target.type === 'radio'){
-                        answeredQuestion.answers = [answerDoc.ref];
+                        answeredQuestion.answers = [answerRef];
                         answeredQuestion.points = answerPoint;
                     } else {
                         //If 'checkbox'
                         //If checked, add the answer to saved ones and add points
                         if(target.checked){
-                            answeredQuestion.answers.push(answerDoc.ref);
+                            answeredQuestion.answers.push(answerRef);
                             answeredQuestion.points += answerPoint;
                         } else { //Otherwise, remove the answer from saved ones and remove point
                             answeredQuestion.answers = answeredQuestion.answers.filter(answer => answer.id !== answerId);
@@ -102,8 +115,6 @@ export function Form(){
                             if(answeredQuestion.answers.length === 0){
                                 completedForm.answeredQuestions.splice(index, 1);
                             }
-
-
                         }
                     }
                 }}
@@ -111,8 +122,8 @@ export function Form(){
         } else {
             //Otherwise, create the answeredQuestion object
             completedForm.answeredQuestions.push({
-                question: questionDoc.ref,
-                answers: [answerDoc.ref],
+                question: questionRef,
+                answers: [answerRef],
                 points: answerPoint,
                 category: categoryId
             })
@@ -141,11 +152,7 @@ export function Form(){
             const formDate = new Date();
             completedForm.dateTime = Timestamp.fromDate(formDate);
 
-            async function addCompletedFormToFirestore(){
-                return await addDoc(collection(documentUser.ref, "completedForms"), completedForm);
-            }
-
-            addCompletedFormToFirestore().then(completedFormRef => {
+            addCompletedFormToFirestore(completedForm).then(completedFormRef => {
                 if(completedFormRef != null){
                     console.log("ADD COMPLETED FORM SUCCESSFUL, id : " + completedFormRef.id);
                     console.log(completedForm.dateTime)

@@ -1,8 +1,7 @@
 import {Fragment, useContext, useEffect, useState} from "react";
 import {FormContext} from "./Form";
 import {FormGroup} from "react-bootstrap";
-import {collection, doc, getDoc, getDocs, query} from "firebase/firestore";
-import {db} from "../../config/initFirebase";
+import {getAnswersByQuestion} from "../../config/initFirebase";
 
 export function AnswersContainer({question, uniqueAnswer, isDisplayMode, completedAnswersId}){
     const onChange = useContext(FormContext)
@@ -11,20 +10,14 @@ export function AnswersContainer({question, uniqueAnswer, isDisplayMode, complet
     const answerType = uniqueAnswer ? 'radio' : 'checkbox';
 
     useEffect(() => {
-        async function getAnswers(){
-            let questionDoc = await getDoc(query(doc(db, "questions", question.id)));
-
-            //Get all answers for that question from database
-            let answersCollection = await getDocs(query(collection(questionDoc.ref, "answers")));
-            //Fill answers with objects containing all data from Firestore object + id
-            let answersArray = answersCollection.docs.map(doc => ({
-                ...doc.data(),
-                id: doc.id
-            }))
-            setAnswers(answersArray)
-        }
-        getAnswers();
-    }, [question.id])
+        getAnswersByQuestion(question.questionRef).then(r => {
+            setAnswers(r);
+        })
+    }, [question.questionRef])
+    
+    useEffect(() => {
+        question.answers = answers;
+    }, [answers, question])
 
     return (
         <FormGroup key={question.id}>
