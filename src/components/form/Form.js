@@ -156,7 +156,7 @@ export function Form(){
                 if(completedFormRef != null){
                     console.log("ADD COMPLETED FORM SUCCESSFUL, id : " + completedFormRef.id);
                     console.log(completedForm.dateTime)
-                    navigate("/history", {state: {formDate: formDate}})
+                    navigate("/history", {state: {justCompletedForm: completedForm}})
                 }
             });
         } else {
