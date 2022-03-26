@@ -53,6 +53,7 @@ export function Form(){
         question: "QUESTIONID",
         answers: ["REF"]
     }
+
     
     useEffect(() => {
         completedForm.pointsByCategory = [];
@@ -60,9 +61,12 @@ export function Form(){
             completedForm.pointsByCategory.push({
                 category: category.categoryRef,
                 categoryLabel: category.label,
-                points: 0
+                points: 0,
+                maxPoints: 0,
+                finalPoints: 0
             })
         })
+
     }, [categories, completedForm])
 
     const handleFormInputChange = async e => {
@@ -74,6 +78,8 @@ export function Form(){
         let answerRef;
         let categoryId;
         let answerPoint;
+
+
 
         //As we have all info from the questions, we can set our variables
         questions.forEach(question => {
@@ -133,6 +139,37 @@ export function Form(){
     const handleFormSubmit = e => {
         e.preventDefault(); //TODO: Needed?
 
+        //Calculate max point by category and store it in comptetedForm
+        let points = 0;
+
+        questions.forEach(question => {
+            //Check if it is a single or multiple answers question
+            //If single, the answer with the max points will be taken
+            //If multiple, the max is the total
+            if(question.uniqueAnswer === true)
+            {
+                let pointsTab = [];
+                question.answers.forEach(answer => {
+                    pointsTab.push(answer.point);
+                })
+                points = Math.max(...pointsTab);
+            }else
+            {
+                points = 0;
+                question.answers.forEach(answer => {
+                    points += answer.point;
+                })
+            }
+            completedForm.pointsByCategory.forEach(objectCategory => {
+                if(question.categoryId === objectCategory.category.id){
+                    objectCategory.maxPoints += points;
+                    return;
+                }
+            })
+        })
+
+        console.log(completedForm);
+
         //Check all questions have been answered
         if(questions.length === completedForm.answeredQuestions.length){
             setIsValidForm(true);
@@ -148,6 +185,8 @@ export function Form(){
                 })
             })
 
+
+
             //Set the date and time when submitting the form
             const formDate = new Date();
             completedForm.dateTime = Timestamp.fromDate(formDate);
@@ -156,7 +195,7 @@ export function Form(){
                 if(completedFormRef != null){
                     console.log("ADD COMPLETED FORM SUCCESSFUL, id : " + completedFormRef.id);
                     console.log(completedForm.dateTime)
-                    navigate("/history", {state: {formDate: formDate}})
+                    //navigate("/history", {state: {formDate: formDate}})
                 }
             });
         } else {
