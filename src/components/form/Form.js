@@ -53,7 +53,6 @@ export function Form(){
         question: "QUESTIONID",
         answers: ["REF"]
     }
-
     
     useEffect(() => {
         completedForm.pointsByCategory = [];
@@ -66,7 +65,6 @@ export function Form(){
                 finalPoints: 0
             })
         })
-
     }, [categories, completedForm])
 
     const handleFormInputChange = async e => {
@@ -78,8 +76,6 @@ export function Form(){
         let answerRef;
         let categoryId;
         let answerPoint;
-
-
 
         //As we have all info from the questions, we can set our variables
         questions.forEach(question => {
@@ -185,8 +181,6 @@ export function Form(){
                 })
             })
 
-
-
             //Set the date and time when submitting the form
             const formDate = new Date();
             completedForm.dateTime = Timestamp.fromDate(formDate);
@@ -195,7 +189,7 @@ export function Form(){
                 if(completedFormRef != null){
                     console.log("ADD COMPLETED FORM SUCCESSFUL, id : " + completedFormRef.id);
                     console.log(completedForm.dateTime)
-                    //navigate("/history", {state: {formDate: formDate}})
+                    navigate("/history", {state: {formDate: formDate}})
                 }
             });
         } else {

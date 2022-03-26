@@ -11,13 +11,13 @@ import {History} from "./history/History";
 
 export let documentUser;
 
-let createUserFirestore = async () => {
+let createUserFirestore = async (uid) => {
     // If a user is connected (so exist in Authentication), get the UID
-        const docRef = doc(db, 'users', auth.currentUser.uid);
+        const docRef = doc(db, 'users', uid);
         documentUser = await getDoc(docRef);
         // If the user doesn't exist in Firestore, creation
         if (!documentUser.exists()){
-            await setDoc(doc(db, 'users', auth.currentUser.uid), {
+            await setDoc(doc(db, 'users', uid), {
                 name: auth.currentUser.displayName
             });
         }
@@ -33,6 +33,9 @@ function App() {
             .auth()
             .onAuthStateChanged((user) => {
                 setIsSignedIn(!!user); // if there is a user, set to true
+                if(user !== null){
+                    createUserFirestore(user.uid)
+                }
             });
         // Make sure we un-register Firebase observers when the component unmounts.
         return () => unregisterAuthObserver();
@@ -55,10 +58,6 @@ function App() {
             </div>
         );
     // Signed in - Create user in Firestore if not already exist
-    } else {
-        createUserFirestore();
-        // TODO: ne devrait pas aller plus loin avant création dans firestore ?
-        // TODO: je n'arrive pas à mettre ca dans le use effect de App
     }
 
 
