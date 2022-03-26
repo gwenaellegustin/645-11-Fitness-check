@@ -62,7 +62,8 @@ export function Form(){
                 categoryLabel: category.label,
                 points: 0,
                 maxPoints: 0,
-                finalPoints: 0
+                finalPoints: 0.0,
+                highIsGood: category.HighIsGood
             })
         })
     }, [categories, completedForm])
@@ -164,8 +165,6 @@ export function Form(){
             })
         })
 
-        console.log(completedForm);
-
         //Check all questions have been answered
         if(questions.length === completedForm.answeredQuestions.length){
             setIsValidForm(true);
@@ -180,6 +179,26 @@ export function Form(){
                     }
                 })
             })
+
+            //Calculating final point for the chart in %
+            completedForm.pointsByCategory.forEach(objectCategory => {
+                let result = 0;
+                try {
+                    result = objectCategory.points / objectCategory.maxPoints * 100;
+                }catch (e){
+                    objectCategory.finalPoints = 0;
+                }
+
+                if (objectCategory.highIsGood){
+                    objectCategory.finalPoints = result;
+                }else{
+                    objectCategory.finalPoints = 100-result;
+                }
+
+                console.log(objectCategory.finalPoints)
+            })
+
+            console.log(completedForm);
 
             //Set the date and time when submitting the form
             const formDate = new Date();

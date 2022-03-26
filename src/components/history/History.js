@@ -1,6 +1,6 @@
 import '../../styles/App.css';
 import React, {useEffect, useState} from 'react';
-import Chart from "./Chart";
+import {Chart} from "./Chart";
 import {doc, getDoc, query} from "firebase/firestore";
 import {auth, db, getCompletedForms} from "../../config/initFirebase";
 import {FormCompleted} from "./FormCompleted";
