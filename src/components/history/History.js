@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Chart} from "./Chart";
+import {ChartContainer} from "./ChartContainer";
 import {doc, getDoc, query} from "firebase/firestore";
 import {auth, db, getCompletedForms} from "../../config/initFirebase";
 import {FormCompletedContainer} from "./FormCompletedContainer";
@@ -85,11 +85,11 @@ export function History({justCompletedForm}){
         <>
             <h1>Votre historique</h1>
             <Row>
-                <Col className=".col-8">
+                <Col className=".col-6">
                     {selectedForm && <><Dropdown/><FormCompletedContainer key={selectedForm.id} completedForm={selectedForm}/></>}
                 </Col>
-                <Col className=".col-4">
-                    {selectedForm && <Chart pointsByCategory={selectedForm.pointsByCategory}/>}
+                <Col className=".col-6 p-5 position-sticky">
+                    {selectedForm && <ChartContainer pointsByCategory={selectedForm.pointsByCategory}/>}
                 </Col>
             </Row>
         </>

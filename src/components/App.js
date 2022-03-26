@@ -75,7 +75,7 @@ function App() {
 
     // Signed in - Render app
     return (
-        <div className="col-md-12 text-center" >
+        <div className="col-md-12" >
             <Navbar color="light" light>
                 <NavbarBrand href="/">
                    Fitness check
@@ -91,7 +91,7 @@ function App() {
                 </DropdownMenu>
                 </UncontrolledDropdown>
             </Navbar>
-            <div className="px-5" className="m-3">
+            <div className="px-5 m-3 text-center">
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/form" element={<FitnessForm />} />

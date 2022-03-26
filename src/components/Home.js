@@ -5,7 +5,6 @@ export default function Home() {
 
     return (
         <>
-
                 <h1>Bienvenue !</h1>
                 <p>
                     <Link to="/form">
@@ -21,7 +20,6 @@ export default function Home() {
                         </Button>
                     </Link>
                 </p>
-
         </>
     );
 }
