@@ -1,7 +1,8 @@
-import {Fragment, useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {FormContext} from "./Form";
 import {FormGroup} from "react-bootstrap";
 import {getAnswersByQuestion} from "../../config/initFirebase";
+import {Input, Label} from "reactstrap";
 
 export function AnswersContainer({question, uniqueAnswer, isDisplayMode, completedAnswersId}){
     const onChange = useContext(FormContext)
@@ -24,21 +25,21 @@ export function AnswersContainer({question, uniqueAnswer, isDisplayMode, complet
             {answers
                 .sort((a,b) => a.point - b.point) //Sort the answers by point, ascending
                 .map(answer => (
-                    <Fragment key={answer.id}>
-                        <input
+                    <FormGroup key={answer.id}>
+                        <Input
                             disabled={isDisplayMode}
+                            name={question.id}
                             type={answerType}
-                            name={question.id} //Need to be same for all grouped answers
                             id={question.id.concat("-").concat(answer.id)}
                             value={answer.id}
                             onChange={onChange}
                             checked={completedAnswersId && completedAnswersId.includes(answer.id)}
                         />
-                        <label>
+                        {' '}
+                        <Label check>
                             {answer.label}
-                        </label>
-                        <br/>
-                    </Fragment>
+                        </Label>
+                    </FormGroup>
             ))}
         </FormGroup>
     )

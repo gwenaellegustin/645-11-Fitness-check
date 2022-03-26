@@ -1,10 +1,17 @@
-import '../styles/App.css';
+
 import {auth, db, firebaseApp} from "../config/initFirebase";
 import {doc, getDoc, setDoc} from "firebase/firestore";
 import {Route, Routes} from "react-router-dom";
-import { Navbar } from 'reactstrap'; // DOC: https://reactstrap.github.io/?path=/docs/components-navbar--navbar
+import {
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    Navbar,
+    NavbarBrand,
+    UncontrolledDropdown
+} from 'reactstrap';
 import {useEffect, useState} from "react";
-import {Form} from "./form/Form";
+import {FitnessForm} from "./form/Form";
 import Login from "./Login";
 import Home from "./Home";
 import {History} from "./history/History";
@@ -34,6 +41,7 @@ function App() {
             .onAuthStateChanged((user) => {
                 setIsSignedIn(!!user); // if there is a user, set to true
                 if(user !== null){
+                    // Create user in Firestore if not already exist
                     createUserFirestore(user.uid)
                 }
             });
@@ -45,7 +53,7 @@ function App() {
     if (isSignedIn === null) {
         return (
             <div className="App">
-                <p>Loading...</p>
+                <p>Chargement...</p>
             </div>
         );
     }
@@ -57,21 +65,39 @@ function App() {
                 <Login/>
             </div>
         );
-    // Signed in - Create user in Firestore if not already exist
     }
+
+    // Sign out
+    const handleSignOutClick = async () => {
+        await firebaseApp.auth().signOut();
+    };
 
 
     // Signed in - Render app
     return (
-        <div className="App">
-            <Navbar>
-                <p>UID current user : {auth.currentUser.uid}</p>
+        <div className="col-md-12 text-center" >
+            <Navbar color="light" light>
+                <NavbarBrand href="/">
+                   Fitness check
+                </NavbarBrand>
+                <UncontrolledDropdown inNavbar>
+                <DropdownToggle caret >
+                    {auth.currentUser.displayName}
+                </DropdownToggle>
+                <DropdownMenu end>
+                    <DropdownItem onClick={handleSignOutClick}>
+                        Se déconnecter
+                    </DropdownItem>
+                </DropdownMenu>
+                </UncontrolledDropdown>
             </Navbar>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/form" element={<Form />} />
-                <Route path="/history" element={<History />} />
-            </Routes>
+            <div className="px-5" className="m-3">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/form" element={<FitnessForm />} />
+                    <Route path="/history" element={<History />} />
+                </Routes>
+            </div>
         </div>
     );
 }

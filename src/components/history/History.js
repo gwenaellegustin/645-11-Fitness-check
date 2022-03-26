@@ -1,10 +1,10 @@
-import '../../styles/App.css';
 import React, {useEffect, useState} from 'react';
 import Chart from "./Chart";
 import {doc, getDoc, query} from "firebase/firestore";
 import {auth, db, getCompletedForms} from "../../config/initFirebase";
-import {FormCompleted} from "./FormCompleted";
+import {FormCompletedContainer} from "./FormCompletedContainer";
 import {Link} from "react-router-dom";
+import {Button, Col, Row} from "reactstrap";
 
 export function History({justCompletedForm}){
     const [completedForms, setCompletedForms] = useState([])
@@ -52,7 +52,7 @@ export function History({justCompletedForm}){
     if (selectedForm === null){
         return (
             <div className="App">
-                <p>Loading...</p>
+                <p>Chargement...</p>
             </div>
         );
     }
@@ -61,12 +61,20 @@ export function History({justCompletedForm}){
     if (completedForms.length === 0){
         return (
             <div className="History">
-                <p>No history</p>
+                <p>Pas d'historique</p>
                 <p>
-                    <Link to="/form">Go To Form</Link>
+                    <Link to="/form">
+                        <Button color="primary">
+                            Questionnaire
+                        </Button>
+                    </Link>
                 </p>
                 <p>
-                    <Link to="/">Go To Home</Link>
+                    <Link to="/">
+                        <Button color="primary">
+                            Home
+                        </Button>
+                    </Link>
                 </p>
             </div>
         )
@@ -74,13 +82,16 @@ export function History({justCompletedForm}){
 
     // History screen
     return(
-        <div className="row">
-            <div className="column">
-                {selectedForm && <><Dropdown/><FormCompleted key={selectedForm.id} completedForm={selectedForm}/></>}
-            </div>
-            <div className="column">
-                {selectedForm && <Chart pointsByCategory={selectedForm.pointsByCategory}/>}
-            </div>
-        </div>
+        <>
+            <h1>Votre historique</h1>
+            <Row>
+                <Col className=".col-8">
+                    {selectedForm && <><Dropdown/><FormCompletedContainer key={selectedForm.id} completedForm={selectedForm}/></>}
+                </Col>
+                <Col className=".col-4">
+                    {selectedForm && <Chart pointsByCategory={selectedForm.pointsByCategory}/>}
+                </Col>
+            </Row>
+        </>
     )
 }

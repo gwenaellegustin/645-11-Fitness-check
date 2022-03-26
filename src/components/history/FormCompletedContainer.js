@@ -3,7 +3,7 @@ import {getCategoriesWithIds, getQuestionsWithIds} from "../../config/initFireba
 import {CategoryContainer} from "../form/CategoryContainer";
 
 
-export function FormCompleted({completedForm}){
+export function FormCompletedContainer({completedForm}){
     const [answeredQuestions, setAnsweredQuestions] = useState([]);
     const [answeredCategories, setAnsweredCategories] = useState([]);
     const [answeredAnswersIds, setAnsweredAnswersIds] = useState([]);

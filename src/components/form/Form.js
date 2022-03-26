@@ -9,10 +9,11 @@ import {
 } from "../../config/initFirebase";
 import {FormError} from "./FormError";
 import {useNavigate} from "react-router-dom";
+import {Button, Form} from 'reactstrap';
 
 export const FormContext = createContext();
 
-export function Form(){
+export function FitnessForm(){
     const [categories, setCategories] = useState([]);
     const [questions, setQuestions] = useState([]);
     const [isValidForm, setIsValidForm] = useState(true);
@@ -166,20 +167,24 @@ export function Form(){
     }
 
     if(isLoading){
-        return <div>Loading ...</div>
+        return <div>Chargement...</div>
     }
 
     //Return a category container with only the questions related to this category (in order to sort it by category)
     //The filter method returns another array filling the condition (= true)
     return (
-        <FormContext.Provider value={handleFormInputChange}>
-            <form onSubmit={handleFormSubmit}>
-                {categories.map(category => (
-                    <CategoryContainer key={category.id} category={category} questions={questions.filter(question => question.category.id === category.id)} isDisplayMode={false}/>
-                ))}
-                <FormError isValidForm={isValidForm}/>
-                <button type="submit">Submit</button>
-            </form>
-        </FormContext.Provider>
+        <>
+            <h1>Nouveau questionnaire</h1>
+            <FormContext.Provider value={handleFormInputChange}>
+                <Form onSubmit={handleFormSubmit}>
+                    {categories.map(category => (
+                        <CategoryContainer key={category.id} category={category} questions={questions.filter(question => question.category.id === category.id)} isDisplayMode={false}/>
+                    ))}
+                    <FormError isValidForm={isValidForm}/>
+                    <Button type="submit" color="primary">Submit</Button>
+                </Form>
+            </FormContext.Provider>
+        </>
+
     )
 }
