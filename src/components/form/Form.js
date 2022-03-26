@@ -61,7 +61,10 @@ export function FitnessForm(){
             completedForm.pointsByCategory.push({
                 category: category.categoryRef,
                 categoryLabel: category.label,
-                points: 0
+                points: 0,
+                maxPoints: 0,
+                finalPoints: 0.0,
+                highIsGood: category.HighIsGood
             })
         })
     }, [categories, completedForm])
@@ -134,6 +137,35 @@ export function FitnessForm(){
     const handleFormSubmit = e => {
         e.preventDefault(); //TODO: Needed?
 
+        //Calculate max point by category and store it in comptetedForm
+        let points = 0;
+
+        questions.forEach(question => {
+            //Check if it is a single or multiple answers question
+            //If single, the answer with the max points will be taken
+            //If multiple, the max is the total
+            if(question.uniqueAnswer === true)
+            {
+                let pointsTab = [];
+                question.answers.forEach(answer => {
+                    pointsTab.push(answer.point);
+                })
+                points = Math.max(...pointsTab);
+            }else
+            {
+                points = 0;
+                question.answers.forEach(answer => {
+                    points += answer.point;
+                })
+            }
+            completedForm.pointsByCategory.forEach(objectCategory => {
+                if(question.categoryId === objectCategory.category.id){
+                    objectCategory.maxPoints += points;
+                    return;
+                }
+            })
+        })
+
         //Check all questions have been answered
         if(questions.length === completedForm.answeredQuestions.length){
             setIsValidForm(true);
@@ -149,6 +181,26 @@ export function FitnessForm(){
                 })
             })
 
+            //Calculating final point for the chart in %
+            completedForm.pointsByCategory.forEach(objectCategory => {
+                let result = 0;
+                try {
+                    result = objectCategory.points / objectCategory.maxPoints * 100;
+                }catch (e){
+                    objectCategory.finalPoints = 0;
+                }
+
+                if (objectCategory.highIsGood){
+                    objectCategory.finalPoints = result;
+                }else{
+                    objectCategory.finalPoints = 100-result;
+                }
+
+                console.log(objectCategory.finalPoints)
+            })
+
+            console.log(completedForm);
+
             //Set the date and time when submitting the form
             const formDate = new Date();
             completedForm.dateTime = Timestamp.fromDate(formDate);
@@ -157,7 +209,7 @@ export function FitnessForm(){
                 if(completedFormRef != null){
                     console.log("ADD COMPLETED FORM SUCCESSFUL, id : " + completedFormRef.id);
                     console.log(completedForm.dateTime)
-                    navigate("/history", {state: {justCompletedForm: completedForm}})
+                    navigate("/history", {state: {formDate: formDate}})
                 }
             });
         } else {
