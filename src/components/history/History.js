@@ -79,7 +79,7 @@ export function History({justCompletedForm}){
                 {selectedForm && <><Dropdown/><FormCompleted key={selectedForm.id} completedForm={selectedForm}/></>}
             </div>
             <div className="column">
-                {<Chart/>}
+                {selectedForm && <Chart pointsByCategory={selectedForm.pointsByCategory}/>}
             </div>
         </div>
     )

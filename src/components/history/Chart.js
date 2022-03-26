@@ -8,7 +8,8 @@ import {
     PolarRadiusAxis, ResponsiveContainer
 } from "recharts";
 
-function Chart() {
+function Chart({pointsByCategory}) {
+    console.log(pointsByCategory)
 
     return (
         <div>
