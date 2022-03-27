@@ -9,14 +9,14 @@ export default function Home() {
                 <p>
                     <Link to="/form">
                         <Button color="primary">
-                            Go to form
+                            Nouveau formulaire
                         </Button>
                     </Link>
                 </p>
                 <p>
                     <Link to="/history">
                         <Button color="primary">
-                            Go to history
+                            Historique
                         </Button>
                     </Link>
                 </p>

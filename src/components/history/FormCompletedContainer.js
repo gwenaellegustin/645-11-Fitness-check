@@ -23,6 +23,7 @@ export function FormCompletedContainer({completedForm}){
     }, [completedForm.answeredQuestions])
 
     //Answered categories
+    // TODO: move in history or context ? (getCategoriesWithIds is call 2 times)
     useEffect(() => {
         const categoriesId = [];
         answeredQuestions.forEach(question => {

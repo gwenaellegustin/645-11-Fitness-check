@@ -8,7 +8,7 @@ import {Button, Col, Row} from "reactstrap";
 
 export function History({justCompletedForm}){
     const [completedForms, setCompletedForms] = useState([])
-    const [selectedForm, setSelectedForm] = useState();
+    const [selectedForm, setSelectedForm] = useState(null);
 
     // Get all completed forms of a user
     useEffect(() => {
@@ -88,7 +88,7 @@ export function History({justCompletedForm}){
                 <Col className=".col-6">
                     {selectedForm && <><Dropdown/><FormCompletedContainer key={selectedForm.id} completedForm={selectedForm}/></>}
                 </Col>
-                <Col className=".col-6 p-5 position-sticky">
+                <Col className=".col-6 p-5">
                     {selectedForm && <ChartContainer pointsByCategory={selectedForm.pointsByCategory}/>}
                 </Col>
             </Row>
