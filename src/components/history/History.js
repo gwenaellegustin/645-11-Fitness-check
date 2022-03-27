@@ -6,7 +6,7 @@ import {FormCompletedContainer} from "./FormCompletedContainer";
 import {Link} from "react-router-dom";
 import {Button} from "reactstrap";
 
-export function History({justCompletedForm}){
+export function History(){
     const [completedForms, setCompletedForms] = useState([])
     const [selectedForm, setSelectedForm] = useState(null);
 
@@ -19,11 +19,9 @@ export function History({justCompletedForm}){
 
     // Dropdownlist
     useEffect(() =>{
-        if (justCompletedForm){
-            setSelectedForm(justCompletedForm)
-        } else if(completedForms.length > 0 ){
-            setSelectedForm(completedForms[0])
-        }
+         if(completedForms.length > 0 ) {
+             setSelectedForm(completedForms[0])
+         }
     },[completedForms])
 
     const onchangeSelect = (e) => {
