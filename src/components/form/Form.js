@@ -61,10 +61,10 @@ export function FitnessForm(){
             completedForm.pointsByCategory.push({
                 category: category.categoryRef,
                 categoryLabel: category.label,
-                points: 0,
-                maxPoints: 0,
+                points: 0, // TODO: delete before send to Firestore ? use only to calculate final points
+                maxPoints: 0, // TODO: delete before send to Firestore ? use only to calculate final points
                 finalPoints: 0.0,
-                highIsGood: category.HighIsGood
+                highIsGood: category.highIsGood // TODO: delete before send to Firestore ? use only to calculate final points
             })
         })
     }, [categories, completedForm])
@@ -195,7 +195,6 @@ export function FitnessForm(){
                 }else{
                     objectCategory.finalPoints = 100-result;
                 }
-
                 console.log(objectCategory.finalPoints)
             })
 
@@ -233,7 +232,7 @@ export function FitnessForm(){
                         <CategoryContainer key={category.id} category={category} questions={questions.filter(question => question.category.id === category.id)} isDisplayMode={false}/>
                     ))}
                     <FormError isValidForm={isValidForm}/>
-                    <Button type="submit" color="primary">Submit</Button>
+                    <Button type="submit" color="primary">Valider</Button>
                 </Form>
             </FormContext.Provider>
         </>
