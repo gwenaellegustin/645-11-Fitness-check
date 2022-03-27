@@ -195,10 +195,10 @@ export function FitnessForm(){
                 }else{
                     objectCategory.finalPoints = 100-result;
                 }
-                console.log(objectCategory.finalPoints)
+                //console.log(objectCategory.finalPoints)
             })
 
-            console.log(completedForm);
+            //console.log(completedForm);
 
             //Set the date and time when submitting the form
             const formDate = new Date();
@@ -208,7 +208,7 @@ export function FitnessForm(){
                 if(completedFormRef != null){
                     console.log("ADD COMPLETED FORM SUCCESSFUL, id : " + completedFormRef.id);
                     console.log(completedForm.dateTime)
-                    navigate("/history", {state: {formDate: formDate}})
+                    navigate("/history", {state: {selectedForm: completedForm}})
                 }
             });
         } else {
