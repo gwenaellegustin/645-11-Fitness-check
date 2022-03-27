@@ -4,7 +4,7 @@ import {doc, getDoc, query} from "firebase/firestore";
 import {auth, db, getCompletedForms} from "../../config/initFirebase";
 import {FormCompletedContainer} from "./FormCompletedContainer";
 import {Link} from "react-router-dom";
-import {Button, Col, Row} from "reactstrap";
+import {Button} from "reactstrap";
 
 export function History({justCompletedForm}){
     const [completedForms, setCompletedForms] = useState([])
@@ -22,6 +22,7 @@ export function History({justCompletedForm}){
     useEffect(() =>{
         if (justCompletedForm){
             setSelectedForm(justCompletedForm)
+            console.log("justCompletedForm")
         } else if(completedForms.length > 0 ){
             setSelectedForm(completedForms[0])
         }
@@ -31,17 +32,17 @@ export function History({justCompletedForm}){
         setSelectedForm(completedForms.find(completedForm => completedForm.id === e.target.value))
     };
 
-    function Dropdown() {
+    function DateDropdown() {
         return (
-            <select
+            <select className="form-select form-select-lg w-auto mx-auto my-2"
                 value={selectedForm.id}
                 onChange={onchangeSelect}
                 >
                 {completedForms.map(o => (
                     <option key={o.id} value={o.id}>
-                        {(new Date(o.dateTime.seconds * 1000 + o.dateTime.nanoseconds/1000)).toLocaleDateString()
-                        + " "
-                        + (new Date(o.dateTime.seconds * 1000 + o.dateTime.nanoseconds/1000)).toLocaleTimeString()}
+                        {o.dateTime.toDate().toLocaleDateString()
+                            + " " +
+                        o.dateTime.toDate().toLocaleTimeString()}
                     </option>
                 ))}
             </select>
@@ -83,15 +84,21 @@ export function History({justCompletedForm}){
     // History screen
     return(
         <>
-            <h1>Votre historique</h1>
-            <Row>
-                <Col className=".col-6">
-                    {selectedForm && <><Dropdown/><FormCompletedContainer key={selectedForm.id} completedForm={selectedForm}/></>}
-                </Col>
-                <Col className=".col-6 p-5">
-                    {selectedForm && <ChartContainer pointsByCategory={selectedForm.pointsByCategory}/>}
-                </Col>
-            </Row>
+            {selectedForm && <>
+                <h1>Votre historique</h1>
+                <div className="row">
+                    <div className="col-lg-12 col-md-12">
+                        <DateDropdown/>
+                    </div>
+                    <div className="col-lg-6 col-md-12">
+                        <FormCompletedContainer key={selectedForm.id} completedForm={selectedForm}/>
+                    </div>
+                    <div className="col-lg-6 col-md-12">
+                        <ChartContainer pointsByCategory={selectedForm.pointsByCategory}/>
+                    </div>
+                </div>
+            </>
+            }
         </>
     )
 }

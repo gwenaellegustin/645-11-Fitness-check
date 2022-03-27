@@ -19,7 +19,7 @@ export function ChartContainer({pointsByCategory}) {
     })
 
     return (
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height={400} className="border rounded mb-0">
             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data} margin={{ top: 0, left: 150, right: 150, bottom: 0 }}>
                 <PolarGrid />
                 <PolarAngleAxis dataKey="subject" />
