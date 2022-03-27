@@ -2,7 +2,6 @@ import {useEffect, useState} from "react";
 import {getCategoriesWithIds, getQuestionsWithIds} from "../../config/initFirebase";
 import {CategoryContainer} from "../form/CategoryContainer";
 
-
 export function FormCompletedContainer({completedForm}){
     const [answeredQuestions, setAnsweredQuestions] = useState([]);
     const [answeredCategories, setAnsweredCategories] = useState([]);

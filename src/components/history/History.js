@@ -15,7 +15,6 @@ export function History({justCompletedForm}){
         getDoc(query(doc(db, "users", auth.currentUser.uid)))
             .then(u => getCompletedForms(u)
                 .then(f => setCompletedForms(f)));
-
     }, [])
 
     // Dropdownlist

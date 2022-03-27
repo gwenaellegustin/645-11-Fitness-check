@@ -8,7 +8,7 @@ import {
 
 export function ChartContainer({pointsByCategory}) {
 
-    //Construction du tableau requis pour construire le chart
+    // Array construction to build the radar chart
     let data = [];
     pointsByCategory.forEach(category => {
         data.push ({

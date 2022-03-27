@@ -2,16 +2,7 @@
 import {auth, db, firebaseApp} from "../config/initFirebase";
 import {doc, getDoc, setDoc} from "firebase/firestore";
 import {Route, Routes} from "react-router-dom";
-import {
-    Collapse,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle, Nav,
-    Navbar,
-    NavbarBrand, NavbarText, NavItem, NavLink,
-    UncontrolledDropdown
-} from 'reactstrap';
+import {Nav,Navbar,NavbarBrand,NavLink} from 'reactstrap';
 import {useEffect, useState} from "react";
 import {FitnessForm} from "./form/Form";
 import Login from "./Login";
