@@ -22,7 +22,6 @@ export function History({justCompletedForm}){
     useEffect(() =>{
         if (justCompletedForm){
             setSelectedForm(justCompletedForm)
-            console.log("justCompletedForm")
         } else if(completedForms.length > 0 ){
             setSelectedForm(completedForms[0])
         }
@@ -38,7 +37,9 @@ export function History({justCompletedForm}){
                 value={selectedForm.id}
                 onChange={onchangeSelect}
                 >
-                {completedForms.map(o => (
+                {completedForms
+                    .sort((a, b) => a.dateTime > b.dateTime ? 1 : -1)
+                    .map(o => (
                     <option key={o.id} value={o.id}>
                         {o.dateTime.toDate().toLocaleDateString()
                             + " " +
