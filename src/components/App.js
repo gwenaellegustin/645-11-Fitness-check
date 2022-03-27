@@ -3,11 +3,13 @@ import {auth, db, firebaseApp} from "../config/initFirebase";
 import {doc, getDoc, setDoc} from "firebase/firestore";
 import {Route, Routes} from "react-router-dom";
 import {
+    Collapse,
+    Dropdown,
     DropdownItem,
     DropdownMenu,
-    DropdownToggle,
+    DropdownToggle, Nav,
     Navbar,
-    NavbarBrand,
+    NavbarBrand, NavbarText, NavItem, NavLink,
     UncontrolledDropdown
 } from 'reactstrap';
 import {useEffect, useState} from "react";
@@ -15,6 +17,7 @@ import {FitnessForm} from "./form/Form";
 import Login from "./Login";
 import Home from "./Home";
 import {History} from "./history/History";
+import {NavDropdown} from "react-bootstrap";
 
 export let documentUser;
 
@@ -76,22 +79,28 @@ function App() {
     // Signed in - Render app
     return (
         <div className="col-md-12" >
-            <Navbar color="light" light>
+            <Navbar color="light" light  expand="md">
                 <NavbarBrand href="/">
                    Fitness check
                 </NavbarBrand>
-                <UncontrolledDropdown inNavbar>
-                <DropdownToggle caret >
-                    {auth.currentUser.displayName}
-                </DropdownToggle>
-                <DropdownMenu end>
-                    <DropdownItem onClick={handleSignOutClick}>
-                        Se déconnecter
-                    </DropdownItem>
-                </DropdownMenu>
-                </UncontrolledDropdown>
+                <Nav
+                    className="me-auto"
+                    navbar
+                >
+                    <NavLink href="/Form">
+                        Nouveau formulaire
+                    </NavLink>
+
+                    <NavLink href="/History">
+                        Historique
+                    </NavLink>
+                </Nav>
+
+                <NavDropdown  title={auth.currentUser.displayName}>
+                    <NavDropdown.Item onClick={handleSignOutClick}>Se déconnecter</NavDropdown.Item>
+                </NavDropdown>
             </Navbar>
-            <div className="px-5 m-3 text-center">
+            <div className="px-3 m-3 text-center">
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/form" element={<FitnessForm />} />
