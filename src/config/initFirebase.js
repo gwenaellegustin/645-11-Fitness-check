@@ -179,7 +179,9 @@ export async function editQuestion(editedQuestion){
         questions: arrayUnion(newQuestion)
     });
     // Delete the old reference in Form collection
-    //TODO
+    await updateDoc(form, {
+        questions: arrayRemove(docRef)
+    });
 
     return newQuestion;
 }
