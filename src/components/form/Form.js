@@ -59,14 +59,16 @@ export function FitnessForm(){
         completedForm.pointsByCategory = [];
         categories.forEach(category => {
             completedForm.pointsByCategory.push({
+
                 category: category.categoryRef,
                 categoryLabel: category.label,
-                points: 0, // TODO: delete before send to Firestore ? use only to calculate final points
-                maxPoints: 0, // TODO: delete before send to Firestore ? use only to calculate final points
                 finalPoints: 0.0,
-                highIsGood: category.highIsGood // TODO: delete before send to Firestore ? use only to calculate final points
+                points: 0,
+                maxPoints: 0,
+                highIsGood: category.highIsGood
             })
         })
+
     }, [categories, completedForm])
 
     const handleFormInputChange = async e => {
@@ -195,10 +197,12 @@ export function FitnessForm(){
                 }else{
                     objectCategory.finalPoints = 100-result;
                 }
-                //console.log(objectCategory.finalPoints)
-            })
 
-            //console.log(completedForm);
+                //Remove the calculation variables who don't need to be store in the database
+                delete objectCategory.points;
+                delete objectCategory.highIsGood;
+                delete objectCategory.maxPoints;
+            })
 
             //Set the date and time when submitting the form
             const formDate = new Date();
