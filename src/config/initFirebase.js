@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import {addDoc, collection, doc, getDoc, getDocs, getFirestore, query, where} from "firebase/firestore";
+import {addDoc, collection, doc, getDoc, getDocs, getFirestore, query, where, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import {getAuth} from "firebase/auth";
 import {documentUser} from "../components/App";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -30,7 +30,7 @@ export async function getForm(){
     }))
 
     //There's only 1 form
-    console.log(formArray[0])
+    //console.log(formArray[0])
 
     return formArray[0];
 }
@@ -146,4 +146,40 @@ export async function getCompletedFormByDate(userDoc, formDate){
 
 export async function addCompletedFormToFirestore(completedForm){
     return await addDoc(collection(documentUser.ref, "completedForms"), completedForm);
+}
+
+
+export async function editQuestion(editedQuestion){
+    const docRef = doc(db, 'questions', editedQuestion.id);
+    let documentQuestion = await getDoc(docRef);
+
+    // Get data form reference question and edit label
+    let questionToCreate = {
+        ...documentQuestion.data(),
+        label: editedQuestion.newLabel
+    }
+
+    // Add the question in Firestore
+    let newQuestion = await addDoc(collection(db, "questions"), questionToCreate);
+
+    // Get Answers of the model question
+    let answers = await getAnswersByQuestion(docRef);
+    // Add Answers to new question$
+    for (const answer of answers) {
+        let newAnswer = {
+            label: answer.label,
+            point: answer.point
+        }
+        await addDoc(collection(newQuestion, "answers"), newAnswer);
+    }
+
+    // Add the new reference in Form collection
+    const form = doc(db, "form", "KbrDb6pas1c6hIbXxwx1");
+    await updateDoc(form, {
+        questions: arrayUnion(newQuestion)
+    });
+    // Delete the old reference in Form collection
+    //TODO
+
+    return newQuestion;
 }

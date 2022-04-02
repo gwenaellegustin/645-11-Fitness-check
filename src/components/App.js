@@ -9,6 +9,7 @@ import Login from "./Login";
 import Home from "./Home";
 import {History} from "./history/History";
 import {NavDropdown} from "react-bootstrap";
+import {Admin} from "./Admin";
 
 export let documentUser;
 
@@ -85,6 +86,9 @@ function App() {
                     <NavLink href="/History">
                         Historique
                     </NavLink>
+                    <NavLink href="/Admin">
+                        Gestion
+                    </NavLink>
                 </Nav>
 
                 <NavDropdown  title={auth.currentUser.displayName}>
@@ -96,6 +100,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/form" element={<FitnessForm />} />
                     <Route path="/history" element={<History />} />
+                    <Route path="/admin" element={<Admin />} />
                 </Routes>
             </div>
         </div>
