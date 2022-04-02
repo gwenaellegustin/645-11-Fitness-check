@@ -7,7 +7,7 @@ import {Link} from "react-router-dom";
 import {Button} from "reactstrap";
 
 export function History(){
-    const [completedForms, setCompletedForms] = useState([])
+    const [completedForms, setCompletedForms] = useState("")
     const [selectedForm, setSelectedForm] = useState(null);
 
     // Get all completed forms of a user
@@ -47,17 +47,7 @@ export function History(){
         );
     }
 
-    // Loading screen
-    if (selectedForm === null){
-        return (
-            <div className="App">
-                <p>Chargement...</p>
-            </div>
-        );
-    }
-
-    // No history screen
-    if (completedForms.length === 0){
+    if(completedForms !== "" && completedForms.length === 0){ // No history screen
         return (
             <div className="History">
                 <p>Pas d'historique</p>
@@ -77,12 +67,15 @@ export function History(){
                 </p>
             </div>
         )
-    }
-
-    // History screen
-    return(
-        <>
-            {selectedForm && <>
+    } else if(selectedForm === null){ // Loading screen
+        return (
+            <div className="App">
+                <p>Chargement...</p>
+            </div>
+        )
+    } else { // History screen
+        return (
+            <>
                 <h1>Votre historique</h1>
                 <div className="row">
                     <div className="col-lg-12 col-md-12">
@@ -96,7 +89,6 @@ export function History(){
                     </div>
                 </div>
             </>
-            }
-        </>
-    )
+        )
+    }
 }
