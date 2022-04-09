@@ -1,5 +1,5 @@
 import {useContext, useEffect, useState} from "react";
-import {FormContext} from "./Form";
+import {FormContext} from "./FitnessForm";
 import {FormGroup} from "react-bootstrap";
 import {getAnswersByQuestion} from "../../config/initFirebase";
 import {Input, Label} from "reactstrap";

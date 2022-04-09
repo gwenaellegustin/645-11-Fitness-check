@@ -4,7 +4,7 @@ import {doc, getDoc, setDoc} from "firebase/firestore";
 import {Route, Routes} from "react-router-dom";
 import {Nav,Navbar,NavbarBrand,NavLink} from 'reactstrap';
 import {useEffect, useState} from "react";
-import {FitnessForm} from "./form/Form";
+import {FitnessForm} from "./form/FitnessForm";
 import Login from "./Login";
 import Home from "./Home";
 import {History} from "./history/History";
