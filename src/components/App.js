@@ -1,4 +1,3 @@
-
 import {auth, createUserFirestore, firebaseApp, getUserByUID} from "../config/initFirebase";
 import {Route, Routes} from "react-router-dom";
 import {Nav,Navbar,NavbarBrand,NavLink} from 'reactstrap';
