@@ -127,7 +127,7 @@ export async function getCompletedForms(userDoc){
     return completedFormsCollection.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
-    }));
+    })).sort((a, b) => a.dateTime - b.dateTime);
 }
 
 export async function getCompletedForm(userDoc){

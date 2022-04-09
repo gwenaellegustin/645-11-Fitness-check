@@ -20,7 +20,7 @@ export function History(){
     // Dropdownlist
     useEffect(() =>{
          if(completedForms.length > 0 ) {
-             setSelectedForm(completedForms[0])
+             setSelectedForm(completedForms[completedForms.length-1])
          }
     },[completedForms])
 
@@ -35,12 +35,12 @@ export function History(){
                 onChange={onchangeSelect}
                 >
                 {completedForms
-                    .sort((a, b) => a.dateTime > b.dateTime ? 1 : -1)
                     .map(o => (
                     <option key={o.id} value={o.id}>
                         {o.dateTime.toDate().toLocaleDateString()
                             + " " +
-                        o.dateTime.toDate().toLocaleTimeString()}
+                        o.dateTime.toDate().toLocaleTimeString()
+                            + " " + o.id}
                     </option>
                 ))}
             </select>
