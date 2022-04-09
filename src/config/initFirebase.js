@@ -20,6 +20,18 @@ export const firebaseApp = firebase.initializeApp(firebaseConfig);
 export const db = getFirestore();
 export const auth = getAuth();
 
+export async function getUserByUID(userUID){
+    console.log("Firestore called getUserByUID");
+
+    let userDoc = await getDoc(doc(db, "users", userUID));
+    let user = {
+        ...userDoc.data(),
+        id: userDoc.id,
+        userRef: userDoc.ref
+    }
+    return user;
+}
+
 export async function getForm(){
     console.log("Firestore called getForm");
 

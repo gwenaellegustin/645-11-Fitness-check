@@ -14,7 +14,6 @@ export function Admin(){
     const [questions, setQuestions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     let editedQuestions = [];
-
     const navigate = useNavigate();
 
     //Categories
