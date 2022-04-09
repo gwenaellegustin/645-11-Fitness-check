@@ -48,12 +48,6 @@ export function FitnessForm(){
             setIsLoading(false);
         }
     }, [questions, categories])
-
-    //TODO: TO DELETE, just to represent the objet inside the array above "answeredQuestions"
-    let answeredQuestion = {
-        question: "QUESTIONID",
-        answers: ["REF"]
-    }
     
     useEffect(() => {
         completedForm.pointsByCategory = [];
@@ -90,10 +84,10 @@ export function FitnessForm(){
                     if(answer.id === answerId){
                         answerRef = answer.answerRef;
                         answerPoint = answer.point
-                        return;
+                        return; //No need to continue the loop
                     }
                 })
-                return;
+                return; //No need to continue the loop
             }
         })
 
@@ -163,7 +157,7 @@ export function FitnessForm(){
             completedForm.pointsByCategory.forEach(objectCategory => {
                 if(question.categoryId === objectCategory.category.id){
                     objectCategory.maxPoints += points;
-                    return;
+                    return; //No need to continue the loop
                 }
             })
         })
@@ -178,7 +172,7 @@ export function FitnessForm(){
                 completedForm.pointsByCategory.forEach(objectCategory => {
                     if(answeredQuestion.category === objectCategory.category.id){
                         objectCategory.points += answeredQuestion.points;
-                        return;
+                        return; //No need to continue the loop
                     }
                 })
             })
