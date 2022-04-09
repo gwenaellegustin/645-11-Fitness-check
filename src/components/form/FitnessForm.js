@@ -1,4 +1,4 @@
-import {createContext, useEffect, useState} from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 import {Timestamp} from "firebase/firestore";
 import {CategoryContainer} from "./CategoryContainer";
 import {
@@ -10,6 +10,7 @@ import {
 import {FormError} from "./FormError";
 import {useNavigate} from "react-router-dom";
 import {Button, Form} from 'reactstrap';
+import {UserContext} from "../App";
 
 export const FormContext = createContext();
 
@@ -21,6 +22,8 @@ export function FitnessForm(){
     const [isLoading, setIsLoading] = useState(true);
 
     const navigate = useNavigate();
+
+    const user = useContext(UserContext);
 
     //Categories
     useEffect(() => {
@@ -202,7 +205,7 @@ export function FitnessForm(){
             const formDate = new Date();
             completedForm.dateTime = Timestamp.fromDate(formDate);
 
-            addCompletedFormToFirestore(completedForm).then(completedFormRef => {
+            addCompletedFormToFirestore(user.userRef, completedForm).then(completedFormRef => {
                 if(completedFormRef != null){
                     console.log("ADD COMPLETED FORM SUCCESSFUL, id : " + completedFormRef.id);
                     console.log(completedForm.dateTime)

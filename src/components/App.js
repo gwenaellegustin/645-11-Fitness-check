@@ -1,9 +1,8 @@
 
-import {auth, db, firebaseApp, getUserByUID} from "../config/initFirebase";
-import {doc, getDoc, setDoc} from "firebase/firestore";
+import {auth, createUserFirestore, firebaseApp, getUserByUID} from "../config/initFirebase";
 import {Route, Routes} from "react-router-dom";
 import {Nav,Navbar,NavbarBrand,NavLink} from 'reactstrap';
-import {createContext,  useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {FitnessForm} from "./form/FitnessForm";
 import Login from "./Login";
 import Home from "./Home";
@@ -11,21 +10,7 @@ import {History} from "./history/History";
 import {NavDropdown} from "react-bootstrap";
 import {Admin} from "./Admin";
 
-export let documentUser;
-export const UserContext = createContext()
-
-let createUserFirestore = async (uid) => {
-    // If a user is connected (so exist in Authentication), get the UID
-        const docRef = doc(db, 'users', uid);
-        documentUser = await getDoc(docRef);
-        // If the user doesn't exist in Firestore, creation
-        if (!documentUser.exists()){
-            await setDoc(doc(db, 'users', uid), {
-                name: auth.currentUser.displayName,
-                admin: false
-            });
-        }
-}
+export const UserContext = React.createContext("");
 
 function App() {
     const [user, setUser] = useState();
@@ -37,12 +22,12 @@ function App() {
     useEffect(() => {
         const unregisterAuthObserver = firebaseApp
             .auth()
-            .onAuthStateChanged( async (user) => {
-                setIsSignedIn(!!user); // if there is a user, set to true
-                if (user !== null){
+            .onAuthStateChanged( (firebaseUser) => {
+                setIsSignedIn(!!firebaseUser); // if there is a user, set to true
+                if (firebaseUser !== null){
                     // Create user in Firestore if not already exist
-                    createUserFirestore(user.uid);
-                    await getUserByUID(user.uid).then(u => setUser(u));
+                    createUserFirestore(firebaseUser.uid);
+                    getUserByUID(firebaseUser.uid).then(u => {setUser(u); console.log(u)});
                 }
             });
         // Make sure we un-register Firebase observers when the component unmounts.
