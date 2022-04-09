@@ -9,7 +9,7 @@ import {History} from "./history/History";
 import {NavDropdown} from "react-bootstrap";
 import {Admin} from "./Admin";
 
-export const UserContext = React.createContext("");
+export const UserContext = React.createContext();
 
 function App() {
     const [user, setUser] = useState();
@@ -26,7 +26,7 @@ function App() {
                 if (firebaseUser !== null){
                     // Create user in Firestore if not already exist
                     createUserFirestore(firebaseUser.uid);
-                    getUserByUID(firebaseUser.uid).then(u => {setUser(u); console.log(u)});
+                    getUserByUID(firebaseUser.uid).then(u => setUser(u));
                 }
             });
         // Make sure we un-register Firebase observers when the component unmounts.

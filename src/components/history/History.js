@@ -14,8 +14,7 @@ export function History(){
 
     // Get all completed forms of a user
     useEffect(() => {
-        if(user !== ""){
-            console.log(user)
+        if(user !== undefined){
             getCompletedForms(user.userRef).then(f => setCompletedForms(f));
         }
     }, [user])
