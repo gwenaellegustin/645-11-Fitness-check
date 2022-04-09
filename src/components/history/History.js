@@ -39,8 +39,7 @@ export function History(){
                     <option key={o.id} value={o.id}>
                         {o.dateTime.toDate().toLocaleDateString()
                             + " " +
-                        o.dateTime.toDate().toLocaleTimeString()
-                            + " " + o.id}
+                        o.dateTime.toDate().toLocaleTimeString()}
                     </option>
                 ))}
             </select>
