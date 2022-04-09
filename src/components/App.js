@@ -1,16 +1,18 @@
 
-import {auth, db, firebaseApp} from "../config/initFirebase";
+import {auth, db, firebaseApp, getUserByUID} from "../config/initFirebase";
 import {doc, getDoc, setDoc} from "firebase/firestore";
 import {Route, Routes} from "react-router-dom";
 import {Nav,Navbar,NavbarBrand,NavLink} from 'reactstrap';
-import {useEffect, useState} from "react";
-import {FitnessForm} from "./form/Form";
+import {createContext,  useEffect, useState} from "react";
+import {FitnessForm,} from "./form/Form";
 import Login from "./Login";
 import Home from "./Home";
 import {History} from "./history/History";
 import {NavDropdown} from "react-bootstrap";
+import {Admin} from "./Admin";
 
 export let documentUser;
+export const UserContext = createContext()
 
 let createUserFirestore = async (uid) => {
     // If a user is connected (so exist in Authentication), get the UID
@@ -19,12 +21,15 @@ let createUserFirestore = async (uid) => {
         // If the user doesn't exist in Firestore, creation
         if (!documentUser.exists()){
             await setDoc(doc(db, 'users', uid), {
-                name: auth.currentUser.displayName
+                name: auth.currentUser.displayName,
+                admin: false
             });
         }
 }
 
 function App() {
+    const [user, setUser] = useState();
+
     // Local signed-in state.
     const [isSignedIn, setIsSignedIn] = useState(null);
 
@@ -32,11 +37,12 @@ function App() {
     useEffect(() => {
         const unregisterAuthObserver = firebaseApp
             .auth()
-            .onAuthStateChanged((user) => {
+            .onAuthStateChanged( async (user) => {
                 setIsSignedIn(!!user); // if there is a user, set to true
-                if(user !== null){
+                if (user !== null) {
                     // Create user in Firestore if not already exist
-                    createUserFirestore(user.uid)
+                    createUserFirestore(user.uid);
+                    await getUserByUID(user.uid).then(u => setUser(u));
                 }
             });
         // Make sure we un-register Firebase observers when the component unmounts.
@@ -69,6 +75,7 @@ function App() {
 
     // Signed in - Render app
     return (
+        <UserContext.Provider value={user}>
         <div className="col-md-12" >
             <Navbar color="light" light  expand="md">
                 <NavbarBrand href="/">
@@ -85,20 +92,27 @@ function App() {
                     <NavLink href="/History">
                         Historique
                     </NavLink>
+                    {user && user.admin ?
+                        <NavLink href="/Admin">
+                            Gestion
+                        </NavLink> : null}
                 </Nav>
-
-                <NavDropdown  title={auth.currentUser.displayName}>
+                <NavDropdown title={auth.currentUser.displayName}>
                     <NavDropdown.Item onClick={handleSignOutClick}>Se déconnecter</NavDropdown.Item>
                 </NavDropdown>
             </Navbar>
+
             <div className="px-3 m-3 text-center">
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/form" element={<FitnessForm />} />
                     <Route path="/history" element={<History />} />
+                    {user && user.admin ?
+                        <Route path="/admin" element={<Admin />} /> : null}
                 </Routes>
             </div>
         </div>
+        </UserContext.Provider>
     );
 }
 
