@@ -160,6 +160,17 @@ export async function addCompletedFormToFirestore(completedForm){
     return await addDoc(collection(documentUser.ref, "completedForms"), completedForm);
 }
 
+export async function addQuestion(newQuestion){
+    // Add the question in Firestore
+    let questionAdded = await addDoc(collection(db, "questions"), newQuestion);
+
+    // Add the new reference in Form collection
+    //const form = doc(db, "form", "KbrDb6pas1c6hIbXxwx1");
+    //await updateDoc(form, {
+    //    questions: arrayUnion(questionAdded)
+    //});
+}
+
 
 export async function editQuestion(editedQuestion){
     const docRef = doc(db, 'questions', editedQuestion.id);

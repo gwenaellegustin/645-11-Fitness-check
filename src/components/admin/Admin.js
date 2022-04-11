@@ -3,9 +3,10 @@ import { editQuestion,
     getCategories,
     getForm,
     getQuestionsWithIds
-} from "../config/initFirebase";
+} from "../../config/initFirebase";
 import {useNavigate} from "react-router-dom";
 import {Button, Form, FormGroup, Input} from 'reactstrap';
+import {NewQuestion} from "./NewQuestion";
 
 export const FormContext = createContext();
 
@@ -63,8 +64,6 @@ export function Admin(){
                 newLabel: e.target.value
             })
         }
-        console.log(editedQuestions)
-
     }
 
     const handleFormSubmit = async e => {
@@ -79,6 +78,7 @@ export function Admin(){
     return (
         <>
             <h1>Gestion des questions</h1>
+            <NewQuestion></NewQuestion>
             {<FormContext.Provider value={handleFormInputChange}>
                 <Form onSubmit={handleFormSubmit}>
                     {categories.map(category => (

@@ -9,7 +9,7 @@ import Login from "./Login";
 import Home from "./Home";
 import {History} from "./history/History";
 import {NavDropdown} from "react-bootstrap";
-import {Admin} from "./Admin";
+import {Admin} from "./admin/Admin";
 
 export let documentUser;
 export const UserContext = createContext()
