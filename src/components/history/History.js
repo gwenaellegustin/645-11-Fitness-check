@@ -1,21 +1,23 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {ChartContainer} from "./ChartContainer";
-import {doc, getDoc, query} from "firebase/firestore";
-import {auth, db, getCompletedForms} from "../../config/initFirebase";
+import {getCompletedForms} from "../../config/initFirebase";
 import {FormCompletedContainer} from "./FormCompletedContainer";
 import {Link} from "react-router-dom";
 import {Button} from "reactstrap";
+import {UserContext} from "../App";
 
 export function History(){
     const [completedForms, setCompletedForms] = useState("")
     const [selectedForm, setSelectedForm] = useState(null);
 
+    const user = useContext(UserContext);
+
     // Get all completed forms of a user
     useEffect(() => {
-        getDoc(query(doc(db, "users", auth.currentUser.uid)))
-            .then(u => getCompletedForms(u)
-                .then(f => setCompletedForms(f)));
-    }, [])
+        if(user !== undefined){
+            getCompletedForms(user.userRef).then(f => setCompletedForms(f));
+        }
+    }, [user])
 
     // Dropdownlist
     useEffect(() =>{

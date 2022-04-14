@@ -1,9 +1,20 @@
 // Import the functions you need from the SDKs you need
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import {addDoc, collection, doc, getDoc, getDocs, getFirestore, query, where, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import {
+    addDoc,
+    arrayRemove,
+    arrayUnion,
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    getFirestore,
+    query,
+    setDoc,
+    updateDoc
+} from "firebase/firestore";
 import {getAuth} from "firebase/auth";
-import {documentUser} from "../components/App";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -24,12 +35,11 @@ export async function getUserByUID(userUID){
     console.log("Firestore called getUserByUID");
 
     let userDoc = await getDoc(doc(db, "users", userUID));
-    let user = {
+    return {
         ...userDoc.data(),
         id: userDoc.id,
         userRef: userDoc.ref
-    }
-    return user;
+    };
 }
 
 export async function getForm(){
@@ -120,44 +130,18 @@ export async function getQuestionsWithIds(questionsId){
     return questions;
 }
 
-export async function getCompletedForms(userDoc){
+export async function getCompletedForms(userRef){
     console.log("Firestore called getCompletedForms");
 
-    let completedFormsCollection = await getDocs(query(collection(userDoc.ref, "completedForms")));
+    let completedFormsCollection = await getDocs(query(collection(userRef, "completedForms")));
     return completedFormsCollection.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
     })).sort((a, b) => a.dateTime - b.dateTime);
 }
 
-export async function getCompletedForm(userDoc){
-    console.log("Firestore called getCompletedForm");
-
-    let completedFormDoc = await getDoc(doc(collection(userDoc.ref, "completedForms"), "DoekfjZKXmnfmemzJ70m"));
-    return {
-        ...completedFormDoc.data(),
-        id: completedFormDoc.id
-    };
-}
-
-export async function getCompletedFormByDate(userDoc, formDate){
-    //TODO: Is it possible to get only 1 form instead of all docs where it's that date time ?
-
-    console.log("Firestore called getCompletedFormByDate");
-
-    console.log(formDate)
-    let completedFormsCollection = await getDocs(query(collection(userDoc.ref, "completedForms"), where("dateTime", "==", formDate)));
-    let completedFormsArray = completedFormsCollection.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id
-    }))
-
-    console.log(completedFormsArray[0])
-    return completedFormsArray[0];
-}
-
-export async function addCompletedFormToFirestore(completedForm){
-    return await addDoc(collection(documentUser.ref, "completedForms"), completedForm);
+export async function addCompletedFormToFirestore(userRef, completedForm){
+    return await addDoc(collection(userRef, "completedForms"), completedForm);
 }
 
 export async function addQuestion(newQuestion){
@@ -207,4 +191,17 @@ export async function editQuestion(editedQuestion){
     });
 
     return newQuestion;
+}
+
+export async function createUserFirestore(uid){
+    // If a user is connected (so exist in Authentication), get the UID
+    const docRef = doc(db, 'users', uid);
+    let documentUser = await getDoc(docRef);
+    // If the user doesn't exist in Firestore, creation
+    if (!documentUser.exists()){
+        await setDoc(doc(db, 'users', uid), {
+            name: auth.currentUser.displayName,
+            admin: false
+        });
+    }
 }
