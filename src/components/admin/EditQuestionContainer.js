@@ -1,11 +1,23 @@
 
 import React, {useEffect, useState} from "react";
-import {Button, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
-import {getCategories} from "../../config/initFirebase";
+import {
+    Button, Card, CardBody,CardTitle,
+    Form,
+    FormGroup,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader
+} from "reactstrap";
+import {getAnswersByQuestion, getCategories} from "../../config/initFirebase";
+import {AnswersContainer} from "../form/AnswersContainer";
 
-export function NewQuestion() {
+export function EditQuestionContainer(question) {
     const [categories, setCategories] = useState([]);
-    const [newQuestion] = useState({label: ""},{category:categories[0]});
+    const [answers, setAnswers] = useState([]);
+    const [editedQuestion] = useState(question.question);
     const [modal, setModal] =useState(false);
     const [newAnswerList, setNewAnswerList] = useState([]);
 
@@ -19,18 +31,26 @@ export function NewQuestion() {
         });
     }, [])
     const changeCategory = (e) => {
-        newQuestion.category = e.value;
+        editedQuestion.category = e.value;
     };
 
     //Label
     const changeLabel = (e) => {
-        newQuestion.label = e;
+        editedQuestion.label = e;
     }
+
+    //Answers
+    useEffect(() => {
+        getAnswersByQuestion(editedQuestion.questionRef).then(r => {
+            setAnswers(r);
+        })
+    }, [question])
 
     //Save
     const handleFormSubmit = e => {
         e.preventDefault();
-        console.log(newQuestion)
+        console.log(question)
+        console.log(editedQuestion)
     }
 
     //New answer
@@ -50,19 +70,27 @@ export function NewQuestion() {
 
     return (
         <>
-            <Button color="success"
-                    onClick={toggle}>Ajouter une question</Button>
+            <Card key={editedQuestion.id} >
+                <CardBody>
+                    <CardTitle tag="h5">{editedQuestion.label}</CardTitle>
+                    {<AnswersContainer question={editedQuestion}
+                                       uniqueAnswer={editedQuestion.uniqueAnswer}
+                                       isDisplayMode={false}/>}
+                    <Button color="danger" style={{margin:5}}>Supprimer</Button>
+                    <Button color="primary" style={{margin:5}} onClick={toggle}>Modifier</Button>
+                </CardBody>
+            </Card>
             <Modal isOpen={modal}
                    toggle={toggle}>
                 <Form onSubmit={handleFormSubmit}>
                     <ModalHeader>
-                        Ajouter une question
+                        Modifier une question
                     </ModalHeader>
                     <ModalBody>
                         <FormGroup>
                             <Label tag="h5" for="category">Categorie</Label>
                             <Input type="select"
-                                   onChange={changeCategory}>
+                                   onChange={changeCategory} defaultValue={editedQuestion.categoryId}>
                                 {categories
                                     .map(o => (
                                         <option key={o.id} value={o.id}>
@@ -72,16 +100,28 @@ export function NewQuestion() {
                             </Input>
                         </FormGroup>
                         <FormGroup>
-                            <Label  tag="h5" for="exampleText">Question</Label>
-                            <Input type="textarea" onInput={e => changeLabel(e.target.value)}/>
+                            <Label tag="h5" for="exampleText">Question</Label>
+                            <Input type="textarea" defaultValue={editedQuestion.label} onInput={e => changeLabel(e.target.value)}/>
                         </FormGroup>
                         <FormGroup className='row'>
                             <FormGroup className="col-10">
-                                <Label  tag="h5" for="answer" className="mr-sm-1">Réponse</Label>
+                                <Label tag="h5" for="answer" className="mr-sm-1">Réponse</Label>
                             </FormGroup>
                             <FormGroup className="col-2">
                                 <Label tag="h5" for="point" className="mr-sm-1">Valeur</Label>
                             </FormGroup>
+                            {answers
+                                .sort((a,b) => a.point - b.point) //Sort the answers by point, ascending
+                                .map(q => (
+                                    <>
+                                        <FormGroup className="col-10">
+                                            <Input type="text" id={q.id} defaultValue={q.label}/>
+                                        </FormGroup>
+                                        <FormGroup className="col-2">
+                                            <Input  type="number" defaultValue={q.point}/>
+                                        </FormGroup>
+                                    </>
+                                ))}
                             {newAnswerList}
                             <Button color="success" style={{width:'auto', margin:'auto'}}
                                     onClick={handleAddAnswer}>Ajouter une réponse</Button>
