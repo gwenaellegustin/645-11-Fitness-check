@@ -93,6 +93,7 @@ function App() {
                     <Route path="/history" element={<History />} />
                     {user && user.admin ?
                         <Route path="/admin" element={<Admin />} /> : null}
+                    <Route path="*" element={<Home />} />
                 </Routes>
             </div>
         </div>
