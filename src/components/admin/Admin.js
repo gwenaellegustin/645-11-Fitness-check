@@ -13,6 +13,15 @@ export function Admin(){
     const [questions, setQuestions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    /*const modalRef = useRef(false)
+    // Toggle for MyModalBody
+    const HandleShowPopup = () => {
+        console.log(modalRef.current)
+        modalRef.current = !modalRef.current
+        //setModal(!popup.current.props.isOpen)
+        //console.log(modal)
+    }*/
+
     //Categories
     useEffect(() => {
         getCategories().then(r => {
