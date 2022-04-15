@@ -1,13 +1,31 @@
-import {Button, Form, FormGroup, Input, Label, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
+import {
+    Button,
+    Form,
+    FormFeedback,
+    FormGroup,
+    Input,
+    Label,
+    ModalBody,
+    ModalFooter,
+    ModalHeader
+} from "reactstrap";
 import React, {useEffect, useState} from "react";
 import {addQuestion, db, editQuestion, getAnswersByQuestion} from "../../config/initFirebase";
 import {doc, getDoc} from "firebase/firestore";
 
 export function MyModal({handleShowPopup, categories, question, existingAnswers}){
+    const [questionEdited, setQuestionEdited] = useState(question)
     const [newAnswerFieldList, setNewAnswerFieldList] = useState([]);
     const [answers, setAnswers] = useState([]);
+    const [categoryInvalid, setCategoryInvalid] = useState(false)
+    const [labelInvalid, setLabelInvalid] = useState(false)
+    const [answerInvalid, setAnswerInvalid] = useState(false)
+    const [noChange, setNoChange] = useState(false)
 
     useEffect( () => {
+        questionEdited.label = question.label;
+        questionEdited.categoryId = question.categoryId;
+        questionEdited.uniqueAnswer = question.uniqueAnswer;
         if (question.id){
             getAnswersByQuestion(question.questionRef).then(r => {
                 setAnswers(r);
@@ -17,12 +35,12 @@ export function MyModal({handleShowPopup, categories, question, existingAnswers}
 
     //Categories
     const changeCategory = (e) => {
-        question.categoryId = e;
+        questionEdited.categoryId = e;
     };
 
     //Label
     const changeLabel = (e) => {
-        question.label = e;
+        questionEdited.label = e;
     }
 
     //Answers
@@ -39,7 +57,7 @@ export function MyModal({handleShowPopup, categories, question, existingAnswers}
     }
 
     const changeUniqueAnswer = (e) => {
-        question.uniqueAnswer = e;
+        questionEdited.uniqueAnswer = e;
     }
 
     const handleAddAnswer = () =>{
@@ -57,25 +75,76 @@ export function MyModal({handleShowPopup, categories, question, existingAnswers}
             </FormGroup>
             <FormGroup className="col-2">
                 <Input  type="number" onChange={e => changeAnswerPoint(index, e.target.value)}/>
+
             </FormGroup>
         </div>;
     }
 
+    const handleCancel = () => {
+        //setQuestionEdited({label: ''}) // TODO: try to clean field when cancel
+        handleShowPopup()
+    }
+
+
     //Save
     const handleFormSubmit = async (e) => {
-        if (question.label === '' || !question.categoryId) {
-            e.preventDefault();
-            //TODO: required field
+        e.preventDefault();
+        if (!question.categoryId){
+            console.log("categorie invalide")
+            setCategoryInvalid(true)
+            return
         } else {
-            e.preventDefault();
-            let categoryDoc = await getDoc(doc(db, "categories", question.categoryId)); //TODO get directly the refin changeCategory()
-            question.category = categoryDoc.ref;
-            if (question.id) {
-                editQuestion(question, answers)
-            } else {
-                addQuestion(question, answers)
+            setCategoryInvalid(false)
+        }
+        if (question.label === '') {
+            console.log("label invalide")
+            setLabelInvalid(true)
+            return
+        } else {
+            setLabelInvalid(false)
+        }
+        answers.forEach(answer => {
+            if(answer.label===''){
+                console.log('answerinvalid')
+                setAnswerInvalid(true)
+                return false
+            }
+        })
+
+
+        if (question.id){ // edit mode
+            if(questionEdited.label === question.label
+                && questionEdited.categoryId === question.categoryId
+                && questionEdited.uniqueAnswer === question.uniqueAnswer){
+                    if (answers === existingAnswers){
+                        console.log("found no difference")
+                        for (let i = 0; i < answers.length; i++) {
+                            console.log(answers[i].label + " " + existingAnswers[i].label)
+                            console.log(answers[i].point+ " " + existingAnswers[i].point)
+                            if(answers[i].label === existingAnswers[i].label && answers[i].point === existingAnswers[i].point){
+                                //TODO: can't validate if not modification
+                            }else {
+                                console.log("found difference")
+                            }
+                        }
+                    }
+                    setNoChange(true)
+                    return
             }
         }
+
+        if(!categoryInvalid || !labelInvalid || !answerInvalid) {
+            console.log("ok")
+            e.preventDefault();
+            let categoryDoc = await getDoc(doc(db, "categories", question.categoryId)); //TODO get directly the ref in changeCategory()
+            questionEdited.category = categoryDoc.ref;
+            if (question.id) {
+                //editQuestion(questionEdited, answers) // TODO: commented for tests
+            } else {
+                //addQuestion(questionEdited, answers) // TODO: commented for tests
+            }
+        }
+        //TODO: reload page
     }
 
     return(
@@ -86,8 +155,8 @@ export function MyModal({handleShowPopup, categories, question, existingAnswers}
             <ModalBody>
             <FormGroup>
                 <Label tag="h5" for="category">Categorie</Label>
-                <Input type="select"
-                       onChange={e => changeCategory(e.target.value)} defaultValue={question.id ? question.categoryId : null} >
+                <Input invalid={categoryInvalid} type="select"
+                       onChange={e => changeCategory(e.target.value)} defaultValue={question.categoryId ? questionEdited.categoryId : null} >
                     <option value=""/>
                     {categories
                         .map(o => (
@@ -96,11 +165,13 @@ export function MyModal({handleShowPopup, categories, question, existingAnswers}
                             </option>
                         ))}
                 </Input>
+                <FormFeedback>La catégorie est obligatoire</FormFeedback>
             </FormGroup>
             <FormGroup>
                 <Label tag="h5" for="exampleText">Question</Label>
-                <Input type="textarea" defaultValue={question.label} onInput={e => changeLabel(e.target.value)}/>
-            </FormGroup>
+                    <Input invalid={labelInvalid} type="textarea" defaultValue={questionEdited.label} onInput={e => changeLabel(e.target.value)}/>
+                    <FormFeedback >Le question est obligatoire</FormFeedback>
+                </FormGroup>
             <div className="row">
                 <div className="col-10">
                     <Label  tag="h5" for="answer" className="mr-sm-1">Réponse</Label>
@@ -109,30 +180,35 @@ export function MyModal({handleShowPopup, categories, question, existingAnswers}
                     <Label tag="h5" for="point" className="mr-sm-1">Valeur</Label>
                 </div>
             </div>
-            {existingAnswers
+            <p className="text-danger">{answerInvalid ? "Toutes les réponses ne sont pas valides" : null}</p>
+                {existingAnswers
                 .sort((a,b) => a.point - b.point) //Sort the answers by point, ascending
-                .map(q => (
-                    <div className="row" key={q.id}>
+                .map(answer => (
+                    <div className="row" key={answer.id}>
                         <FormGroup className="col-10">
-                            <Input type="text" id={q.id} defaultValue={q.label}/>
+                            <Input type="text" id={answer.id} defaultValue={answer.label}/>
+                            {/*TODO: can we change existing answer ?*/}
                         </FormGroup>
                         <FormGroup className="col-2">
-                            <Input  type="number" defaultValue={q.point}/>
+                            <Input type="number" defaultValue={answer.point}/>
+                            {/*TODO: can we change existing answer ?*/}
                         </FormGroup>
                     </div>
                 ))}
+            {answers.length===0 ? handleAddAnswer() : null}
             {newAnswerFieldList}
             <FormGroup check>
                 <Label check>
-                    <Input type="checkbox" defaultChecked={question.id ? question.uniqueAnswer : changeUniqueAnswer(false)} onInput={e => changeUniqueAnswer(e.target.checked)} />{' '}
+                    <Input type="checkbox" defaultChecked={question.id ? questionEdited.uniqueAnswer : changeUniqueAnswer(false)} onInput={e => changeUniqueAnswer(e.target.checked)} />{' '}
                     Réponse unique (radio button)
                 </Label>
             </FormGroup>
             <Button color="success" style={{width:'auto', margin:'auto'}}
                     onClick={handleAddAnswer}>Ajouter une réponse</Button>
-        </ModalBody>
+                <p className="text-danger text-end">{noChange ? "Pas de modification" : null}</p>
+            </ModalBody>
             <ModalFooter>
-                <Button color="danger" onClick={handleShowPopup}>Annuler</Button>
+                <Button color="danger" onClick={handleCancel}>Annuler</Button>
                 <Button color="primary" type="submit">Sauvegarder</Button>
             </ModalFooter>
         </Form>
