@@ -3,9 +3,6 @@ import { getCategories,
     getForm,
     getQuestionsWithIds
 } from "../../config/initFirebase";
-import {
-    FormGroup,
-} from 'reactstrap';
 import {NewQuestion} from "./NewQuestion";
 import {EditQuestionContainer} from "./EditQuestionContainer";
 
@@ -37,7 +34,7 @@ export function Admin(){
         })
     }, [])
 
-    useEffect(() => {
+   useEffect(() => {
         if(questions.length > 0 && categories.length > 0){
             setIsLoading(false);
         }
@@ -48,17 +45,17 @@ export function Admin(){
     }
 
     return (
-        <>
+        <div>
             <h1>Gestion des questions</h1>
-            <NewQuestion/>
+            <NewQuestion categories={categories}/>
                 {categories.map(category => (
-                    <FormGroup key={category.id} >
+                    <div key={category.id} >
                             <legend>{category.label}</legend >
                             {questions.filter(question => question.category.id === category.id).map(question => (
-                                <EditQuestionContainer key={question.id} question={question}/>
+                                <EditQuestionContainer categories={categories} key={question.id} question={question}/>
                             ))}
-                    </FormGroup>
+                    </div>
                 ))}
-        </>
+        </div>
     )
 }

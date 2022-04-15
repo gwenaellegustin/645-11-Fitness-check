@@ -144,34 +144,48 @@ export async function addCompletedFormToFirestore(userRef, completedForm){
     return await addDoc(collection(userRef, "completedForms"), completedForm);
 }
 
+export async function deleteQuestion(question){
+    console.log("Firestore called deleteQuestion");
+
+    const docRef = doc(db, 'questions', question.id);
+    const form = doc(db, "form", "KbrDb6pas1c6hIbXxwx1");
+    await updateDoc(form, {
+        questions: arrayRemove(docRef)
+    });
+    console.log(question.id)
+}
+
 export async function addQuestion(newQuestion){
+    console.log("Firestore called addQuestion");
+    console.log(newQuestion)
+
     // Add the question in Firestore
     let questionAdded = await addDoc(collection(db, "questions"), newQuestion);
 
     // Add the new reference in Form collection
-    //const form = doc(db, "form", "KbrDb6pas1c6hIbXxwx1");
-    //await updateDoc(form, {
-    //    questions: arrayUnion(questionAdded)
-    //});
+    const form = doc(db, "form", "KbrDb6pas1c6hIbXxwx1");
+    await updateDoc(form, {
+        questions: arrayUnion(questionAdded)
+    });
 }
 
+export async function editQuestion(editedQuestion, answers){
+    console.log("Firestore called editQuestion");
 
-export async function editQuestion(editedQuestion){
     const docRef = doc(db, 'questions', editedQuestion.id);
     let documentQuestion = await getDoc(docRef);
 
     // Get data form reference question and edit label
     let questionToCreate = {
         ...documentQuestion.data(),
-        label: editedQuestion.newLabel
+        label: editedQuestion.newLabel,
+        category: editedQuestion.newLabel
     }
 
     // Add the question in Firestore
     let newQuestion = await addDoc(collection(db, "questions"), questionToCreate);
 
-    // Get Answers of the model question
-    let answers = await getAnswersByQuestion(docRef);
-    // Add Answers to new question$
+    // Add Answers to new question
     for (const answer of answers) {
         let newAnswer = {
             label: answer.label,
@@ -194,6 +208,8 @@ export async function editQuestion(editedQuestion){
 }
 
 export async function createUserFirestore(uid){
+    console.log("Firestore called createUserFirestore");
+
     // If a user is connected (so exist in Authentication), get the UID
     const docRef = doc(db, 'users', uid);
     let documentUser = await getDoc(docRef);

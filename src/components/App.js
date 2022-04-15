@@ -91,8 +91,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/form" element={<FitnessForm />} />
                     <Route path="/history" element={<History />} />
-                    {user && user.admin ?
-                        <Route path="/admin" element={<Admin />} /> : null}
+                    <Route path="/admin" element={<Admin />} />
                 </Routes>
             </div>
         </div>
