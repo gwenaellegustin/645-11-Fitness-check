@@ -7,7 +7,7 @@ import Login from "./Login";
 import Home from "./Home";
 import {History} from "./history/History";
 import {NavDropdown} from "react-bootstrap";
-import {Admin} from "./admin/Admin";
+import {Admin} from "./Admin";
 
 export const UserContext = React.createContext();
 
@@ -91,7 +91,9 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/form" element={<FitnessForm />} />
                     <Route path="/history" element={<History />} />
-                    <Route path="/admin" element={<Admin />} />
+                    {user && user.admin ?
+                        <Route path="/admin" element={<Admin />} /> : null}
+                    <Route path="*" element={<Home />} />
                 </Routes>
             </div>
         </div>
