@@ -14,6 +14,13 @@ export function Admin(){
     const [questions, setQuestions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    // TODO: warning message
+    // tuto (video + git) :
+        //  https://www.youtube.com/watch?v=SmMZqh1xdB4
+        // https://github.com/daryanka/react-modal/tree/master/src
+    // other example:
+        // https://www.smashingmagazine.com/2020/11/react-useref-hook/
+
     /*const modalRef = useRef(false)
     // Toggle for MyModal
     const HandleShowPopup = () => {

@@ -4,8 +4,8 @@ import {addQuestion, db, editQuestion, getAnswersByQuestion} from "../../config/
 import {doc, getDoc} from "firebase/firestore";
 
 export function MyModal({handleShowPopup, categories, question, existingAnswers}){
-    const [newAnswerList, setNewAnswerList] = useState([]);
-    const [answers, setAnswers] = useState(existingAnswers);
+    const [newAnswerFieldList, setNewAnswerFieldList] = useState([]);
+    const [answers, setAnswers] = useState([]);
 
     useEffect( () => {
         if (question.id){
@@ -17,7 +17,6 @@ export function MyModal({handleShowPopup, categories, question, existingAnswers}
 
     //Categories
     const changeCategory = (e) => {
-        console.log(e)
         question.categoryId = e;
     };
 
@@ -31,7 +30,6 @@ export function MyModal({handleShowPopup, categories, question, existingAnswers}
         let temp = [...answers];
         temp[index].label = value;
         setAnswers(temp)
-        // https://stackoverflow.com/questions/55987953/how-do-i-update-states-onchange-in-an-array-of-object-in-react-hooks
     }
 
     const changeAnswerPoint = (index, value) => {
@@ -45,10 +43,8 @@ export function MyModal({handleShowPopup, categories, question, existingAnswers}
     }
 
     const handleAddAnswer = () =>{
-        console.log("addanswer")
-        setNewAnswerList(newAnswerList.concat(<NewAnswer key={newAnswerList.length} index={existingAnswers.length+newAnswerList.length}/>));
+        setNewAnswerFieldList(newAnswerFieldList.concat(<NewAnswer key={newAnswerFieldList.length} index={existingAnswers.length+newAnswerFieldList.length}/>));
         let emptyAnswer = {
-            index: existingAnswers.length+newAnswerList.length,
             label: "",
             point: 0
         }
@@ -67,7 +63,6 @@ export function MyModal({handleShowPopup, categories, question, existingAnswers}
 
     //Save
     const handleFormSubmit = async (e) => {
-        console.log(question)
         if (question.label === '' || !question.categoryId) {
             e.preventDefault();
             //TODO: required field
@@ -126,10 +121,10 @@ export function MyModal({handleShowPopup, categories, question, existingAnswers}
                         </FormGroup>
                     </div>
                 ))}
-            {newAnswerList}
+            {newAnswerFieldList}
             <FormGroup check>
                 <Label check>
-                    <Input type="checkbox" defaultChecked={question.uniqueAnswer} onInput={e => changeUniqueAnswer(e.target.checked)} />{' '}
+                    <Input type="checkbox" defaultChecked={question.id ? question.uniqueAnswer : changeUniqueAnswer(false)} onInput={e => changeUniqueAnswer(e.target.checked)} />{' '}
                     Réponse unique (radio button)
                 </Label>
             </FormGroup>

@@ -7,7 +7,6 @@ import {MyModal} from "./MyModal";
 export function NewQuestion({categories}) {
     const [newQuestion] = useState({label: ""});
     const [modal, setModal] =useState(false);
-    const [answers, setAnswers] = useState([])
 
     // Toggle for MyModal
     const handleShowPopup = () => setModal(!modal);
@@ -18,7 +17,7 @@ export function NewQuestion({categories}) {
                     onClick={handleShowPopup}>Ajouter une question</Button>
             <Modal isOpen={modal}
                    toggle={handleShowPopup}>
-                    <MyModal handleShowPopup={handleShowPopup} categories={categories} question={newQuestion} existingAnswers={answers}/>
+                    <MyModal handleShowPopup={handleShowPopup} categories={categories} question={newQuestion} existingAnswers={[]}/>
             </Modal>
         </>
     );

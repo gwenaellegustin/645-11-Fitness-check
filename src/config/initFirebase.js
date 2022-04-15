@@ -152,13 +152,12 @@ export async function deleteQuestion(question){
     await updateDoc(form, {
         questions: arrayRemove(docRef)
     });
-    console.log(question.id + "deleted")
 }
 
 export async function addQuestion(newQuestion, answers){
     console.log("Firestore called addQuestion");
-    console.log(newQuestion)
 
+    // Get only information required for Firestore
     let questionToCreate = {
         label: newQuestion.label,
         category: newQuestion.category,
@@ -186,7 +185,6 @@ export async function addQuestion(newQuestion, answers){
 
 export async function editQuestion(editedQuestion, answers){
     console.log("Firestore called editQuestion");
-    console.log(answers)
     const editedQuestionRef = doc(db, 'testquestions', editedQuestion.id);
 
     // Get data form reference question and edit label
@@ -218,7 +216,7 @@ export async function editQuestion(editedQuestion, answers){
         questions: arrayRemove(editedQuestionRef)
     });
 
-    return createdQuestion;
+    return true// createdQuestion;
 }
 
 export async function createUserFirestore(uid){
