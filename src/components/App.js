@@ -1,28 +1,19 @@
-import '../styles/App.css';
-import firebase from "firebase/compat/app";
-import firebaseApp from "../config/initFirebase";
+import {auth, createUserFirestore, firebaseApp, getUserByUID} from "../config/initFirebase";
 import {Route, Routes} from "react-router-dom";
-import {StyledFirebaseAuth} from "react-firebaseui";
-import {useEffect, useState} from "react";
-import Form from "./Form";
+import {Nav,Navbar,NavbarBrand,NavLink} from 'reactstrap';
+import React, {useEffect, useState} from "react";
+import {FitnessForm} from "./form/FitnessForm";
 import Login from "./Login";
-import Users from "./Users";
 import Home from "./Home";
+import {History} from "./history/History";
+import {NavDropdown} from "react-bootstrap";
+import {Admin} from "./Admin";
 
-
-// Configure FirebaseUI.
-const uiConfig = {
-    // Popup signin flow rather than redirect flow.
-    signInFlow: "popup",
-    // We will display Google and Facebook as auth providers.
-    signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
-    callbacks: {
-        // Avoid redirects after sign-in.
-        signInSuccessWithAuthResult: () => false,
-    },
-};
+export const UserContext = React.createContext();
 
 function App() {
+    const [user, setUser] = useState();
+
     // Local signed-in state.
     const [isSignedIn, setIsSignedIn] = useState(null);
 
@@ -30,10 +21,14 @@ function App() {
     useEffect(() => {
         const unregisterAuthObserver = firebaseApp
             .auth()
-            .onAuthStateChanged((user) => {
-                setIsSignedIn(!!user); // si il y a un user, met à true sinon à false
+            .onAuthStateChanged( (firebaseUser) => {
+                setIsSignedIn(!!firebaseUser); // if there is a user, set to true
+                if (firebaseUser !== null){
+                    // Create user in Firestore if not already exist
+                    createUserFirestore(firebaseUser.uid);
+                    getUserByUID(firebaseUser.uid).then(u => setUser(u));
+                }
             });
-
         // Make sure we un-register Firebase observers when the component unmounts.
         return () => unregisterAuthObserver();
     }, []);
@@ -42,30 +37,66 @@ function App() {
     if (isSignedIn === null) {
         return (
             <div className="App">
-                <p>Loading...</p>
+                <p>Chargement...</p>
             </div>
         );
     }
 
     // Not signed in - Render auth screen
-    if (!isSignedIn)
+    if (!isSignedIn){
         return (
             <div className="App">
-                <StyledFirebaseAuth
-                    uiConfig={uiConfig}
-                    firebaseAuth={firebaseApp.auth()}
-                />
+                <Login/>
             </div>
         );
+    }
+
+    // Sign out
+    const handleSignOutClick = async () => {
+        await firebaseApp.auth().signOut();
+    };
+
 
     // Signed in - Render app
     return (
-        <div className="App">
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/form" element={<Form />} />
-            </Routes>
+        <UserContext.Provider value={user}>
+        <div className="col-md-12" >
+            <Navbar color="light" light  expand="md">
+                <NavbarBrand href="/">
+                   Fitness check
+                </NavbarBrand>
+                <Nav
+                    className="me-auto"
+                    navbar
+                >
+                    <NavLink href="/Form">
+                        Nouveau formulaire
+                    </NavLink>
+
+                    <NavLink href="/History">
+                        Historique
+                    </NavLink>
+                    {user && user.admin ?
+                        <NavLink href="/Admin">
+                            Gestion
+                        </NavLink> : null}
+                </Nav>
+                <NavDropdown title={auth.currentUser.displayName}>
+                    <NavDropdown.Item onClick={handleSignOutClick}>Se déconnecter</NavDropdown.Item>
+                </NavDropdown>
+            </Navbar>
+
+            <div className="px-3 m-3 text-center">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/form" element={<FitnessForm />} />
+                    <Route path="/history" element={<History />} />
+                    {user && user.admin ?
+                        <Route path="/admin" element={<Admin />} /> : null}
+                </Routes>
+            </div>
         </div>
+        </UserContext.Provider>
     );
 }
 
