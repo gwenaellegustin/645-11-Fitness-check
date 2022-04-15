@@ -1,5 +1,6 @@
 import React, {createContext, useEffect, useState} from "react"
-import { getCategories,
+import {
+    getCategories,
     getForm,
     getQuestionsWithIds
 } from "../../config/initFirebase";
@@ -14,7 +15,7 @@ export function Admin(){
     const [isLoading, setIsLoading] = useState(true);
 
     /*const modalRef = useRef(false)
-    // Toggle for MyModalBody
+    // Toggle for MyModal
     const HandleShowPopup = () => {
         console.log(modalRef.current)
         modalRef.current = !modalRef.current

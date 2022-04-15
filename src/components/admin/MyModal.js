@@ -1,8 +1,9 @@
-import {Button, FormGroup, Input, Label, ModalBody} from "reactstrap";
+import {Button, Form, FormGroup, Input, Label, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
 import React, {useEffect, useState} from "react";
-import {getAnswersByQuestion} from "../../config/initFirebase";
+import {addQuestion, db, editQuestion, getAnswersByQuestion} from "../../config/initFirebase";
+import {doc, getDoc} from "firebase/firestore";
 
-export function MyModalBody({categories, question, existingAnswers}){
+export function MyModal({handleShowPopup, categories, question, existingAnswers}){
     const [newAnswerList, setNewAnswerList] = useState([]);
     const [answers, setAnswers] = useState(existingAnswers);
 
@@ -16,46 +17,42 @@ export function MyModalBody({categories, question, existingAnswers}){
 
     //Categories
     const changeCategory = (e) => {
-        console.log("category changed: "+ e)
-        question.category = e;
+        console.log(e)
+        question.categoryId = e;
     };
 
     //Label
     const changeLabel = (e) => {
-        console.log("label changed: "+ e)
         question.label = e;
     }
 
+    //Answers
     const changeAnswerLabel = (index, value) => {
-        //function changeAnswerLabel(index, value) {
-        console.log(index + " " +value)
+        let temp = [...answers];
+        temp[index].label = value;
+        setAnswers(temp)
         // https://stackoverflow.com/questions/55987953/how-do-i-update-states-onchange-in-an-array-of-object-in-react-hooks
-
-        //setNewAnswers([...newAnswers, ...newAnswers[newAnswers.length].label=value])
-        //console.log(answers)
-        //answers[newAnswers.length].answer.label = value;
     }
 
     const changeAnswerPoint = (index, value) => {
-        //function changeAnswerPoint(index, value) {
-        console.log(index + " " +value)
-        //existingAnswers[index].answer.point = value;
+        let temp = [...answers];
+        temp[index].point = value;
+        setAnswers(temp)
     }
 
-    //New answer
-    const handleAddAnswer = () => {
-        setNewAnswerList(newAnswerList.concat(<NewAnswer key={newAnswerList.length} index={newAnswerList.length}/>));
+    const changeUniqueAnswer = (e) => {
+        question.uniqueAnswer = e;
+    }
+
+    const handleAddAnswer = () =>{
+        console.log("addanswer")
+        setNewAnswerList(newAnswerList.concat(<NewAnswer key={newAnswerList.length} index={existingAnswers.length+newAnswerList.length}/>));
         let emptyAnswer = {
-            id: newAnswerList.length,
+            index: existingAnswers.length+newAnswerList.length,
             label: "",
             point: 0
         }
-        //console.log(answers)
         answers.push(emptyAnswer)
-        console.log(answers)
-        //console.log(answers.existingAnswers)
-        //console.log(answers.newAnswers)
-
     }
     function NewAnswer({index})  {
         return <div className="row">
@@ -68,16 +65,39 @@ export function MyModalBody({categories, question, existingAnswers}){
         </div>;
     }
 
+    //Save
+    const handleFormSubmit = async (e) => {
+        console.log(question)
+        if (question.label === '' || !question.categoryId) {
+            e.preventDefault();
+            //TODO: required field
+        } else {
+            e.preventDefault();
+            let categoryDoc = await getDoc(doc(db, "categories", question.categoryId)); //TODO get directly the refin changeCategory()
+            question.category = categoryDoc.ref;
+            if (question.id) {
+                editQuestion(question, answers)
+            } else {
+                addQuestion(question, answers)
+            }
+        }
+    }
+
     return(
-        <ModalBody>
+        <Form onSubmit={handleFormSubmit}>
+            <ModalHeader>
+                {question.id ? "Modifier une question" : "Ajouter une question"}
+            </ModalHeader>
+            <ModalBody>
             <FormGroup>
                 <Label tag="h5" for="category">Categorie</Label>
                 <Input type="select"
-                       onChange={e => changeCategory(e.target.value)} defaultValue={question.categoryId}>
+                       onChange={e => changeCategory(e.target.value)} defaultValue={question.id ? question.categoryId : null} >
+                    <option value=""/>
                     {categories
                         .map(o => (
                             <option key={o.id} value={o.id}>
-                                {o.label + " (Haut est bien: " + o.highIsGood + ")"}
+                                {o.label} {o.highIsGood===true ? "(Haut est bien)" : "(Bas est bien)"}
                             </option>
                         ))}
                 </Input>
@@ -107,9 +127,20 @@ export function MyModalBody({categories, question, existingAnswers}){
                     </div>
                 ))}
             {newAnswerList}
+            <FormGroup check>
+                <Label check>
+                    <Input type="checkbox" defaultChecked={question.uniqueAnswer} onInput={e => changeUniqueAnswer(e.target.checked)} />{' '}
+                    Réponse unique (radio button)
+                </Label>
+            </FormGroup>
             <Button color="success" style={{width:'auto', margin:'auto'}}
                     onClick={handleAddAnswer}>Ajouter une réponse</Button>
         </ModalBody>
+            <ModalFooter>
+                <Button color="danger" onClick={handleShowPopup}>Annuler</Button>
+                <Button color="primary" type="submit">Sauvegarder</Button>
+            </ModalFooter>
+        </Form>
     )
 
 }
