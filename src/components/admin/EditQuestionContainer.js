@@ -14,16 +14,14 @@ export function EditQuestionContainer({categories, question}) {
     const handleShowPopup = () => {
         if (!modal) {
             getAnswersByQuestion(editedQuestion.questionRef).then(r => {
-                setAnswers(r);
+                setAnswers(r.map(answer => ({
+                    ...answer,
+                    key: answer.id
+                })));
             })
         }
         setModal(!modal)
     };
-
-    const handleDelete = (id) => {
-        console.log(id)
-        //deleteQuestion(question)
-    }
 
     return (
         <div>
