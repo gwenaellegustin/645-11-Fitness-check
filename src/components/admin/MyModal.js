@@ -40,7 +40,6 @@ export function MyModal({handleShowPopup, categories, questionExisting, answersE
         } else {
             setCategoryInvalid(true)
         }
-        console.log(questionEdited)
     };
     // Handle change label in form
     const changeLabel = (e) => {
@@ -63,7 +62,7 @@ export function MyModal({handleShowPopup, categories, questionExisting, answersE
         setAnswersEdited(temp)
     }
     const changeUniqueAnswer = (e) => {
-        setQuestionEdited({uniqueAnswer: e})
+        setQuestionEdited({...questionEdited, uniqueAnswer: e})
     }
 
     // Handle adding a new answer
@@ -122,7 +121,7 @@ export function MyModal({handleShowPopup, categories, questionExisting, answersE
                 return true
             }
         }
-        return false
+        return true // In add mode
     }
 
     //Save
@@ -171,6 +170,7 @@ export function MyModal({handleShowPopup, categories, questionExisting, answersE
                     <Input invalid={labelInvalid} type="textarea" value={questionEdited.label} onChange={changeLabel}/>
                     <FormFeedback >Le question est obligatoire</FormFeedback>
                 </FormGroup>
+
             <div className="row">
                 <div className="col-10">
                     <Label  tag="h5" for="answer" className="mr-sm-1">Réponse</Label>
@@ -179,7 +179,12 @@ export function MyModal({handleShowPopup, categories, questionExisting, answersE
                     <Label tag="h5" for="point" className="mr-sm-1">Valeur</Label>
                 </div>
             </div>
-            <p className="text-danger">{answerInvalid ? "Toutes les réponses ne sont pas valides" : null}</p>
+                <FormGroup check>
+                    <Label check>
+                        <Input type="checkbox" value={questionEdited.uniqueAnswer} onChange={e => changeUniqueAnswer(e.target.checked)} />{' '}
+                        Réponse unique (radio button)
+                    </Label>
+                </FormGroup>
                 {answersEdited
                     .map((answer,index) => (
                         <div className="row" key={answer.key}>
@@ -192,12 +197,8 @@ export function MyModal({handleShowPopup, categories, questionExisting, answersE
                         </div>
                     ))}
             {answersEdited.length===0 ? handleAddAnswer() : null}
-            <FormGroup check>
-                <Label check>
-                    <Input type="checkbox" checked={questionEdited.uniqueAnswer} onChange={e => changeUniqueAnswer(e.target.checked)} />{' '}
-                    Réponse unique (radio button)
-                </Label>
-            </FormGroup>
+
+                <p className="text-danger">{answerInvalid ? "Toutes les réponses ne sont pas valides" : null}</p>
             <Button color="success" style={{width:'auto', margin:'auto'}}
                     onClick={handleAddAnswer}>Ajouter une réponse</Button>
                 <p className="text-danger text-end">{noChange ? "Pas de modification" : null}</p>
