@@ -4,12 +4,17 @@ import {Button, Modal} from "reactstrap";
 
 import {MyModal} from "./MyModal";
 
-export function NewQuestion({categories}) {
+export function NewQuestion({categories, forceReload}) {
     const [newQuestion] = useState({label: "", uniqueAnswer: false});
     const [modal, setModal] =useState(false);
 
     // Toggle for MyModal
     const handleShowPopup = () => setModal(!modal);
+
+    const handleReload = () => {
+        forceReload(forceReload+1);
+        setModal(!modal)
+    }
 
     return (
         <>
@@ -17,7 +22,7 @@ export function NewQuestion({categories}) {
                     onClick={handleShowPopup}>Ajouter une question</Button>
             <Modal isOpen={modal}
                    toggle={handleShowPopup}>
-                    <MyModal handleShowPopup={handleShowPopup} categories={categories} questionExisting={newQuestion} answersExisting={[]}/>
+                    <MyModal handleShowPopup={handleShowPopup} categories={categories} questionExisting={newQuestion} answersExisting={[]} handleReload={handleReload}/>
             </Modal>
         </>
     );

@@ -13,6 +13,7 @@ export function Admin(){
     const [categories, setCategories] = useState([]);
     const [questions, setQuestions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [reload, forceReload] = useState(false);
 
     // TODO: warning message
     // tuto (video + git) :
@@ -20,15 +21,6 @@ export function Admin(){
         // https://github.com/daryanka/react-modal/tree/master/src
     // other example:
         // https://www.smashingmagazine.com/2020/11/react-useref-hook/
-
-    /*const modalRef = useRef(false)
-    // Toggle for MyModal
-    const HandleShowPopup = () => {
-        console.log(modalRef.current)
-        modalRef.current = !modalRef.current
-        //setModal(!popup.current.props.isOpen)
-        //console.log(modal)
-    }*/
 
     //Categories
     useEffect(() => {
@@ -49,7 +41,7 @@ export function Admin(){
                 setQuestions(r);
             })
         })
-    }, [])
+    }, [reload])
 
    useEffect(() => {
         if(questions.length > 0 && categories.length > 0){
@@ -64,12 +56,12 @@ export function Admin(){
     return (
         <div>
             <h1>Gestion des questions</h1>
-            <NewQuestion categories={categories}/>
+            <NewQuestion categories={categories} forceReload={forceReload}/>
                 {categories.map(category => (
                     <div key={category.id} >
                             <legend>{category.label}</legend >
                             {questions.filter(question => question.category.id === category.id).map(question => (
-                                <EditQuestionContainer categories={categories} key={question.id} question={question}/>
+                                <EditQuestionContainer categories={categories} key={question.id} question={question} forceReload={forceReload}/>
                             ))}
                     </div>
                 ))}

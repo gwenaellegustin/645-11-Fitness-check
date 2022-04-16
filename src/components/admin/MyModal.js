@@ -13,7 +13,7 @@ import React, {useEffect, useState} from "react";
 import {addQuestion, db, editQuestion} from "../../config/initFirebase";
 import {doc, getDoc} from "firebase/firestore";
 
-export function MyModal({handleShowPopup, categories, questionExisting, answersExisting}){
+export function MyModal({handleShowPopup, categories, questionExisting, answersExisting, handleReload}){
     const [questionEdited, setQuestionEdited] = useState(questionExisting)
     const [answersEdited, setAnswersEdited] = useState(answersExisting);
     const [categoryInvalid, setCategoryInvalid] = useState(false)
@@ -78,7 +78,7 @@ export function MyModal({handleShowPopup, categories, questionExisting, answersE
 
     const checkFormValid = () => {
         // Validation of field
-        if (!questionEdited.categoryId){
+        if (!questionEdited.categoryId){ //TODO: check if category no exist
             console.log("categorie invalid")
             setCategoryInvalid(true)
             return false
@@ -89,7 +89,7 @@ export function MyModal({handleShowPopup, categories, questionExisting, answersE
             return false
         }
         if(answersEdited.every(answer => {
-            return(answer.label==='' || answer.point==='')
+            return(answer.label==='' || answer.point==='') // TODO: answer.point can be null ?
         })){
             setAnswerInvalid(true)
             console.log("answers invalid")
@@ -138,11 +138,11 @@ export function MyModal({handleShowPopup, categories, questionExisting, answersE
             let categoryDoc = await getDoc(doc(db, "categories", questionEdited.categoryId)); //TODO get directly the ref in changeCategory()
             questionEdited.category = categoryDoc.ref;
             if (questionExisting.id) {
-                editQuestion(questionEdited, answersEdited)
+                editQuestion(questionEdited, answersEdited).then(handleReload)
+
             } else {
-                addQuestion(questionEdited, answersEdited)
+                addQuestion(questionEdited, answersEdited).then(handleReload)
             }
-            //TODO: reload page
         }
     }
 
