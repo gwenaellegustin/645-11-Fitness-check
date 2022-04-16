@@ -17,7 +17,7 @@ export function NewQuestion({categories}) {
                     onClick={handleShowPopup}>Ajouter une question</Button>
             <Modal isOpen={modal}
                    toggle={handleShowPopup}>
-                    <MyModal handleShowPopup={handleShowPopup} categories={categories} question={newQuestion} existingAnswers={[]}/>
+                    <MyModal handleShowPopup={handleShowPopup} categories={categories} questionExisting={newQuestion} answersExisting={[]}/>
             </Modal>
         </>
     );

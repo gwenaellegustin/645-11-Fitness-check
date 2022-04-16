@@ -39,7 +39,7 @@ export function EditQuestionContainer({categories, question}) {
             </Card>
             <Modal isOpen={modal}
                    toggle={handleShowPopup}>
-                    <MyModal handleShowPopup={handleShowPopup} categories={categories} question={editedQuestion} existingAnswers={answers}/>
+                    <MyModal handleShowPopup={handleShowPopup} categories={categories} questionExisting={editedQuestion} answersExisting={answers}/>
             </Modal>
         </div>
     );
