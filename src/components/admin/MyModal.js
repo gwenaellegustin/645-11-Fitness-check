@@ -29,6 +29,7 @@ export function MyModal({handleShowPopup, categories, questionExisting, answersE
         } else {
             setAnswersEdited([])
         }
+
     }, [answersExisting.length>0])
 
 

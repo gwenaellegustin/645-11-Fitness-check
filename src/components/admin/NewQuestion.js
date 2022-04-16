@@ -5,7 +5,7 @@ import {Button, Modal} from "reactstrap";
 import {MyModal} from "./MyModal";
 
 export function NewQuestion({categories}) {
-    const [newQuestion] = useState({label: ""});
+    const [newQuestion] = useState({label: "", uniqueAnswer: false});
     const [modal, setModal] =useState(false);
 
     // Toggle for MyModal
