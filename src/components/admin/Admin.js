@@ -41,7 +41,7 @@ export function Admin(){
         })
     }, [])
 
-    // Functions to update the display (passed in context=
+    // Functions to update the display (passed in context)
     const addQuestion = (newQuestion) => {
         setQuestions([...questions, newQuestion] )
     }

@@ -101,6 +101,7 @@ export function MyModal({questionExisting, handleModal}){
 
         if (answersEdited.length === 0) {
             console.log("NO: answers invalid")
+            setAnswerInvalid(true);
             return false
         }
 
