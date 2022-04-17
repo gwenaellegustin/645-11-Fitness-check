@@ -164,7 +164,7 @@ export function MyModal({questionExisting, handleModal}){
                         handleModal()
                         questionEdited.id = questionRef.id;
                         questionEdited.answers = answersEdited;
-                        editQuestion(questionEdited);
+                        editQuestion(questionEdited, questionExisting.id);
                     }
                 });
             } else {

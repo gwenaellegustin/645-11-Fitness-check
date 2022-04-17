@@ -45,8 +45,8 @@ export function Admin(){
     const addQuestion = (newQuestion) => {
         setQuestions([...questions, newQuestion] )
     }
-    const editQuestion = (editedQuestion) => {
-        const index = questions.findIndex(question => question.id === editedQuestion.id);
+    const editQuestion = (editedQuestion, oldQuestionId) => {
+        const index = questions.findIndex(question => question.id === oldQuestionId);
         let temp = [...questions];
         temp[index] = editedQuestion;
         setQuestions(temp);
