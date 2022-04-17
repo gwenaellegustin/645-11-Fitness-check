@@ -158,13 +158,13 @@ export function MyModal({questionExisting, handleModal}){
                 answer.point = parseInt(answer.point);
             })
 
+            questionEdited.answers = answersEdited;
+
             if (questionExisting.id) {
                 editQuestionFirestore(questionEdited, answersEdited).then(questionRef => {
                     if(questionRef != null){
                         console.log("EDIT QUESTION SUCCESSFUL, id : " + questionRef.id);
-                        handleModal()
                         questionEdited.id = questionRef.id;
-                        questionEdited.answers = answersEdited;
                         editQuestion(questionEdited, questionExisting.id);
                     }
                 });
@@ -172,13 +172,13 @@ export function MyModal({questionExisting, handleModal}){
                 addQuestionFirestore(questionEdited, answersEdited).then(questionRef => {
                     if(questionRef != null){
                         console.log("ADD QUESTION SUCCESSFUL, id : " + questionRef.id);
-                        handleModal()
                         questionEdited.id = questionRef.id;
-                        questionEdited.answers = answersEdited;
                         addQuestion(questionEdited);
                     }
                 });
             }
+
+            handleModal();
         }
     }
 
