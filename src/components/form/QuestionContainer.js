@@ -4,10 +4,19 @@ import {useContext} from "react";
 import React from "react";
 import {FormContext} from "./FitnessForm";
 
+/**
+ * Component to display a question with the answers
+ *
+ * @param question linked to this container
+ * @param isDisplayMode for edit or read-only mode
+ * @param completedAnswersId for read-only mode in order to select answered answers
+ *
+ * @author Antony
+ */
 export function QuestionContainer({question, isDisplayMode, completedAnswersId}){
+    //When submitting the form, will indicate which question isn't answered in order to display a red message
     const [, invalidQuestionId] = useContext(FormContext);
 
-    //For the moment it only display the label, but it should call either a uniqueAnswersContainer or a multipleAnswersContainer
     return (
         <FormGroup>
             <Label>{question.label}</Label>
