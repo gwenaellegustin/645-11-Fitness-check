@@ -6,6 +6,7 @@ import { editQuestion,
 } from "../config/initFirebase";
 import {useNavigate} from "react-router-dom";
 import {Button, Form, FormGroup, Input} from 'reactstrap';
+import {Loading} from "./Loading";
 
 export const FormContext = createContext();
 
@@ -45,7 +46,7 @@ export function Admin(){
 
 
     if(isLoading){
-        return <div>Chargement...</div>
+        return <Loading/>
     }
 
     const handleFormInputChange = e => {

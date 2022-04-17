@@ -5,6 +5,7 @@ import {FormCompletedContainer} from "./FormCompletedContainer";
 import {Link} from "react-router-dom";
 import {Button} from "reactstrap";
 import {UserContext} from "../App";
+import {Loading} from "../Loading";
 
 export const HistoryContext = createContext("");
 
@@ -56,10 +57,6 @@ export function History(){
         setFormIsReady(value);
     }
 
-    const isLoading = ( <div className="App">
-                            <p>Chargement...</p>
-                        </div>)
-
     if(completedForms !== "" && completedForms.length === 0){ // No history screen
         return (
             <div className="History">
@@ -81,7 +78,7 @@ export function History(){
             </div>
         )
     } else if(selectedForm === null){ // Loading screen
-        return isLoading;
+        return <Loading/>
     } else { // History screen
         return (
             <HistoryContext.Provider value={{setFormReady}}>
@@ -97,7 +94,7 @@ export function History(){
                     <div className="col-lg-6 col-md-12">
                         <ChartContainer pointsByCategory={selectedForm.pointsByCategory}/>
                     </div>
-                    : isLoading}
+                    : <Loading/>}
                 </div>
             </HistoryContext.Provider>
         )

@@ -8,6 +8,7 @@ import Home from "./Home";
 import {History} from "./history/History";
 import {NavDropdown} from "react-bootstrap";
 import {Admin} from "./Admin";
+import {Loading} from "./Loading";
 
 export const UserContext = React.createContext();
 
@@ -36,9 +37,7 @@ function App() {
     // Not initialized yet - Render loading message
     if (isSignedIn === null) {
         return (
-            <div className="App">
-                <p>Chargement...</p>
-            </div>
+            <Loading/>
         );
     }
 

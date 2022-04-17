@@ -7,6 +7,7 @@ import {useNavigate} from "react-router-dom";
 import {Button, Form} from 'reactstrap';
 import {UserContext} from "../App";
 import React from "react";
+import {Loading} from "../Loading";
 
 export const FormContext = createContext("");
 
@@ -310,7 +311,7 @@ export function FitnessForm(){
     }
 
     if(isLoading){
-        return <div>Chargement...</div>
+        return <Loading/>
     }
 
     //Return a category container with only the questions related to this category (in order to sort it by category)
