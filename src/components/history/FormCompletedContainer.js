@@ -23,7 +23,7 @@ export function FormCompletedContainer({completedForm}){
                 setFormReady(true);
             })
         }
-    }, [completedForm.answeredQuestions, setFormReady])
+    }, [completedForm.answeredQuestions])
 
     //Answered categories
     // TODO: move in history or context ? (getCategoriesWithIds is call 2 times)
