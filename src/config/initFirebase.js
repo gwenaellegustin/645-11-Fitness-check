@@ -31,6 +31,38 @@ export const firebaseApp = firebase.initializeApp(firebaseConfig);
 export const db = getFirestore();
 export const auth = getAuth();
 
+function addAnswers(questionRef, answers){
+    let updatedAnswers = [];
+
+    // Add Answers to new question
+    let isAllAnswersAdded = answers.every(async answer => {
+        let newAnswer = {
+            label: answer.label,
+            point: answer.point
+        }
+        let answerRef = await addDoc(collection(questionRef, "answers"), newAnswer);
+        let answerDoc = await getDoc(answerRef);
+
+        if(answerDoc != null){
+            updatedAnswers.push({
+                ...answerDoc.data(),
+                id: answerDoc.id,
+                answerRef: answerDoc.ref
+            })
+
+            return true; //continue if answer added in firestore
+        }
+
+        return false; //Stop if the answer isn't added in firestore
+    })
+
+    if(isAllAnswersAdded){
+        return updatedAnswers;
+    }
+
+    return null;
+}
+
 async function getAnswersByQuestion(questionRef){
     console.log("Firestore called getAnswers");
 
@@ -156,24 +188,34 @@ export async function addQuestionFirestore(newQuestion, answers){
     }
 
     // Add the question in Firestore
-    let questionAdded = await addDoc(collection(db, "testquestions"), questionToCreate);
+    let questionRef = await addDoc(collection(db, "testquestions"), questionToCreate);
 
-    // Add the new reference in Form collection
-    const form = (await getForm()).formRef;
-    await updateDoc(form, {
-        questions: arrayUnion(questionAdded)
-    });
+    let updatedQuestion = null;
 
-    // Add Answers to new question
-    for (const answer of answers) {
-        let newAnswer = {
-            label: answer.label,
-            point: answer.point
+    if(questionRef != null){
+        let updatedAnswers = addAnswers(questionRef, answers);
+
+        if(updatedAnswers != null){
+            // Add the new reference in Form collection
+            const form = (await getForm()).formRef;
+
+            await updateDoc(form, {
+                questions: arrayUnion(questionRef)
+            });
+
+            let questionDoc = await getDoc(questionRef);
+
+            updatedQuestion = {
+                ...updatedQuestion,
+                ...questionDoc.data(),
+                id: questionDoc.id,
+                questionRef: questionDoc.ref,
+                answers: updatedAnswers
+            }
         }
-        await addDoc(collection(questionAdded, "answers"), newAnswer);
     }
 
-    return questionAdded;
+    return updatedQuestion;
 }
 
 export async function editQuestionFirestore(editedQuestion, answers){
@@ -188,28 +230,39 @@ export async function editQuestionFirestore(editedQuestion, answers){
     }
 
     // Add the question in Firestore
-    let createdQuestion = await addDoc(collection(db, "testquestions"), questionToCreate);
+    let questionRef = await addDoc(collection(db, "testquestions"), questionToCreate);
 
-    // Add Answers to new question
-    for (const answer of answers) {
-        let newAnswer = {
-            label: answer.label,
-            point: answer.point
+    let updatedQuestion = null;
+
+    if(questionRef != null){
+        let updatedAnswers = addAnswers(questionRef, answers);
+
+        if(updatedAnswers != null){
+            // Add the new reference in Form collection
+            const form = (await getForm()).formRef;
+
+            await updateDoc(form, {
+                questions: arrayUnion(questionRef)
+            });
+
+            // Delete the old reference in Form collection
+            await updateDoc(form, {
+                questions: arrayRemove(editedQuestionRef)
+            });
+
+            let questionDoc = await getDoc(questionRef);
+
+            updatedQuestion = {
+                ...updatedQuestion,
+                ...questionDoc.data(),
+                id: questionDoc.id,
+                questionRef: questionDoc.ref,
+                answers: updatedAnswers
+            }
         }
-        await addDoc(collection(createdQuestion, "answers"), newAnswer);
     }
 
-    // Add the new reference in Form collection
-    const form = (await getForm()).formRef;
-    await updateDoc(form, {
-        questions: arrayUnion(createdQuestion)
-    });
-    // Delete the old reference in Form collection
-    await updateDoc(form, {
-        questions: arrayRemove(editedQuestionRef)
-    });
-
-    return createdQuestion;
+    return updatedQuestion;
 }
 
 export async function createUserFirestore(uid){

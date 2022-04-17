@@ -10,8 +10,7 @@ import {
     ModalHeader
 } from "reactstrap";
 import React, {useContext, useEffect, useState} from "react";
-import { addQuestionFirestore, db, editQuestionFirestore} from "../../config/initFirebase";
-import {doc, getDoc} from "firebase/firestore";
+import { addQuestionFirestore, editQuestionFirestore} from "../../config/initFirebase";
 import {AdminContext} from "./Admin";
 
 export function MyModal({questionExisting, handleModal}){
@@ -37,7 +36,15 @@ export function MyModal({questionExisting, handleModal}){
 
     // Handle change category in form
     const changeCategory = (e) => {
-        setQuestionEdited({...questionEdited, categoryId : e.target.value })
+        let categoryRef;
+        categories.every(category => {
+            if(category.id === e.target.value){
+                categoryRef = category.categoryRef;
+                return false; //Stop the loop, category found
+            }
+            return true; //Continue the loop
+        })
+        setQuestionEdited({...questionEdited, category : categoryRef })
         if (e.target.value){
             setCategoryInvalid(false)
         } else {
@@ -81,7 +88,7 @@ export function MyModal({questionExisting, handleModal}){
     const checkFormValid = () => {
 
         // Validation of field
-        if (!questionEdited.categoryId) {
+        if (!questionEdited.category.id) {
             console.log("NO: categorie invalid")
             setCategoryInvalid(true)
             return false
@@ -117,7 +124,7 @@ export function MyModal({questionExisting, handleModal}){
         if (questionExisting.id) {
             setNoChange(true)
             if (questionEdited.label === questionExisting.label
-                && questionEdited.categoryId === questionExisting.categoryId
+                && questionEdited.category.id === questionExisting.categoryId
                 && questionEdited.uniqueAnswer === questionExisting.uniqueAnswer
                 && answersEdited.length === questionExisting.answers.length) {
                 let i = 0;
@@ -150,9 +157,6 @@ export function MyModal({questionExisting, handleModal}){
         console.log("FORM VALID ?")
         if (checkFormValid()){
             console.log("YES !")
-            e.preventDefault();
-            let categoryDoc = await getDoc(doc(db, "categories", questionEdited.categoryId)); //TODO get directly the ref in changeCategory()
-            questionEdited.category = categoryDoc.ref;
 
             answersEdited.forEach(answer => {
                 answer.point = parseInt(answer.point);
@@ -161,24 +165,24 @@ export function MyModal({questionExisting, handleModal}){
             questionEdited.answers = answersEdited;
 
             if (questionExisting.id) {
-                editQuestionFirestore(questionEdited, answersEdited).then(questionRef => {
-                    if(questionRef != null){
-                        console.log("EDIT QUESTION SUCCESSFUL, id : " + questionRef.id);
-                        questionEdited.id = questionRef.id;
-                        editQuestion(questionEdited, questionExisting.id);
+                editQuestionFirestore(questionEdited, answersEdited).then(updatedQuestion => {
+                    if(updatedQuestion != null){
+                        console.log("EDIT QUESTION SUCCESSFUL, id : " + updatedQuestion.id);
+                        updatedQuestion.category = questionEdited.category;
+                        editQuestion(updatedQuestion, questionExisting.id);
+                        handleModal();
                     }
                 });
             } else {
-                addQuestionFirestore(questionEdited, answersEdited).then(questionRef => {
-                    if(questionRef != null){
-                        console.log("ADD QUESTION SUCCESSFUL, id : " + questionRef.id);
-                        questionEdited.id = questionRef.id;
-                        addQuestion(questionEdited);
+                addQuestionFirestore(questionEdited, answersEdited).then(addedQuestion => {
+                    if(addedQuestion != null){
+                        console.log("ADD QUESTION SUCCESSFUL, id : " + addedQuestion.id);
+                        addedQuestion.category = questionEdited.category;
+                        addQuestion(addedQuestion);
+                        handleModal();
                     }
                 });
             }
-
-            handleModal();
         }
     }
 
@@ -191,7 +195,7 @@ export function MyModal({questionExisting, handleModal}){
                 <FormGroup>
                     <Label tag="h5" for="category">Categorie</Label>
                     <Input invalid={categoryInvalid} type="select"
-                           onChange={changeCategory} value={questionEdited.categoryId}>
+                           onChange={changeCategory} value={questionEdited.category && questionEdited.category.id}>
                         <option value=""/>
                         {categories.map(o => (
                             <option key={o.id} value={o.id}>
