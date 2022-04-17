@@ -1,18 +1,21 @@
 
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {Button, Modal} from "reactstrap";
 
 import {MyModal} from "./MyModal";
+import {AdminContext} from "./Admin";
 
-export function NewQuestion({categories, forceReload}) {
+export function NewQuestion() {
     const [newQuestion] = useState({label: "", uniqueAnswer: false});
     const [modal, setModal] =useState(false);
+    const {reload, forceReload } = useContext(AdminContext);
+
 
     // Toggle for MyModal
     const handleShowPopup = () => setModal(!modal);
 
     const handleReload = () => {
-        forceReload(forceReload+1);
+        forceReload(reload+1);
         setModal(!modal)
     }
 
@@ -22,7 +25,7 @@ export function NewQuestion({categories, forceReload}) {
                     onClick={handleShowPopup}>Ajouter une question</Button>
             <Modal isOpen={modal}
                    toggle={handleShowPopup}>
-                    <MyModal handleShowPopup={handleShowPopup} categories={categories} questionExisting={newQuestion} answersExisting={[]} handleReload={handleReload}/>
+                    <MyModal handleShowPopup={handleShowPopup} questionExisting={newQuestion} answersExisting={[]} handleReload={handleReload}/>
             </Modal>
         </>
     );

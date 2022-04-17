@@ -7,7 +7,11 @@ import {
 import {NewQuestion} from "./NewQuestion";
 import {EditQuestionContainer} from "./EditQuestionContainer";
 
-export const FormContext = createContext();
+export const AdminContext = createContext({
+    categories: [],
+    reload: 0,
+    forceReload: ()=>{}
+})
 
 export function Admin(){
     const [categories, setCategories] = useState([]);
@@ -54,17 +58,18 @@ export function Admin(){
     }
 
     return (
-        <div>
+        <AdminContext.Provider value={{categories: categories, reload: reload, forceReload: forceReload}}>
             <h1>Gestion des questions</h1>
-            <NewQuestion categories={categories} forceReload={forceReload}/>
+            <NewQuestion/>
                 {categories.map(category => (
                     <div key={category.id} >
                             <legend>{category.label}</legend >
                             {questions.filter(question => question.category.id === category.id).map(question => (
-                                <EditQuestionContainer categories={categories} key={question.id} question={question} forceReload={forceReload}/>
+                                <EditQuestionContainer key={question.id} question={question}/>
                             ))}
                     </div>
                 ))}
-        </div>
+
+        </AdminContext.Provider>
     )
 }

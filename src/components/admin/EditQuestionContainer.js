@@ -1,14 +1,16 @@
 
-import React, { useState} from "react";
+import React, {useContext, useState} from "react";
 import {Button, Card, CardBody,CardTitle,Modal,} from "reactstrap";
 import {deleteQuestion, getAnswersByQuestion} from "../../config/initFirebase";
 import {AnswersContainer} from "../form/AnswersContainer";
 import {MyModal} from "./MyModal";
+import {AdminContext} from "./Admin";
 
-export function EditQuestionContainer({categories, question, forceReload}) {
+export function EditQuestionContainer({question}) {
     const [editedQuestion] = useState(question);
     const [modal, setModal] =useState(false);
     const [answers, setAnswers] = useState([]);
+    const { reload, forceReload  } = useContext(AdminContext);
 
     // Toggle for Popup
     const handleShowPopup = () => {
@@ -17,7 +19,8 @@ export function EditQuestionContainer({categories, question, forceReload}) {
                 setAnswers(r.map(answer => ({
                     ...answer,
                     key: answer.id
-                })));
+                })).sort((a,b) => a.point - b.point) //Sort the answers by point, ascending
+                );
             })
         }
         setModal(!modal)
@@ -25,11 +28,11 @@ export function EditQuestionContainer({categories, question, forceReload}) {
 
     const handleDelete = async (editedQuestion) => {
         await deleteQuestion(editedQuestion)
-        forceReload(forceReload+1);
+        forceReload(reload+1);
     }
 
     const handleReload = () => {
-        forceReload(forceReload+1);
+        forceReload(reload+1);
         setModal(!modal)
     }
 
@@ -47,7 +50,7 @@ export function EditQuestionContainer({categories, question, forceReload}) {
             </Card>
             <Modal isOpen={modal}
                    toggle={handleShowPopup}>
-                    <MyModal handleShowPopup={handleShowPopup} categories={categories} questionExisting={editedQuestion} answersExisting={answers} handleReload={handleReload}/>
+                    <MyModal handleShowPopup={handleShowPopup} questionExisting={editedQuestion} answersExisting={answers} handleReload={handleReload}/>
             </Modal>
         </div>
     );

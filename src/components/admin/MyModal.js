@@ -9,17 +9,19 @@ import {
     ModalFooter,
     ModalHeader
 } from "reactstrap";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {addQuestion, db, editQuestion} from "../../config/initFirebase";
 import {doc, getDoc} from "firebase/firestore";
+import {AdminContext} from "./Admin";
 
-export function MyModal({handleShowPopup, categories, questionExisting, answersExisting, handleReload}){
+export function MyModal({handleShowPopup, questionExisting, answersExisting, handleReload}){
     const [questionEdited, setQuestionEdited] = useState(questionExisting)
     const [answersEdited, setAnswersEdited] = useState(answersExisting);
     const [categoryInvalid, setCategoryInvalid] = useState(false)
     const [labelInvalid, setLabelInvalid] = useState(false)
     const [answerInvalid, setAnswerInvalid] = useState(false)
     const [noChange, setNoChange] = useState(false)
+    const { categories  } = useContext(AdminContext);
 
     useEffect( () => {
         if (answersExisting){
