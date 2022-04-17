@@ -1,6 +1,5 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext} from "react";
 import {FormContext} from "./FitnessForm";
-import {getAnswersByQuestion} from "../../config/initFirebase";
 import {Input, Label} from "reactstrap";
 
 /**
@@ -15,30 +14,12 @@ import {Input, Label} from "reactstrap";
  */
 export function AnswersContainer({question, uniqueAnswer, isDisplayMode, completedAnswersId}){
     const [onChange] = useContext(FormContext);
-    const [answers, setAnswers] = useState([]);
 
     const answerType = uniqueAnswer ? 'radio' : 'checkbox';
 
-    useEffect(() => {
-        //https://dev.to/otamnitram/react-useeffect-cleanup-how-and-when-to-use-it-2hbm
-        let mounted = true;
-        getAnswersByQuestion(question.questionRef).then(r => {
-            if(mounted){
-                setAnswers(r);
-            }
-        })
-
-        return () => {mounted = false};
-    }, [question.questionRef])
-    
-    useEffect(() => {
-        //Set directly the answers in the related question
-        question.answers = answers;
-    }, [answers, question])
-
     return (
         <div>
-            {answers
+            {question.answers
                 .sort((a,b) => a.point - b.point) //Sort the answers by point, ascending
                 .map(answer => (
                     <div key={answer.id}>
