@@ -7,16 +7,12 @@ import {
 import {NewQuestion} from "./NewQuestion";
 import {EditQuestionContainer} from "./EditQuestionContainer";
 
-export const AdminContext = createContext({
-
-})
+export const AdminContext = createContext({})
 
 export function Admin(){
     const [categories, setCategories] = useState([]);
     const [questions, setQuestions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-
-    //const [reload, forceReload] = useState(false);
 
     // TODO: warning message
     // tuto (video + git) :
@@ -24,24 +20,6 @@ export function Admin(){
         // https://github.com/daryanka/react-modal/tree/master/src
     // other example:
         // https://www.smashingmagazine.com/2020/11/react-useref-hook/
-
-    const addQuestion = (newQuestion) => {
-        setQuestions([...questions, newQuestion] )
-    }
-
-    const editQuestion = (editedQuestion) => {
-        const index = questions.findIndex(question => question.id === editedQuestion.id);
-        let temp = [...questions];
-        temp[index] = editedQuestion;
-        setQuestions(temp);
-    }
-
-    const deleteQuestion = (deletedQuestion) => {
-        const index = questions.findIndex(question => question.id === deletedQuestion.id);
-        let temp = [...questions];
-        temp.splice(index,1)
-        setQuestions(temp)
-    }
 
     //Categories
     useEffect(() => {
@@ -57,12 +35,28 @@ export function Admin(){
             form.questions.forEach(questionDoc => {
                 questionsIds.push(questionDoc.id)
             })
-
             getQuestionsWithIds(questionsIds).then(r => {
                 setQuestions(r);
             })
         })
     }, [])
+
+    // Functions to update the display (passed in context=
+    const addQuestion = (newQuestion) => {
+        setQuestions([...questions, newQuestion] )
+    }
+    const editQuestion = (editedQuestion) => {
+        const index = questions.findIndex(question => question.id === editedQuestion.id);
+        let temp = [...questions];
+        temp[index] = editedQuestion;
+        setQuestions(temp);
+    }
+    const deleteQuestion = (deletedQuestion) => {
+        const index = questions.findIndex(question => question.id === deletedQuestion.id);
+        let temp = [...questions];
+        temp.splice(index,1)
+        setQuestions(temp)
+    }
 
    useEffect(() => {
         if(questions.length > 0 && categories.length > 0){
