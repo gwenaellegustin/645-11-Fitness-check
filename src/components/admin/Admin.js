@@ -72,7 +72,7 @@ export function Admin(){
         <AdminContext.Provider value={{categories: categories, editQuestion: editQuestion, addQuestion: addQuestion, deleteQuestion: deleteQuestion}}>
             <h1>Gestion des questions</h1>
             <NewQuestion/>
-            {categories.map(category => (<EditCategoryContainer category={category} questions={questions.filter(question => question.category.id === category.id)}/>))}
+            {categories.map(category => (<EditCategoryContainer key={category.id} category={category} questions={questions.filter(question => question.category.id === category.id)}/>))}
         </AdminContext.Provider>
     )
 }
