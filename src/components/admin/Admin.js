@@ -5,7 +5,7 @@ import {
     getQuestionsWithIds
 } from "../../config/initFirebase";
 import {NewQuestion} from "./NewQuestion";
-import {EditQuestionContainer} from "./EditQuestionContainer";
+import {EditCategoryContainer} from "./EditCategoryContainer";
 
 export const AdminContext = createContext({})
 
@@ -72,15 +72,7 @@ export function Admin(){
         <AdminContext.Provider value={{categories: categories, editQuestion: editQuestion, addQuestion: addQuestion, deleteQuestion: deleteQuestion}}>
             <h1>Gestion des questions</h1>
             <NewQuestion/>
-                {categories.map(category => (
-                    <div key={category.id} >
-                            <legend>{category.label}</legend >
-                            {questions.filter(question => question.category.id === category.id).map(question => (
-                                <EditQuestionContainer key={question.id} question={question}/>
-                            ))}
-                    </div>
-                ))}
-
+            {categories.map(category => (<EditCategoryContainer category={category} questions={questions.filter(question => question.category.id === category.id)}/>))}
         </AdminContext.Provider>
     )
 }
