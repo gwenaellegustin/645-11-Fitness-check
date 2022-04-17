@@ -81,74 +81,74 @@ export function MyModal({questionExisting, handleModal}){
     const checkFormValid = () => {
 
         // Validation of field
-        if (!questionEdited.categoryId){
-            console.log("No: categorie invalid")
+        if (!questionEdited.categoryId) {
+            console.log("NO: categorie invalid")
             setCategoryInvalid(true)
             return false
         }
-        if (!questionEdited.label || questionEdited.label.trim()==='') {
-            console.log("No: label invalid")
+        if (!questionEdited.label || questionEdited.label.trim() === '') {
+            console.log("NO: label invalid")
             setLabelInvalid(true)
             return false
         }
 
-        answersEdited.forEach((answer, index) => {
-            if(answer.label.trim()==='' && answer.point.trim()===''){
-                answersEdited.splice(index,1)
+        for (let i = 0; i < answersEdited.length; i++) {
+            if (answersEdited[i].label.trim() === '' && answersEdited[i].point.trim() === '') {
+                answersEdited.splice(i, 1)
+                i--; // array length diminue form one, we have to check the new answersEdited[i]
             }
-        })
+        }
 
-        if (answersEdited.length===0){
-            console.log("No: answers invalid")
+        if (answersEdited.length === 0) {
+            console.log("NO: answers invalid")
             return false
         }
 
-        if(!answersEdited.every(answer => {
-            return(answer.label!=='' && answer.point!=='')
-        })){
+        if (!answersEdited.every(answer => {
+            return (answer.label !== '' && answer.point !== '')
+        })) {
             setAnswerInvalid(true)
-            console.log("No: answers invalid")
+            console.log("NO: answers invalid")
             return false
         }
 
         // Check if the question is not the same that before (if edit mode)
-        if (questionExisting.id){
-            if(questionEdited.label === questionExisting.label
+        if (questionExisting.id) {
+            setNoChange(true)
+            if (questionEdited.label === questionExisting.label
                 && questionEdited.categoryId === questionExisting.categoryId
                 && questionEdited.uniqueAnswer === questionExisting.uniqueAnswer
-                && answersEdited.length === questionExisting.answers.length){
-                console.log("no difference in label, category, unique answer")
+                && answersEdited.length === questionExisting.answers.length) {
                 let i = 0;
                 do {
-                    if(answersEdited[i].label !== questionExisting.answers[i].label
-                        || answersEdited[i].point !== questionExisting.answers[i].point ){
+                    if (answersEdited[i].label !== questionExisting.answers[i].label
+                        || answersEdited[i].point !== questionExisting.answers[i].point) {
                         //Difference in label or point of a answer
                         i = answersEdited.length //stop while
-                        console.log("found a diff in " + i)
                         setNoChange(false)
                         return true
                     } else {
                         i++
                     }
                 } while (i < answersEdited.length);
+                // No difference in label, categoryId, unique answer or answers
+                console.log("NO : no difference")
+                return false
             } else {
                 //Difference in label, category, uniqueAnswer or number of answers
                 setNoChange(false)
                 return true
             }
         }
-        return true // In add mode
+        return true
     }
 
     //Save
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form valid ?")
+        console.log("FORM VALID ?")
         if (checkFormValid()){
-            console.log("Yes ! the question :")
-            console.log(questionEdited)
-            console.log("and answers :")
-            console.log(answersEdited)
+            console.log("YES !")
             e.preventDefault();
             let categoryDoc = await getDoc(doc(db, "categories", questionEdited.categoryId)); //TODO get directly the ref in changeCategory()
             questionEdited.category = categoryDoc.ref;
