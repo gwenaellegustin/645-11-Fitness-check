@@ -31,6 +31,19 @@ export const firebaseApp = firebase.initializeApp(firebaseConfig);
 export const db = getFirestore();
 export const auth = getAuth();
 
+async function getAnswersByQuestion(questionRef){
+    console.log("Firestore called getAnswers");
+
+    //Get all answers for that question from database
+    let answersCollection = await getDocs(query(collection(questionRef, "answers")));
+    //Fill answers with objects containing all data from Firestore object + id
+    return answersCollection.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+        answerRef: doc.ref
+    }));
+}
+
 export async function getUserByUID(userUID){
     console.log("Firestore called getUserByUID");
 
@@ -53,22 +66,9 @@ export async function getForm(){
     }))
 
     //There's only 1 form
-    //console.log(formArray[0].id)
+    //console.log(formArray[0])
 
     return formArray[0];
-}
-
-export async function getAnswersByQuestion(questionRef){
-    console.log("Firestore called getAnswers");
-
-    //Get all answers for that question from database
-    let answersCollection = await getDocs(query(collection(questionRef, "answers")));
-    //Fill answers with objects containing all data from Firestore object + id
-    return answersCollection.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id,
-        answerRef: doc.ref
-    }));
 }
 
 export async function getCategories(){
@@ -79,7 +79,8 @@ export async function getCategories(){
     //Fill categories with objects containing all data from Firestore object + id
     return categoriesCollection.docs.map(doc => ({
         ...doc.data(),
-        id: doc.id
+        id: doc.id,
+        categoryRef: doc.ref
     }));
 }
 
@@ -100,18 +101,6 @@ export async function getCategoriesWithIds(categoriesId){
     return categories;
 }
 
-export async function getQuestions(){
-    console.log("Firestore called getQuestions");
-
-    //Get all questions from database
-    let questionsCollection = await getDocs(query(collection(db, "testquestions")));
-    //Fill questions with objects containing all data from Firestore object + id
-    return questionsCollection.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id
-    }));
-}
-
 export async function getQuestionsWithIds(questionsId){
     console.log("Firestore called getQuestionsWithIds");
     const questions = [];
@@ -123,8 +112,9 @@ export async function getQuestionsWithIds(questionsId){
             questionRef: questionDoc.ref,
             categoryId: questionDoc.data().category.id
         }
-        let answers = await getAnswersByQuestion(questionDoc.ref);
-        question.answers = answers;
+
+        question.answers = await getAnswersByQuestion(questionDoc.ref);
+
         questions.push(question);
     }
     return questions;
@@ -223,8 +213,6 @@ export async function editQuestionFirestore(editedQuestion, answers){
 }
 
 export async function createUserFirestore(uid){
-    console.log("Firestore called createUserFirestore");
-
     // If a user is connected (so exist in Authentication), get the UID
     const docRef = doc(db, 'users', uid);
     let documentUser = await getDoc(docRef);

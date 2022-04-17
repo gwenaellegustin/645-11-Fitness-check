@@ -1,4 +1,4 @@
-import React, {useContext,} from "react";
+import React, {useContext} from "react";
 import {FormContext} from "./FitnessForm";
 import {Input, Label} from "reactstrap";
 
@@ -24,9 +24,9 @@ export function AnswersContainer({question, uniqueAnswer, isDisplayMode, complet
                 .map(answer => (
                     <div key={answer.id}>
                         <Input
-                            disabled={isDisplayMode}
-                            name={question.id}
-                            type={answerType}
+                            disabled={isDisplayMode} //Differentiate between new form and history
+                            name={question.id} //Answers with same question need to be regrouped
+                            type={answerType} //Either radio or checkbox
                             id={question.id.concat("-").concat(answer.id)}
                             value={answer.id}
                             onChange={onChange}
@@ -39,6 +39,5 @@ export function AnswersContainer({question, uniqueAnswer, isDisplayMode, complet
                     </div>
                 ))}
         </div>
-
     )
 }
