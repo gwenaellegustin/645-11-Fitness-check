@@ -152,6 +152,11 @@ export function MyModal({questionExisting, handleModal}){
             e.preventDefault();
             let categoryDoc = await getDoc(doc(db, "categories", questionEdited.categoryId)); //TODO get directly the ref in changeCategory()
             questionEdited.category = categoryDoc.ref;
+
+            answersEdited.forEach(answer => {
+                answer.point = parseInt(answer.point);
+            })
+
             if (questionExisting.id) {
                 editQuestionFirestore(questionEdited, answersEdited).then(questionRef => {
                     if(questionRef != null){
