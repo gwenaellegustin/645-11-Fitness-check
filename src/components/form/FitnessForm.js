@@ -1,12 +1,7 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import {Timestamp} from "firebase/firestore";
 import {CategoryContainer} from "./CategoryContainer";
-import {
-    addCompletedFormToFirestore,
-    getCategories,
-    getForm,
-    getQuestionsWithIds
-} from "../../config/initFirebase";
+import {addCompletedFormToFirestore, getCategories, getForm, getQuestionsWithIds} from "../../config/initFirebase";
 import {FormError} from "./FormError";
 import {useNavigate} from "react-router-dom";
 import {Button, Form} from 'reactstrap';
@@ -30,31 +25,51 @@ export function FitnessForm(){
 
     //Categories
     useEffect(() => {
+        //https://dev.to/otamnitram/react-useeffect-cleanup-how-and-when-to-use-it-2hbm
+        let mounted = true;
         getCategories().then(r => {
-            setCategories(r)
+            if(mounted){
+                setCategories(r);
+            }
         });
+
+        return () => {mounted = false}
     }, [])
 
     //Questions from Form collection
     useEffect(() => {
+        //https://dev.to/otamnitram/react-useeffect-cleanup-how-and-when-to-use-it-2hbm
+        let mounted = true;
         let questionsIds = [];
         getForm().then(form => {
-            form.questions.forEach(questionDoc => {
-                questionsIds.push(questionDoc.id)
-            })
+            if(mounted){
+                form.questions.forEach(questionDoc => {
+                    questionsIds.push(questionDoc.id)
+                })
 
-            getQuestionsWithIds(questionsIds).then(r => {
-                setQuestions(r);
-            })
+                getQuestionsWithIds(questionsIds).then(r => {
+                    setQuestions(r);
+                })
+            }
         })
+
+        return () => {mounted = false}
     }, [])
 
+    //Is not more loading when questions and categories are fetched
     useEffect(() => {
+        //https://dev.to/otamnitram/react-useeffect-cleanup-how-and-when-to-use-it-2hbm
+        let mounted = true;
         if(questions.length > 0 && categories.length > 0){
-            setIsLoading(false);
+            if(mounted){
+                setIsLoading(false);
+            }
         }
+
+        return () => {mounted = false}
     }, [questions, categories])
-    
+
+    //When categories are fetched, build completedForm
     useEffect(() => {
         completedForm.pointsByCategory = [];
         categories.forEach(category => {
@@ -68,9 +83,9 @@ export function FitnessForm(){
                 highIsGood: category.highIsGood
             })
         })
-
     }, [categories, completedForm])
 
+    //Event handler on input change
     const handleFormInputChange = async e => {
         const target = e.target;
         const questionId = target.name;
@@ -99,13 +114,14 @@ export function FitnessForm(){
             return true;
         })
 
-        //Check if the answeredQuestion object exist in the array, otherwise, create it
+        //Check if the answeredQuestion object exist in the array
         const answeredQuestionAlreadyExist = completedForm.answeredQuestions.find(answeredQuestion => answeredQuestion.question.id === questionId);
 
         if(answeredQuestionAlreadyExist){
             completedForm.answeredQuestions.forEach((answeredQuestion, index) => {
                 if(answeredQuestion.question.id === questionId){
-                    //If 'radio', only 1 response and 1 point need to be saved
+                    //If 'radio'
+                    //Only 1 answer and 1 point need to be saved
                     if(target.type === 'radio'){
                         answeredQuestion.answers = [answerRef];
                         answeredQuestion.points = answerPoint;
@@ -138,6 +154,7 @@ export function FitnessForm(){
         }
     }
 
+    //Event handler on form submit
     const handleFormSubmit = e => {
         e.preventDefault(); //Prevent refresh page
 
@@ -154,6 +171,7 @@ export function FitnessForm(){
         }
     }
 
+    //Check that all questions have been answered
     const validate = e => {
         let isValid = true;
 
@@ -209,21 +227,22 @@ export function FitnessForm(){
         return isValid;
     }
 
+    //Calculate max, answered points and percentage
     const calculatePoints = () => {
         //Calculate max point by category and store it in comptetedForm
         let points = 0;
 
+        //Set max points by category
         questions.forEach(question => {
             //Check if it is a single or multiple answers question
             //If single, the answer with the max points will be taken
-            //If multiple, the max is the total
             if(question.uniqueAnswer === true) {
                 let pointsTab = [];
                 question.answers.forEach(answer => {
                     pointsTab.push(answer.point);
                 })
                 points = Math.max(...pointsTab);
-            } else {
+            } else { //If multiple, the max is the total
                 points = 0;
                 question.answers.forEach(answer => {
                     points += answer.point;
@@ -238,7 +257,7 @@ export function FitnessForm(){
             })
         })
 
-        //Set pointsByCategory
+        //Set answered points by category
         //Add points from each question to the correct category
         completedForm.answeredQuestions.forEach(answeredQuestion => {
             completedForm.pointsByCategory.every(objectCategory => {
@@ -255,13 +274,14 @@ export function FitnessForm(){
             let result = 0;
             try {
                 result = objectCategory.points / objectCategory.maxPoints * 100;
-            }catch (e){
+            } catch (e){
+                console.log("Can't divide by 0. Final points will be 0.")
                 objectCategory.finalPoints = 0;
             }
 
             if (objectCategory.highIsGood){
                 objectCategory.finalPoints = result;
-            }else{
+            } else{
                 objectCategory.finalPoints = 100-result;
             }
 
@@ -272,16 +292,17 @@ export function FitnessForm(){
         })
     }
 
+    //Save the form in Firestore and redirect to History
     const saveTheForm = () => {
         //Set the date and time when submitting the form
         const formDate = new Date();
         completedForm.dateTime = Timestamp.fromDate(formDate);
 
         addCompletedFormToFirestore(user.userRef, completedForm).then(completedFormRef => {
-            if(completedFormRef != null){
-                console.log("ADD COMPLETED FORM SUCCESSFUL, id : " + completedFormRef.id);
-                console.log(completedForm.dateTime)
+            if(completedFormRef != null){ //Ensure the form has been correctly saved
                 navigate("/history")
+            } else {
+                console.error("The form can't be saved in Firestore.")
             }
         });
     }
