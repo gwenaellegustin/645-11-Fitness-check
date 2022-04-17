@@ -324,11 +324,10 @@ export function FitnessForm(){
                     {categories.map(category => (
                         <CategoryContainer key={category.id} category={category} questions={questions.filter(question => question.category.id === category.id)} isDisplayMode={false}/>
                     ))}
-                    <FormError isValidForm={isValidForm}/>
+                    {!isValidForm && <FormError/>}
                     <Button type="submit" color="primary">Valider</Button>
                 </Form>
             </FormContext.Provider>
         </>
-
     )
 }
