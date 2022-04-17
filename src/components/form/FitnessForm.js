@@ -10,6 +10,9 @@ import React from "react";
 
 export const FormContext = createContext("");
 
+/**
+ * Component to display the form sorted by categories
+ */
 export function FitnessForm(){
     const [categories, setCategories] = useState([]);
     const [questions, setQuestions] = useState([]);
