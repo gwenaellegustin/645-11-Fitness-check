@@ -10,29 +10,30 @@ import {
     ModalHeader
 } from "reactstrap";
 import React, {useContext, useEffect, useState} from "react";
-import {addQuestion, db, editQuestion} from "../../config/initFirebase";
+import { addQuestionFirestore, db, editQuestionFirestore} from "../../config/initFirebase";
 import {doc, getDoc} from "firebase/firestore";
 import {AdminContext} from "./Admin";
 
-export function MyModal({handleShowPopup, questionExisting, answersExisting, handleReload}){
+export function MyModal({questionExisting, handleModal}){
     const [questionEdited, setQuestionEdited] = useState(questionExisting)
-    const [answersEdited, setAnswersEdited] = useState(answersExisting);
+    const [answersEdited, setAnswersEdited] = useState([]);
     const [categoryInvalid, setCategoryInvalid] = useState(false)
     const [labelInvalid, setLabelInvalid] = useState(false)
     const [answerInvalid, setAnswerInvalid] = useState(false)
     const [noChange, setNoChange] = useState(false)
-    const { categories  } = useContext(AdminContext);
+    const { categories, editQuestion, addQuestion } = useContext(AdminContext);
 
     useEffect( () => {
-        if (answersExisting){
-            setAnswersEdited(answersExisting.map(answer => ({
-                ...answer
+        if (questionExisting.answers){
+            setAnswersEdited(questionExisting.answers.map(answer => ({
+                ...answer,
+                key: answer.id
             })));
         } else {
             setAnswersEdited([])
         }
 
-    }, [answersExisting.length>0])
+    }, [questionExisting])
 
     // Handle change category in form
     const changeCategory = (e) => {
@@ -85,13 +86,25 @@ export function MyModal({handleShowPopup, questionExisting, answersExisting, han
             setCategoryInvalid(true)
             return false
         }
-        if (!questionEdited.label) {
+        if (!questionEdited.label || questionEdited.label.trim()==='') {
             console.log("No: label invalid")
             setLabelInvalid(true)
             return false
         }
-        if(answersEdited.every(answer => {
-            return(answer.label==='' || answer.point==='')
+
+        answersEdited.forEach((answer, index) => {
+            if(answer.label.trim()==='' && answer.point.trim()===''){
+                answersEdited.splice(index,1)
+            }
+        })
+
+        if (answersEdited.length===0){
+            console.log("No: answers invalid")
+            return false
+        }
+
+        if(!answersEdited.every(answer => {
+            return(answer.label!=='' && answer.point!=='')
         })){
             setAnswerInvalid(true)
             console.log("No: answers invalid")
@@ -103,12 +116,12 @@ export function MyModal({handleShowPopup, questionExisting, answersExisting, han
             if(questionEdited.label === questionExisting.label
                 && questionEdited.categoryId === questionExisting.categoryId
                 && questionEdited.uniqueAnswer === questionExisting.uniqueAnswer
-                && answersEdited.length === answersExisting.length){
+                && answersEdited.length === questionExisting.answers.length){
                 console.log("no difference in label, category, unique answer")
                 let i = 0;
                 do {
-                    if(answersEdited[i].label !== answersExisting[i].label
-                        || answersEdited[i].point !== answersExisting[i].point ){
+                    if(answersEdited[i].label !== questionExisting.answers[i].label
+                        || answersEdited[i].point !== questionExisting.answers[i].point ){
                         //Difference in label or point of a answer
                         i = answersEdited.length //stop while
                         console.log("found a diff in " + i)
@@ -140,10 +153,25 @@ export function MyModal({handleShowPopup, questionExisting, answersExisting, han
             let categoryDoc = await getDoc(doc(db, "categories", questionEdited.categoryId)); //TODO get directly the ref in changeCategory()
             questionEdited.category = categoryDoc.ref;
             if (questionExisting.id) {
-                editQuestion(questionEdited, answersEdited).then(handleReload)
-
+                editQuestionFirestore(questionEdited, answersEdited).then(questionRef => {
+                    if(questionRef != null){
+                        console.log("EDIT QUESTION SUCCESSFUL, id : " + questionRef.id);
+                        handleModal()
+                        questionEdited.id = questionRef.id;
+                        questionEdited.answers = answersEdited;
+                        editQuestion(questionEdited);
+                    }
+                });
             } else {
-                addQuestion(questionEdited, answersEdited).then(handleReload)
+                addQuestionFirestore(questionEdited, answersEdited).then(questionRef => {
+                    if(questionRef != null){
+                        console.log("ADD QUESTION SUCCESSFUL, id : " + questionRef.id);
+                        handleModal()
+                        questionEdited.id = questionRef.id;
+                        questionEdited.answers = answersEdited;
+                        addQuestion(questionEdited);
+                    }
+                });
             }
         }
     }
@@ -204,7 +232,7 @@ export function MyModal({handleShowPopup, questionExisting, answersExisting, han
                 <p className="text-danger text-end">{noChange ? "Pas de modification" : null}</p>
             </ModalBody>
             <ModalFooter>
-                <Button color="danger" onClick={handleShowPopup}>Annuler</Button>
+                <Button color="danger" onClick={handleModal}>Annuler</Button>
                 <Button color="primary" type="submit">Sauvegarder</Button>
             </ModalFooter>
         </Form>

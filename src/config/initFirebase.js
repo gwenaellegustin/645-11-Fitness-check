@@ -114,9 +114,7 @@ export async function getQuestions(){
 
 export async function getQuestionsWithIds(questionsId){
     console.log("Firestore called getQuestionsWithIds");
-
     const questions = [];
-
     for (const questionId of questionsId) {
         let questionDoc = await getDoc(doc(db, "testquestions", questionId));
         let question = {
@@ -125,6 +123,8 @@ export async function getQuestionsWithIds(questionsId){
             questionRef: questionDoc.ref,
             categoryId: questionDoc.data().category.id
         }
+        let answers = await getAnswersByQuestion(questionDoc.ref);
+        question.answers = answers;
         questions.push(question);
     }
     return questions;
@@ -144,7 +144,7 @@ export async function addCompletedFormToFirestore(userRef, completedForm){
     return await addDoc(collection(userRef, "completedForms"), completedForm);
 }
 
-export async function deleteQuestion(question){
+export async function deleteQuestionFirestore(question){
     console.log("Firestore called deleteQuestion");
 
     const docRef = doc(db, 'testquestions', question.id);
@@ -152,10 +152,11 @@ export async function deleteQuestion(question){
     await updateDoc(form, {
         questions: arrayRemove(docRef)
     });
+    return docRef;
 }
 
-export async function addQuestion(newQuestion, answers){
-    console.log("Firestore called addQuestion");
+export async function addQuestionFirestore(newQuestion, answers){
+    console.log("Firestore called addQuestionFirestore");
 
     // Get only information required for Firestore
     let questionToCreate = {
@@ -181,9 +182,11 @@ export async function addQuestion(newQuestion, answers){
         }
         await addDoc(collection(questionAdded, "answers"), newAnswer);
     }
+
+    return questionAdded;
 }
 
-export async function editQuestion(editedQuestion, answers){
+export async function editQuestionFirestore(editedQuestion, answers){
     console.log("Firestore called editQuestion");
     const editedQuestionRef = doc(db, 'testquestions', editedQuestion.id);
 
@@ -216,7 +219,7 @@ export async function editQuestion(editedQuestion, answers){
         questions: arrayRemove(editedQuestionRef)
     });
 
-    return true// createdQuestion;
+    return createdQuestion;
 }
 
 export async function createUserFirestore(uid){

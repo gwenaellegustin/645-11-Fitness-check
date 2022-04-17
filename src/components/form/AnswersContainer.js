@@ -1,6 +1,5 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext,} from "react";
 import {FormContext} from "./FitnessForm";
-import {getAnswersByQuestion} from "../../config/initFirebase";
 import {Input, Label} from "reactstrap";
 
 /**
@@ -15,23 +14,12 @@ import {Input, Label} from "reactstrap";
  */
 export function AnswersContainer({question, uniqueAnswer, isDisplayMode, completedAnswersId}){
     const [onChange] = useContext(FormContext);
-    const [answers, setAnswers] = useState([]);
 
     const answerType = uniqueAnswer ? 'radio' : 'checkbox';
 
-    useEffect(() => {
-        getAnswersByQuestion(question.questionRef).then(r => {
-            setAnswers(r);
-        })
-    }, [question.questionRef])
-    
-    useEffect(() => {
-        question.answers = answers;
-    }, [answers, question])
-
     return (
         <div>
-            {answers
+            {question.answers
                 .sort((a,b) => a.point - b.point) //Sort the answers by point, ascending
                 .map(answer => (
                     <div key={answer.id}>

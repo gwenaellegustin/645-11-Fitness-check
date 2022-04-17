@@ -8,16 +8,15 @@ import {NewQuestion} from "./NewQuestion";
 import {EditQuestionContainer} from "./EditQuestionContainer";
 
 export const AdminContext = createContext({
-    categories: [],
-    reload: 0,
-    forceReload: ()=>{}
+
 })
 
 export function Admin(){
     const [categories, setCategories] = useState([]);
     const [questions, setQuestions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [reload, forceReload] = useState(false);
+
+    //const [reload, forceReload] = useState(false);
 
     // TODO: warning message
     // tuto (video + git) :
@@ -25,6 +24,24 @@ export function Admin(){
         // https://github.com/daryanka/react-modal/tree/master/src
     // other example:
         // https://www.smashingmagazine.com/2020/11/react-useref-hook/
+
+    const addQuestion = (newQuestion) => {
+        setQuestions([...questions, newQuestion] )
+    }
+
+    const editQuestion = (editedQuestion) => {
+        const index = questions.findIndex(question => question.id === editedQuestion.id);
+        let temp = [...questions];
+        temp[index] = editedQuestion;
+        setQuestions(temp);
+    }
+
+    const deleteQuestion = (deletedQuestion) => {
+        const index = questions.findIndex(question => question.id === deletedQuestion.id);
+        let temp = [...questions];
+        temp.splice(index,1)
+        setQuestions(temp)
+    }
 
     //Categories
     useEffect(() => {
@@ -45,7 +62,7 @@ export function Admin(){
                 setQuestions(r);
             })
         })
-    }, [reload])
+    }, [])
 
    useEffect(() => {
         if(questions.length > 0 && categories.length > 0){
@@ -58,7 +75,7 @@ export function Admin(){
     }
 
     return (
-        <AdminContext.Provider value={{categories: categories, reload: reload, forceReload: forceReload}}>
+        <AdminContext.Provider value={{categories: categories, editQuestion: editQuestion, addQuestion: addQuestion, deleteQuestion: deleteQuestion}}>
             <h1>Gestion des questions</h1>
             <NewQuestion/>
                 {categories.map(category => (
