@@ -1,20 +1,10 @@
-import {
-    Button,
-    Form,
-    FormFeedback,
-    FormGroup,
-    Input,
-    Label,
-    ModalBody,
-    ModalFooter,
-    ModalHeader
-} from "reactstrap";
+import {Button, Form, FormFeedback, FormGroup, Input, Label, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
 import React, {useContext, useEffect, useState} from "react";
-import { addQuestionFirestore, editQuestionFirestore} from "../../config/initFirebase";
+import {addQuestionFirestore, editQuestionFirestore} from "../../config/initFirebase";
 import {AdminContext} from "./Admin";
 
 export function MyModal({questionExisting, handleModal}){
-    const [questionEdited, setQuestionEdited] = useState(questionExisting)
+    const [questionEdited, setQuestionEdited] = useState({})
     const [answersEdited, setAnswersEdited] = useState([]);
     const [categoryInvalid, setCategoryInvalid] = useState(false)
     const [labelInvalid, setLabelInvalid] = useState(false)
@@ -23,15 +13,23 @@ export function MyModal({questionExisting, handleModal}){
     const { categories, editQuestion, addQuestion } = useContext(AdminContext);
 
     useEffect( () => {
-        if (questionExisting.answers){
-            setAnswersEdited(questionExisting.answers.map(answer => ({
-                ...answer,
-                key: answer.id
-            })));
-        } else {
-            setAnswersEdited([])
+        //Reminder : https://javascript.info/object-copy
+        let copiedQuestion = {};
+        Object.assign(copiedQuestion, questionExisting);
+
+        let copiedAnswers = [];
+        if(questionExisting.answers){
+            questionExisting.answers.forEach(answer => {
+                let copiedAnswer = {};
+                Object.assign(copiedAnswer, answer);
+                copiedAnswers.push(copiedAnswer);
+            })
         }
 
+        copiedQuestion.answers = copiedAnswers;
+
+        setQuestionEdited(copiedQuestion);
+        setAnswersEdited(copiedAnswers);
     }, [questionExisting])
 
     // Handle change category in form
@@ -68,7 +66,7 @@ export function MyModal({questionExisting, handleModal}){
     }
     const changeAnswerPoint = (index, value) => {
         let temp = [...answersEdited];
-        temp[index].point = value;
+        temp[index].point = parseInt(value);
         setAnswersEdited(temp)
     }
     const changeUniqueAnswer = (e) => {
@@ -78,7 +76,7 @@ export function MyModal({questionExisting, handleModal}){
     // Handle adding a new answer
     const handleAddAnswer = () =>{
         let emptyAnswer = {
-            key: answersEdited.length,
+            id: answersEdited.length,
             label: "",
             point: ""
         }
@@ -100,9 +98,9 @@ export function MyModal({questionExisting, handleModal}){
         }
 
         for (let i = 0; i < answersEdited.length; i++) {
-            if (answersEdited[i].label.trim() === '' && answersEdited[i].point.trim() === '') {
+            if (answersEdited[i].label.trim() === '') {
                 answersEdited.splice(i, 1)
-                i--; // array length diminue form one, we have to check the new answersEdited[i]
+                i--; // array length reduced by one, we have to check the new answersEdited[i]
             }
         }
 
@@ -113,7 +111,7 @@ export function MyModal({questionExisting, handleModal}){
         }
 
         if (!answersEdited.every(answer => {
-            return (answer.label !== '' && answer.point !== '')
+            return (answer.label !== '' && answer.point !== ''); //Return false if one answer has empty label or empty point
         })) {
             setAnswerInvalid(true)
             console.log("NO: answers invalid")
@@ -122,26 +120,25 @@ export function MyModal({questionExisting, handleModal}){
 
         // Check if the question is not the same that before (if edit mode)
         if (questionExisting.id) {
-            setNoChange(true)
-            if (questionEdited.label === questionExisting.label
-                && questionEdited.category.id === questionExisting.categoryId
-                && questionEdited.uniqueAnswer === questionExisting.uniqueAnswer
-                && answersEdited.length === questionExisting.answers.length) {
-                let i = 0;
-                do {
-                    if (answersEdited[i].label !== questionExisting.answers[i].label
-                        || answersEdited[i].point !== questionExisting.answers[i].point) {
-                        //Difference in label or point of a answer
-                        i = answersEdited.length //stop while
-                        setNoChange(false)
-                        return true
-                    } else {
-                        i++
-                    }
-                } while (i < answersEdited.length);
-                // No difference in label, categoryId, unique answer or answers
-                console.log("NO : no difference")
-                return false
+            setNoChange(true);
+
+            if (answersEdited.length === questionExisting.answers.length
+                && questionEdited.label === questionExisting.label
+                && questionEdited.category.id === questionExisting.category.id
+                && questionEdited.uniqueAnswer === questionExisting.uniqueAnswer) {
+                //Return false if at least one answer doesn't correspond
+                let sameAnswers = answersEdited.every(answerEdited => {
+                    //Stop if one answer doesn't correspond to any (return false)
+                    return !questionExisting.answers.every(answerExisting => {
+                            //Stop if label and point match (return false) -> same answers
+                            return !(answerEdited.label === answerExisting.label && answerEdited.point === answerExisting.point);
+                        });
+                })
+
+                setNoChange(sameAnswers);
+
+                //If same sameAnswers, return checkFormValid false
+                return !sameAnswers;
             } else {
                 //Difference in label, category, uniqueAnswer or number of answers
                 setNoChange(false)
@@ -157,10 +154,6 @@ export function MyModal({questionExisting, handleModal}){
         console.log("FORM VALID ?")
         if (checkFormValid()){
             console.log("YES !")
-
-            answersEdited.forEach(answer => {
-                answer.point = parseInt(answer.point);
-            })
 
             questionEdited.answers = answersEdited;
 
@@ -195,7 +188,7 @@ export function MyModal({questionExisting, handleModal}){
                 <FormGroup>
                     <Label tag="h5" for="category">Categorie</Label>
                     <Input invalid={categoryInvalid} type="select"
-                           onChange={changeCategory} value={questionEdited.category && questionEdited.category.id}>
+                           onChange={changeCategory} value={(questionEdited && questionEdited.category) ? questionEdited.category.id : ""}>
                         <option value=""/>
                         {categories.map(o => (
                             <option key={o.id} value={o.id}>
@@ -207,7 +200,7 @@ export function MyModal({questionExisting, handleModal}){
                 </FormGroup>
                 <FormGroup>
                     <Label tag="h5" for="exampleText">Question</Label>
-                    <Input invalid={labelInvalid} type="textarea" value={questionEdited.label} onChange={changeLabel}/>
+                    <Input invalid={labelInvalid} type="textarea" value={questionEdited ? questionEdited.label : ""} onChange={changeLabel}/>
                     <FormFeedback >Le question est obligatoire</FormFeedback>
                 </FormGroup>
                <div className="row">
@@ -220,18 +213,18 @@ export function MyModal({questionExisting, handleModal}){
                </div>
                <FormGroup check>
                    <Label check>
-                       <Input type="checkbox" value={questionEdited.uniqueAnswer} onChange={e => changeUniqueAnswer(e.target.checked)} />{' '}
+                       <Input type="checkbox" value={questionEdited ? questionEdited.uniqueAnswer : false} onChange={e => changeUniqueAnswer(e.target.checked)} />{' '}
                         Réponse unique (radio button)
                    </Label>
                </FormGroup>
                 {answersEdited
                     .map((answer,index) => (
-                        <div className="row" key={answer.key}>
+                        <div className="row" key={answer.id}>
                             <FormGroup className="col-10">
-                                <Input type="text" value={answer.label} onInput={e => changeAnswerLabel(index, e.target.value)}/>
+                                <Input type="text" value={answer ? answer.label : ""} onInput={e => changeAnswerLabel(index, e.target.value)}/>
                             </FormGroup>
                             <FormGroup className="col-2">
-                                <Input  type="number" value={answer.point} onInput={e => changeAnswerPoint(index, e.target.value)}/>
+                                <Input  type="number" value={answer.point ? answer.point : ""} onInput={e => changeAnswerPoint(index, e.target.value)}/>
                             </FormGroup>
                         </div>
                     ))}
