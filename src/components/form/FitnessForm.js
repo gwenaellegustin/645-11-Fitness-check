@@ -74,7 +74,6 @@ export function FitnessForm(){
         completedForm.pointsByCategory = [];
         categories.forEach(category => {
             completedForm.pointsByCategory.push({
-
                 category: category.categoryRef,
                 categoryLabel: category.label,
                 finalPoints: 0.0,
