@@ -73,8 +73,9 @@ export function Admin(){
             <h1>Gestion des questions</h1>
             <NewQuestion/>
                 {categories.map(category => (
-                    <div key={category.id} >
+                    <div  className="text-start" key={category.id} >
                             <legend>{category.label}</legend >
+                            <hr/>
                             {questions.filter(question => question.category.id === category.id).map(question => (
                                 <EditQuestionContainer key={question.id} question={question}/>
                             ))}

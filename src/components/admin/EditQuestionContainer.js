@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import {Button, Card, CardBody,CardTitle,Modal,} from "reactstrap";
+import {Button, FormGroup, Label, Modal,} from "reactstrap";
 import {deleteQuestionFirestore} from "../../config/initFirebase";
 import {AnswersContainer} from "../form/AnswersContainer";
 import {MyModal} from "./MyModal";
@@ -26,21 +26,19 @@ export function EditQuestionContainer({question}) {
     }
 
     return (
-        <div>
-            <Card key={editedQuestion.id} >
-                <CardBody>
-                        <CardTitle tag="h5">{editedQuestion.label}</CardTitle>
-                        {<AnswersContainer question={editedQuestion}
-                                           uniqueAnswer={editedQuestion.uniqueAnswer}
-                                           isDisplayMode={false}/>}
-                        <Button color="danger" style={{margin:5}} onClick={() => handleDelete(editedQuestion)}>Supprimer</Button>
-                        <Button type="submit" color="primary" style={{margin:5}} onClick={handleModal}>Modifier</Button>
-                </CardBody>
-            </Card>
+        <>
+            <FormGroup>
+                <Label tag="h6">{editedQuestion.label}</Label>
+                {<AnswersContainer question={editedQuestion}
+                                   uniqueAnswer={editedQuestion.uniqueAnswer}
+                                   isDisplayMode={false}/>}
+                <Button color="danger" style={{margin:5}} onClick={() => handleDelete(editedQuestion)}>Supprimer</Button>
+                <Button type="submit" color="primary" style={{margin:5}} onClick={handleModal}>Modifier</Button>
+            </FormGroup>
             <Modal isOpen={modal}
                    toggle={handleModal}>
                     <MyModal questionExisting={editedQuestion} answersExisting={editedQuestion.answers} handleModal={handleModal} />
             </Modal>
-        </div>
+        </>
     );
 }
