@@ -1,11 +1,14 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {getCategoriesWithIds, getQuestionsWithIds} from "../../config/initFirebase";
 import {CategoryContainer} from "../form/CategoryContainer";
+import {HistoryContext} from "./History";
 
 export function FormCompletedContainer({completedForm}){
     const [answeredQuestions, setAnsweredQuestions] = useState([]);
     const [answeredCategories, setAnsweredCategories] = useState([]);
     const [answeredAnswersIds, setAnsweredAnswersIds] = useState([]);
+
+    const {setFormReady} = useContext(HistoryContext);
 
     //Answered questions
     useEffect(() => {
@@ -17,9 +20,10 @@ export function FormCompletedContainer({completedForm}){
 
             getQuestionsWithIds(questionsId).then(r => {
                 setAnsweredQuestions(r);
+                setFormReady(true);
             })
         }
-    }, [completedForm.answeredQuestions])
+    }, [completedForm.answeredQuestions, setFormReady])
 
     //Answered categories
     // TODO: move in history or context ? (getCategoriesWithIds is call 2 times)
