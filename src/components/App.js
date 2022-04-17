@@ -1,6 +1,6 @@
 import {auth, createUserFirestore, firebaseApp, getUserByUID} from "../config/initFirebase";
 import {Route, Routes} from "react-router-dom";
-import {Nav,Navbar,NavbarBrand,NavLink} from 'reactstrap';
+import {Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink} from 'reactstrap';
 import React, {useEffect, useState} from "react";
 import {FitnessForm} from "./form/FitnessForm";
 import Login from "./Login";
@@ -14,6 +14,7 @@ export const UserContext = React.createContext();
 
 function App() {
     const [user, setUser] = useState();
+    const [collapse, isCollapse] = useState(true);
 
     // Local signed-in state.
     const [isSignedIn, setIsSignedIn] = useState(null);
@@ -55,34 +56,47 @@ function App() {
         await firebaseApp.auth().signOut();
     };
 
+    const toggleNavbar = () => {
+        isCollapse(!collapse);
+    }
+
 
     // Signed in - Render app
     return (
         <UserContext.Provider value={user}>
-        <div className="col-md-12" >
-            <Navbar color="light" light  expand="md">
+        <div>
+            <Navbar color="light" light  expand="md" container="fluid">
                 <NavbarBrand href="/">
                    Fitness check
                 </NavbarBrand>
-                <Nav
-                    className="me-auto"
-                    navbar
-                >
-                    <NavLink href="/Form">
-                        Nouveau formulaire
-                    </NavLink>
-
-                    <NavLink href="/History">
-                        Historique
-                    </NavLink>
-                    {user && user.admin ?
-                        <NavLink href="/Admin">
-                            Gestion
-                        </NavLink> : null}
-                </Nav>
-                <NavDropdown title={auth.currentUser.displayName}>
-                    <NavDropdown.Item onClick={handleSignOutClick}>Se déconnecter</NavDropdown.Item>
-                </NavDropdown>
+                <NavbarToggler onClick={toggleNavbar} />
+                <Collapse isOpen={!collapse} navbar>
+                    <Nav
+                        className="me-auto"
+                        navbar
+                    >
+                        <NavItem>
+                            <NavLink href="/Form">
+                                Nouveau formulaire
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink href="/History">
+                                Historique
+                            </NavLink>
+                        </NavItem>
+                        {user && user.admin ?
+                            <NavItem>
+                                <NavLink href="/Admin">
+                                    Gestion
+                                </NavLink>
+                            </NavItem>
+                        : null}
+                    </Nav>
+                    <NavDropdown title={auth.currentUser.displayName}>
+                        <NavDropdown.Item onClick={handleSignOutClick}>Se déconnecter</NavDropdown.Item>
+                    </NavDropdown>
+                </Collapse>
             </Navbar>
 
             <div className="px-3 m-3 text-center">
