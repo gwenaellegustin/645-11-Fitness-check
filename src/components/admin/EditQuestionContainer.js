@@ -1,4 +1,3 @@
-
 import React, {useContext, useState} from "react";
 import {Button, Card, CardBody,CardTitle,Modal,} from "reactstrap";
 import {deleteQuestion, getAnswersByQuestion} from "../../config/initFirebase";
@@ -26,11 +25,13 @@ export function EditQuestionContainer({question}) {
         setModal(!modal)
     };
 
+    // Delete question in firestore and reload the page (to be sure of the removal)
     const handleDelete = async (editedQuestion) => {
         await deleteQuestion(editedQuestion)
         forceReload(reload+1);
     }
 
+    // After edit, close the modal and reload the page (get info from Firestore)
     const handleReload = () => {
         forceReload(reload+1);
         setModal(!modal)

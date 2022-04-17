@@ -34,7 +34,6 @@ export function MyModal({handleShowPopup, questionExisting, answersExisting, han
 
     }, [answersExisting.length>0])
 
-
     // Handle change category in form
     const changeCategory = (e) => {
         setQuestionEdited({...questionEdited, categoryId : e.target.value })
@@ -79,22 +78,23 @@ export function MyModal({handleShowPopup, questionExisting, answersExisting, han
     }
 
     const checkFormValid = () => {
+
         // Validation of field
-        if (!questionEdited.categoryId){ //TODO: check if category no exist
-            console.log("categorie invalid")
+        if (!questionEdited.categoryId){
+            console.log("No: categorie invalid")
             setCategoryInvalid(true)
             return false
         }
         if (!questionEdited.label) {
-            console.log("label invalid")
+            console.log("No: label invalid")
             setLabelInvalid(true)
             return false
         }
         if(answersEdited.every(answer => {
-            return(answer.label==='' || answer.point==='') // TODO: answer.point can be null ?
+            return(answer.label==='' || answer.point==='')
         })){
             setAnswerInvalid(true)
-            console.log("answers invalid")
+            console.log("No: answers invalid")
             return false
         }
 
@@ -154,40 +154,38 @@ export function MyModal({handleShowPopup, questionExisting, answersExisting, han
                 {questionExisting.id ? "Modifier une question" : "Ajouter une question"}
             </ModalHeader>
             <ModalBody>
-            <FormGroup>
-                <Label tag="h5" for="category">Categorie</Label>
-                <Input invalid={categoryInvalid} type="select"
-                       onChange={changeCategory} value={questionEdited.categoryId}>
-                    <option value=""/>
-                    {categories
-                        .map(o => (
+                <FormGroup>
+                    <Label tag="h5" for="category">Categorie</Label>
+                    <Input invalid={categoryInvalid} type="select"
+                           onChange={changeCategory} value={questionEdited.categoryId}>
+                        <option value=""/>
+                        {categories.map(o => (
                             <option key={o.id} value={o.id}>
-                                {o.label} {o.highIsGood===true ? "(Haut est bien)" : "(Bas est bien)"}
+                                    {o.label} {o.highIsGood===true ? "(Haut est bien)" : "(Bas est bien)"}
                             </option>
                         ))}
-                </Input>
-                <FormFeedback>La catégorie est obligatoire</FormFeedback>
-            </FormGroup>
-            <FormGroup>
-                <Label tag="h5" for="exampleText">Question</Label>
+                    </Input>
+                    <FormFeedback>La catégorie est obligatoire</FormFeedback>
+                </FormGroup>
+                <FormGroup>
+                    <Label tag="h5" for="exampleText">Question</Label>
                     <Input invalid={labelInvalid} type="textarea" value={questionEdited.label} onChange={changeLabel}/>
                     <FormFeedback >Le question est obligatoire</FormFeedback>
                 </FormGroup>
-
-            <div className="row">
-                <div className="col-10">
-                    <Label  tag="h5" for="answer" className="mr-sm-1">Réponse</Label>
-                </div>
-                <div className="col-2">
-                    <Label tag="h5" for="point" className="mr-sm-1">Valeur</Label>
-                </div>
-            </div>
-                <FormGroup check>
-                    <Label check>
-                        <Input type="checkbox" value={questionEdited.uniqueAnswer} onChange={e => changeUniqueAnswer(e.target.checked)} />{' '}
+               <div className="row">
+                    <div className="col-10">
+                        <Label  tag="h5" for="answer" className="mr-sm-1">Réponse</Label>
+                    </div>
+                    <div className="col-2">
+                        <Label tag="h5" for="point" className="mr-sm-1">Valeur</Label>
+                    </div>
+               </div>
+               <FormGroup check>
+                   <Label check>
+                       <Input type="checkbox" value={questionEdited.uniqueAnswer} onChange={e => changeUniqueAnswer(e.target.checked)} />{' '}
                         Réponse unique (radio button)
-                    </Label>
-                </FormGroup>
+                   </Label>
+               </FormGroup>
                 {answersEdited
                     .map((answer,index) => (
                         <div className="row" key={answer.key}>
@@ -199,10 +197,9 @@ export function MyModal({handleShowPopup, questionExisting, answersExisting, han
                             </FormGroup>
                         </div>
                     ))}
-            {answersEdited.length===0 ? handleAddAnswer() : null}
-
+                {answersEdited.length===0 ? handleAddAnswer() : null}
                 <p className="text-danger">{answerInvalid ? "Toutes les réponses ne sont pas valides" : null}</p>
-            <Button color="success" style={{width:'auto', margin:'auto'}}
+                <Button color="success" style={{width:'auto', margin:'auto'}}
                     onClick={handleAddAnswer}>Ajouter une réponse</Button>
                 <p className="text-danger text-end">{noChange ? "Pas de modification" : null}</p>
             </ModalBody>
@@ -212,5 +209,4 @@ export function MyModal({handleShowPopup, questionExisting, answersExisting, han
             </ModalFooter>
         </Form>
     )
-
 }
