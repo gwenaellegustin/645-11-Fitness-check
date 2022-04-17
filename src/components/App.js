@@ -9,6 +9,7 @@ import {History} from "./history/History";
 import {NavDropdown} from "react-bootstrap";
 import {Admin} from "./Admin";
 import {Loading} from "./Loading";
+import {Footer} from "./Footer";
 
 export const UserContext = React.createContext();
 
@@ -109,6 +110,7 @@ function App() {
                     <Route path="*" element={<Home />} />
                 </Routes>
             </div>
+            <Footer/>
         </div>
         </UserContext.Provider>
     );
