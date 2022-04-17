@@ -86,7 +86,7 @@ function App() {
                 </NavDropdown>
             </Navbar>
 
-            <div className="px-3 m-3 text-center">
+            <div className="px-3 m-auto w-75 my-2 text-center">
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/form" element={<FitnessForm />} />
