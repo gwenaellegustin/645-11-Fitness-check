@@ -79,7 +79,7 @@ export function MyModal({questionExisting, handleModal}){
         setAnswersEdited(temp)
     }
     const changeUniqueAnswer = (e) => {
-        setQuestionEdited({...questionEdited, uniqueAnswer: e})
+        setQuestionEdited({...questionEdited, uniqueAnswer: e.target.checked})
     }
 
     // Handle adding a new answer
@@ -228,7 +228,7 @@ export function MyModal({questionExisting, handleModal}){
                </div>
                <FormGroup check>
                    <Label check>
-                       <Input type="checkbox" checked={questionEdited ? questionEdited.uniqueAnswer : false} onChange={e => changeUniqueAnswer(e.target.checked)} />{' '}
+                       <Input type="checkbox" checked={(questionEdited && questionEdited.uniqueAnswer) ? questionEdited.uniqueAnswer : false} onChange={changeUniqueAnswer} />{' '}
                         Réponse unique (radio button)
                    </Label>
                </FormGroup>
@@ -250,8 +250,8 @@ export function MyModal({questionExisting, handleModal}){
                 <p className="text-danger text-end">{noChange ? "Pas de modification" : null}</p>
             </ModalBody>
             <ModalFooter>
-                <Button color="danger" onClick={handleModal}>Annuler</Button>
-                <Button color="primary" type="submit">Sauvegarder</Button>
+                <Button type="button" color="danger" onClick={handleModal}>Annuler</Button>
+                <Button type="submit" color="primary">Sauvegarder</Button>
             </ModalFooter>
         </Form>
     )
