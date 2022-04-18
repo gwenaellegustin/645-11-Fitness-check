@@ -75,7 +75,7 @@ function App() {
     return (
         <UserContext.Provider value={user}>
         <div>
-            <Navbar color="light" light  expand="md">
+            <Navbar color="light" light  expand="md" animation="false">
                 <NavbarBrand href="/">
                    Fitness check
                 </NavbarBrand>
@@ -108,7 +108,7 @@ function App() {
                             <DropdownToggle caret nav >
                                 {auth.currentUser.displayName}
                             </DropdownToggle>
-                            <DropdownMenu right>
+                            <DropdownMenu>
                                 <DropdownItem onClick={handleSignOutClick}>
                                     Se déconnecter
                                 </DropdownItem>
