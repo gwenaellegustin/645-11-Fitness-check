@@ -156,7 +156,7 @@ export function MyModal({questionExisting, handleModal}){
 
         // Check if all answer has a label and point valid
         if (!answersEdited.every(answer => {
-            return (answer.label.trim() !== '' && answer.point.trim() !== ''); //Return false if one answer has empty label or empty point
+            return (answer.label.trim() !== '' && answer.point !== ''); //Return false if one answer has empty label or empty point
         })) {
             setAnswerInvalid(true)
             console.log("NO: answers invalid - point or label empty")
