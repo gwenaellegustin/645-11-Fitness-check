@@ -68,18 +68,18 @@ function App() {
         <UserContext.Provider value={user}>
         <div>
             <Navbar color="light" light  expand="md" container="fluid">
-                <NavbarBrand href="/">
+                <NavbarBrand href="/" className="px-3 ">
                    Fitness check
                 </NavbarBrand>
                 <NavbarToggler onClick={toggleNavbar} />
                 <Collapse isOpen={!collapse} navbar>
                     <Nav
-                        className="me-auto"
+                        className="me-auto px-3"
                         navbar
                     >
                         <NavItem>
                             <NavLink href="/Form">
-                                Nouveau formulaire
+                                Questionnaire
                             </NavLink>
                         </NavItem>
                         <NavItem>
