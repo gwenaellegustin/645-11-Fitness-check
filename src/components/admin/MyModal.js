@@ -3,6 +3,14 @@ import React, {useContext, useEffect, useState} from "react";
 import {addQuestionFirestore, editQuestionFirestore} from "../../config/initFirebase";
 import {AdminContext} from "./Admin";
 
+/**
+ * Popup use to add or edit a question
+ *
+ * @param questionExisting to prefill input (category,label, answers)
+ * @param handleModal to close himself
+ *
+ * @author Gwenaëlle & Antony
+ */
 export function MyModal({questionExisting, handleModal}){
     const [questionEdited, setQuestionEdited] = useState({})
     const [answersEdited, setAnswersEdited] = useState([]);
@@ -12,6 +20,7 @@ export function MyModal({questionExisting, handleModal}){
     const [noChange, setNoChange] = useState(false)
     const { categories, editQuestion, addQuestion } = useContext(AdminContext);
 
+    // Fill questionEdited and answerEdited with existing data
     useEffect( () => {
         //Reminder : https://javascript.info/object-copy
         let copiedQuestion = {};
@@ -83,20 +92,54 @@ export function MyModal({questionExisting, handleModal}){
         setAnswersEdited([...answersEdited, emptyAnswer])
     }
 
+    // Handle submit
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        console.log("FORM VALID ?")
+        if (checkFormValid()){
+            console.log("YES !")
+
+            questionEdited.answers = answersEdited;
+
+            if (questionExisting.id) {
+                editQuestionFirestore(questionEdited, answersEdited).then(updatedQuestion => {
+                    if(updatedQuestion != null){
+                        console.log("EDIT QUESTION SUCCESSFUL, id : " + updatedQuestion.id);
+                        updatedQuestion.category = questionEdited.category;
+                        editQuestion(updatedQuestion, questionExisting.id);
+                        handleModal();
+                    }
+                });
+            } else {
+                addQuestionFirestore(questionEdited, answersEdited).then(addedQuestion => {
+                    if(addedQuestion != null){
+                        console.log("ADD QUESTION SUCCESSFUL, id : " + addedQuestion.id);
+                        addedQuestion.category = questionEdited.category;
+                        addQuestion(addedQuestion);
+                        handleModal();
+                    }
+                });
+            }
+        }
+    }
+
     const checkFormValid = () => {
 
-        // Validation of field
+        // Validation of field category
         if (!questionEdited.category) {
             console.log("NO: categorie invalid")
             setCategoryInvalid(true)
             return false
         }
+
+        // Validation of field label
         if (!questionEdited.label || questionEdited.label.trim() === '') {
             console.log("NO: label invalid")
             setLabelInvalid(true)
             return false
         }
 
+        // Delete all empty answer
         for (let i = 0; i < answersEdited.length; i++) {
             if (answersEdited[i].label.trim() === '' && answersEdited[i].point.trim() === '') {
                 answersEdited.splice(i, 1)
@@ -104,14 +147,16 @@ export function MyModal({questionExisting, handleModal}){
             }
         }
 
+        // Check if there is at least one answer
         if (answersEdited.length === 0) {
             console.log("NO: answers invalid - empty answers")
             setAnswerInvalid(true);
             return false
         }
 
+        // Check if all answer has a label and point valid
         if (!answersEdited.every(answer => {
-            return (answer.label !== '' && answer.point !== ''); //Return false if one answer has empty label or empty point
+            return (answer.label.trim() !== '' && answer.point.trim() !== ''); //Return false if one answer has empty label or empty point
         })) {
             setAnswerInvalid(true)
             console.log("NO: answers invalid - point or label empty")
@@ -148,36 +193,6 @@ export function MyModal({questionExisting, handleModal}){
         return true
     }
 
-    //Save
-    const handleFormSubmit = async (e) => {
-        e.preventDefault();
-        console.log("FORM VALID ?")
-        if (checkFormValid()){
-            console.log("YES !")
-
-            questionEdited.answers = answersEdited;
-
-            if (questionExisting.id) {
-                editQuestionFirestore(questionEdited, answersEdited).then(updatedQuestion => {
-                    if(updatedQuestion != null){
-                        console.log("EDIT QUESTION SUCCESSFUL, id : " + updatedQuestion.id);
-                        updatedQuestion.category = questionEdited.category;
-                        editQuestion(updatedQuestion, questionExisting.id);
-                        handleModal();
-                    }
-                });
-            } else {
-                addQuestionFirestore(questionEdited, answersEdited).then(addedQuestion => {
-                    if(addedQuestion != null){
-                        console.log("ADD QUESTION SUCCESSFUL, id : " + addedQuestion.id);
-                        addedQuestion.category = questionEdited.category;
-                        addQuestion(addedQuestion);
-                        handleModal();
-                    }
-                });
-            }
-        }
-    }
 
     return(
         <Form onSubmit={handleFormSubmit}>
@@ -229,7 +244,7 @@ export function MyModal({questionExisting, handleModal}){
                         </div>
                     ))}
                 {answersEdited.length===0 ? handleAddAnswer() : null}
-                <p className="text-danger">{answerInvalid ? "Toutes les réponses ne sont pas valides" : null}</p>
+                <p className="text-danger" style={{fontSize:".875em"}}>{answerInvalid ? "Toutes les réponses ne sont pas valides" : null}</p>
                 <Button color="success" style={{width:'auto', margin:'auto'}}
                     onClick={handleAddAnswer}>Ajouter une réponse</Button>
                 <p className="text-danger text-end">{noChange ? "Pas de modification" : null}</p>

@@ -2,7 +2,12 @@ import React, {useState} from "react";
 import {Button, Modal} from "reactstrap";
 import {MyModal} from "./MyModal";
 
-export function NewQuestion() {
+/**
+ * Button add question with modal call
+ *
+ * @author Gwenaëlle
+ */
+export function NewQuestionContainer() {
     const [modal, setModal] = useState(false);
 
     const handleModal = () => {

@@ -1,14 +1,17 @@
 import React, {createContext, useEffect, useState} from "react"
-import {
-    getCategories,
-    getForm,
-    getQuestionsWithIds
-} from "../../config/initFirebase";
-import {NewQuestion} from "./NewQuestion";
+import {getCategories, getForm, getQuestionsWithIds} from "../../config/initFirebase";
+import {NewQuestionContainer} from "./NewQuestionContainer";
 import {EditCategoryContainer} from "./EditCategoryContainer";
+import {Loading} from "../Loading";
 
 export const AdminContext = createContext({})
 
+/**
+ *  Component to display the Admin page:
+ *  Use to manage questions
+ *
+ * @author Gwenaëlle
+ */
 export function Admin(){
     const [categories, setCategories] = useState([]);
     const [questions, setQuestions] = useState(null);
@@ -62,20 +65,20 @@ export function Admin(){
         setQuestions(temp)
     }
 
+    // Loading message if categories or questions not loaded
    useEffect(() => {
         if(questions !== null && categories.length > 0){
             setIsLoading(false);
         }
     }, [questions, categories])
-
     if(isLoading){
-        return <div>Chargement...</div>
+        return <Loading/>
     }
 
     return (
         <AdminContext.Provider value={{categories: categories, editQuestion: editQuestion, addQuestion: addQuestion, deleteQuestion: deleteQuestion}}>
             <h1>Gestion des questions</h1>
-            <NewQuestion/>
+            <NewQuestionContainer/>
             {categories.map(category => (<EditCategoryContainer key={category.id} category={category} questions={questions.filter(question => question.category.id === category.id)}/>))}
         </AdminContext.Provider>
     )

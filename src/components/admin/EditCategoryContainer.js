@@ -1,6 +1,14 @@
 import {EditQuestionContainer} from "./EditQuestionContainer";
 import React from "react";
 
+/**
+ * Component to display all questions of a category
+ *
+ * @param category used to map each question
+ * @param questions of the category to display
+ *
+ * @author Antony
+ */
 export function EditCategoryContainer({category, questions}){
     return (<div  className="text-start">
                 {questions.length > 0 ?

@@ -5,12 +5,19 @@ import {AnswersContainer} from "../form/AnswersContainer";
 import {MyModal} from "./MyModal";
 import {AdminContext} from "./Admin";
 
+/**
+ * Component to display a question and answers with button to edit/delete
+ *
+ * @param question to display (contains answers)
+ *
+ * @author Gwenaëlle
+ */
 export function EditQuestionContainer({question}) {
     const [editedQuestion] = useState(question);
     const [modal, setModal] = useState(false);
     const { deleteQuestion } = useContext(AdminContext);
 
-    // Delete question in firestore and reload the page (to be sure of the removal)
+    // Delete question in Firestore, if successful delete in display
     const handleDelete = (deletedQuestion) => {
          deleteQuestionFirestore(deletedQuestion).then(questionRef => {
             if(questionRef != null){

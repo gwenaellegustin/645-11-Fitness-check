@@ -3,7 +3,7 @@ import {StyledFirebaseAuth} from "react-firebaseui";
 import firebase from "firebase/compat/app";
 
 /**
- * Configure FirebaseUI
+ * Configure FirebaseUI login
  */
 const uiConfig = {
     // Popup signin flow rather than redirect flow.
