@@ -90,7 +90,7 @@ export async function getUserByUID(userUID){
 export async function getForm(){
     console.log("Firestore called getForm");
 
-    let formCollection = await getDocs(query(collection(db, "form")));
+    let formCollection = await getDocs(query(collection(db, "testform")));
     let formArray = formCollection.docs.map(doc => ({
         ...doc.data(),
         id: doc.id,
@@ -137,7 +137,7 @@ export async function getQuestionsWithIds(questionsId){
     console.log("Firestore called getQuestionsWithIds");
     const questions = [];
     for (const questionId of questionsId) {
-        let questionDoc = await getDoc(doc(db, "questions", questionId));
+        let questionDoc = await getDoc(doc(db, "testquestions", questionId));
         let question = {
             ...questionDoc.data(),
             id: questionDoc.id,
@@ -169,7 +169,7 @@ export async function addCompletedFormToFirestore(userRef, completedForm){
 export async function deleteQuestionFirestore(question){
     console.log("Firestore called deleteQuestion");
 
-    const docRef = doc(db, 'questions', question.id);
+    const docRef = doc(db, "testquestions", question.id);
     const form = (await getForm()).formRef;
     await updateDoc(form, {
         questions: arrayRemove(docRef)
@@ -188,7 +188,7 @@ export async function addQuestionFirestore(newQuestion, answers){
     }
 
     // Add the question in Firestore
-    let questionRef = await addDoc(collection(db, "questions"), questionToCreate);
+    let questionRef = await addDoc(collection(db, "testquestions"), questionToCreate);
 
     let updatedQuestion = null;
 
@@ -220,7 +220,7 @@ export async function addQuestionFirestore(newQuestion, answers){
 
 export async function editQuestionFirestore(editedQuestion, answers){
     console.log("Firestore called editQuestion");
-    const editedQuestionRef = doc(db, 'questions', editedQuestion.id);
+    const editedQuestionRef = doc(db, "testquestions", editedQuestion.id);
 
     // Get data form reference question and edit label
     let questionToCreate = {
@@ -230,7 +230,7 @@ export async function editQuestionFirestore(editedQuestion, answers){
     }
 
     // Add the question in Firestore
-    let questionRef = await addDoc(collection(db, "questions"), questionToCreate);
+    let questionRef = await addDoc(collection(db, "testquestions"), questionToCreate);
 
     let updatedQuestion = null;
 
@@ -267,11 +267,11 @@ export async function editQuestionFirestore(editedQuestion, answers){
 
 export async function createUserFirestore(uid){
     // If a user is connected (so exist in Authentication), get the UID
-    const docRef = doc(db, 'users', uid);
+    const docRef = doc(db, "users", uid);
     let documentUser = await getDoc(docRef);
     // If the user doesn't exist in Firestore, creation
     if (!documentUser.exists()){
-        await setDoc(doc(db, 'users', uid), {
+        await setDoc(doc(db, "users", uid), {
             name: auth.currentUser.displayName,
             admin: false
         });
