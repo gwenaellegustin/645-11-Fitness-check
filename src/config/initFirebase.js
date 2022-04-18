@@ -21,8 +21,8 @@ import {getAuth} from "firebase/auth";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Db path
-const dbForm = "form" // change in testfrom for test data
-const dbQuestions = "questions" // change in testquestions for test data
+const dbForm = "testform" // change in testfrom for test data
+const dbQuestions = "testquestions" // change in testquestions for test data
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
