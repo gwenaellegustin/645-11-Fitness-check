@@ -22,7 +22,7 @@ export function EditQuestionContainer({question}) {
     }
 
     const handleModal = () => {
-        setModal(!modal)
+        setModal(!modal);
     }
 
     return (

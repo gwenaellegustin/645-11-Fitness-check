@@ -11,7 +11,7 @@ export const AdminContext = createContext({})
 
 export function Admin(){
     const [categories, setCategories] = useState([]);
-    const [questions, setQuestions] = useState([]);
+    const [questions, setQuestions] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     // TODO: warning message
@@ -32,12 +32,16 @@ export function Admin(){
     useEffect(() => {
         let questionsIds = [];
         getForm().then(form => {
-            form.questions.forEach(questionDoc => {
-                questionsIds.push(questionDoc.id)
-            })
-            getQuestionsWithIds(questionsIds).then(r => {
-                setQuestions(r);
-            })
+            if(form.questions !== undefined){
+                form.questions.forEach(questionDoc => {
+                    questionsIds.push(questionDoc.id)
+                })
+                getQuestionsWithIds(questionsIds).then(r => {
+                    setQuestions(r);
+                })
+            } else {
+                setQuestions([]);
+            }
         })
     }, [])
 
@@ -59,7 +63,7 @@ export function Admin(){
     }
 
    useEffect(() => {
-        if(questions.length > 0 && categories.length > 0){
+        if(questions !== null && categories.length > 0){
             setIsLoading(false);
         }
     }, [questions, categories])
