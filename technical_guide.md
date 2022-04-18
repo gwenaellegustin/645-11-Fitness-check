@@ -28,12 +28,11 @@ Administrator account:
     - timestamp _dateTime_ when form had been completed
     - array _answeredQuestions_ :
       - array _answers_ of answers' reference (in case of check boxes)
-      - string _category_ is category's id **-----------------------> WHY ?**
       - int _points_ addition of each answer checked
       - reference _question_ 
     - array _pointsByCategory:
-      - reference _category_ **-----------------------> WHY ?**
-      - string _categoryLabel_
+      - reference _category_ to display in FormCompleted
+      - string _categoryLabel_ to display in Chart
       - int _finalPoints_  addition of points in a category
       
 ### Delete and edit logic
