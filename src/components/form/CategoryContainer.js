@@ -16,14 +16,18 @@ export function CategoryContainer({category, questions, isDisplayMode, completed
     //Return a question container with the question object (containing the label, answers, isUniqueAnswer)
     return (
         <FormGroup className="text-start">
-            <legend>{category.label}</legend>
-            <hr/>
-            {questions
-                .sort((a, b) => a.label.localeCompare(b.label)) //Sort alphabetically by label
-                .map(question => (
-                <QuestionContainer key={question.id} question={question} isDisplayMode={isDisplayMode}
-                                   completedAnswersId={completedAnswersId}/>
-            ))}
+            {questions.length > 0 ?
+                <div key={category.id}>
+                    <legend>{category.label}</legend>
+                    <hr/>
+                    {questions
+                        .sort((a, b) => a.label.localeCompare(b.label)) //Sort alphabetically by label
+                        .map(question => (
+                            <QuestionContainer key={question.id} question={question} isDisplayMode={isDisplayMode}
+                                               completedAnswersId={completedAnswersId}/>
+                        ))}
+                </div>
+                : null}
         </FormGroup>
     )
 }
