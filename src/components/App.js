@@ -1,6 +1,6 @@
 import {auth, createUserFirestore, firebaseApp, getUserByUID} from "../config/initFirebase";
-import {Route, Routes} from "react-router-dom";
-import {Nav,Navbar,NavbarBrand,NavLink} from 'reactstrap';
+import {Route} from "react-router-dom";
+import {Collapse, Nav, Navbar, NavbarBrand, NavbarToggler,  NavLink} from 'reactstrap';
 import React, {useEffect, useState} from "react";
 import {FitnessForm} from "./form/FitnessForm";
 import Login from "./Login";
@@ -13,6 +13,7 @@ export const UserContext = React.createContext();
 
 function App() {
     const [user, setUser] = useState();
+    const [isOpen, setIsOpen] = useState();
 
     // Local signed-in state.
     const [isSignedIn, setIsSignedIn] = useState(null);
@@ -60,30 +61,28 @@ function App() {
     // Signed in - Render app
     return (
         <UserContext.Provider value={user}>
-        <div className="col-md-12" >
-            <Navbar color="light" light  expand="md">
-                <NavbarBrand href="/">
-                   Fitness check
+            <Navbar color="light" light expand="md">
+                <NavbarBrand  href="/">
+                    Fitness check
                 </NavbarBrand>
-                <Nav
-                    className="me-auto"
-                    navbar
-                >
-                    <NavLink href="/Form">
-                        Nouveau formulaire
-                    </NavLink>
-
-                    <NavLink href="/History">
-                        Historique
-                    </NavLink>
-                    {user && user.admin ?
-                        <NavLink href="/Admin">
-                            Gestion
-                        </NavLink> : null}
-                </Nav>
-                <NavDropdown title={auth.currentUser.displayName}>
-                    <NavDropdown.Item onClick={handleSignOutClick}>Se déconnecter</NavDropdown.Item>
-                </NavDropdown>
+                <NavbarToggler onClick={()=>setIsOpen(!isOpen)} />
+                <Collapse isOpen={isOpen} navbar>
+                        <Nav navbar  className="me-0 px-3 float-end text-end">
+                            <NavLink href="/Form">
+                                Nouveau formulaire
+                            </NavLink>
+                            <NavLink href="/History">
+                                Historique
+                            </NavLink>
+                            {user && user.admin ?
+                                <NavLink href="/Admin">
+                                    Gestion
+                                </NavLink> : null}
+                        </Nav>
+                    <NavDropdown title={auth.currentUser.displayName}>
+                        <NavDropdown.Item onClick={handleSignOutClick} >Se déconnecter</NavDropdown.Item>
+                    </NavDropdown>
+                </Collapse>
             </Navbar>
 
             <div className="px-3 m-auto w-75 my-2 text-center">
@@ -95,7 +94,6 @@ function App() {
                     <Route path="*" element={<Home />} />
                 </Routes>
             </div>
-        </div>
         </UserContext.Provider>
     );
 }
