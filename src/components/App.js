@@ -1,13 +1,21 @@
 import {auth, createUserFirestore, firebaseApp, getUserByUID} from "../config/initFirebase";
 import {Route, Routes} from "react-router-dom";
-import {Collapse, Nav, Navbar, NavItem, NavbarBrand, NavbarToggler,  NavLink} from 'reactstrap';
+import {
+    Collapse,
+    Nav,
+    Navbar,
+    NavItem,
+    NavbarBrand,
+    NavbarToggler,
+    NavLink,
+    UncontrolledDropdown,
+    DropdownMenu, DropdownToggle, DropdownItem
+} from 'reactstrap';
 import React, {useEffect, useState} from "react";
 import {FitnessForm} from "./form/FitnessForm";
 import Login from "./Login";
 import Home from "./Home";
 import {History} from "./history/History";
-import {NavDropdown} from "react-bootstrap";
-
 import {Admin} from "./admin/Admin";
 import {Loading} from "./Loading";
 import {Footer} from "./Footer";
@@ -67,12 +75,12 @@ function App() {
     return (
         <UserContext.Provider value={user}>
         <div>
-            <Navbar color="light" light  expand="md" container="fluid">
-                <NavbarBrand href="/" className="px-3 ">
+            <Navbar color="light" light  expand="md">
+                <NavbarBrand href="/">
                    Fitness check
                 </NavbarBrand>
                 <NavbarToggler onClick={toggleNavbar} />
-                <Collapse isOpen={!collapse} navbar>
+                <Collapse isOpen={!collapse} navbar className="float-end text-end">
                     <Nav
                         className="me-auto px-3"
                         navbar
@@ -95,12 +103,20 @@ function App() {
                             </NavItem>
                         : null}
                     </Nav>
-                    <NavDropdown title={auth.currentUser.displayName}>
-                        <NavDropdown.Item onClick={handleSignOutClick}>Se déconnecter</NavDropdown.Item>
-                    </NavDropdown>
+                    <Nav className="float-end">
+                        <UncontrolledDropdown inNavbar nav>
+                            <DropdownToggle caret nav >
+                                {auth.currentUser.displayName}
+                            </DropdownToggle>
+                            <DropdownMenu right>
+                                <DropdownItem onClick={handleSignOutClick}>
+                                    Se déconnecter
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </Nav>
                 </Collapse>
             </Navbar>
-
             <div className="px-3 m-auto w-75 my-2 text-center">
                 <Routes>
                     <Route path="/" element={<Home />} />
