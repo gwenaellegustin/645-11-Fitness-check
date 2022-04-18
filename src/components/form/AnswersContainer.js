@@ -23,17 +23,17 @@ export function AnswersContainer({question, uniqueAnswer, isDisplayMode, complet
                 .sort((a,b) => a.point - b.point) //Sort the answers by point, ascending
                 .map(answer => (
                     <div key={answer.id}>
-                        <Input
-                            disabled={isDisplayMode} //Differentiate between new form and history
-                            name={question.id} //Answers with same question need to be regrouped
-                            type={answerType} //Either radio or checkbox
-                            id={question.id.concat("-").concat(answer.id)}
-                            value={answer.id}
-                            onChange={onChange}
-                            checked={completedAnswersId && completedAnswersId.includes(answer.id)}
-                        />
-                        {' '}
                         <Label check>
+                            <Input
+                                disabled={isDisplayMode} //Differentiate between new form and history
+                                name={question.id} //Answers with same question need to be regrouped
+                                type={answerType} //Either radio or checkbox
+                                id={question.id.concat("-").concat(answer.id)}
+                                value={answer.id}
+                                onChange={onChange}
+                                checked={completedAnswersId && completedAnswersId.includes(answer.id)}
+                            />
+                            {' '}
                             {answer.label}
                         </Label>
                     </div>
