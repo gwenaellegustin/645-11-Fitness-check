@@ -66,7 +66,7 @@ export function MyModal({questionExisting, handleModal}){
     }
     const changeAnswerPoint = (index, value) => {
         let temp = [...answersEdited];
-        temp[index].point = parseInt(value);
+        temp[index].point = value;
         setAnswersEdited(temp)
     }
     const changeUniqueAnswer = (e) => {
@@ -80,13 +80,13 @@ export function MyModal({questionExisting, handleModal}){
             label: "",
             point: ""
         }
-        setAnswersEdited(answersEdited.concat(emptyAnswer))
+        setAnswersEdited([...answersEdited, emptyAnswer])
     }
 
     const checkFormValid = () => {
 
         // Validation of field
-        if (!questionEdited.category.id) {
+        if (!questionEdited.category) {
             console.log("NO: categorie invalid")
             setCategoryInvalid(true)
             return false
@@ -98,14 +98,14 @@ export function MyModal({questionExisting, handleModal}){
         }
 
         for (let i = 0; i < answersEdited.length; i++) {
-            if (answersEdited[i].label.trim() === '') {
+            if (answersEdited[i].label.trim() === '' && answersEdited[i].point.trim() === '') {
                 answersEdited.splice(i, 1)
                 i--; // array length reduced by one, we have to check the new answersEdited[i]
             }
         }
 
         if (answersEdited.length === 0) {
-            console.log("NO: answers invalid")
+            console.log("NO: answers invalid - empty answers")
             setAnswerInvalid(true);
             return false
         }
@@ -114,7 +114,7 @@ export function MyModal({questionExisting, handleModal}){
             return (answer.label !== '' && answer.point !== ''); //Return false if one answer has empty label or empty point
         })) {
             setAnswerInvalid(true)
-            console.log("NO: answers invalid")
+            console.log("NO: answers invalid - point or label empty")
             return false
         }
 
@@ -131,7 +131,7 @@ export function MyModal({questionExisting, handleModal}){
                     //Stop if one answer doesn't correspond to any (return false)
                     return !questionExisting.answers.every(answerExisting => {
                             //Stop if label and point match (return false) -> same answers
-                            return !(answerEdited.label === answerExisting.label && answerEdited.point === answerExisting.point);
+                            return !(answerEdited.label === answerExisting.label && parseInt(answerEdited.point) === answerExisting.point);
                         });
                 })
 
@@ -224,7 +224,7 @@ export function MyModal({questionExisting, handleModal}){
                                 <Input type="text" value={answer ? answer.label : ""} onInput={e => changeAnswerLabel(index, e.target.value)}/>
                             </FormGroup>
                             <FormGroup className="col-2">
-                                <Input  type="number" value={answer.point ? answer.point : ""} onInput={e => changeAnswerPoint(index, e.target.value)}/>
+                                <Input  type="number" value={answer ? answer.point : ""} onInput={e => changeAnswerPoint(index, e.target.value)}/>
                             </FormGroup>
                         </div>
                     ))}

@@ -38,7 +38,7 @@ function addAnswers(questionRef, answers){
     let isAllAnswersAdded = answers.every(async answer => {
         let newAnswer = {
             label: answer.label,
-            point: answer.point
+            point: parseInt(answer.point)
         }
         let answerRef = await addDoc(collection(questionRef, "answers"), newAnswer);
         let answerDoc = await getDoc(answerRef);
