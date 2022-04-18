@@ -1,5 +1,5 @@
 import {auth, createUserFirestore, firebaseApp, getUserByUID} from "../config/initFirebase";
-import {Route} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import {Collapse, Nav, Navbar, NavbarBrand, NavbarToggler,  NavLink} from 'reactstrap';
 import React, {useEffect, useState} from "react";
 import {FitnessForm} from "./form/FitnessForm";
@@ -67,7 +67,7 @@ function App() {
                 </NavbarBrand>
                 <NavbarToggler onClick={()=>setIsOpen(!isOpen)} />
                 <Collapse isOpen={isOpen} navbar>
-                        <Nav navbar  className="me-0 px-3 float-end text-end">
+                        <Nav navbar  className="px-3">
                             <NavLink href="/Form">
                                 Nouveau formulaire
                             </NavLink>
@@ -79,10 +79,10 @@ function App() {
                                     Gestion
                                 </NavLink> : null}
                         </Nav>
-                    <NavDropdown title={auth.currentUser.displayName}>
-                        <NavDropdown.Item onClick={handleSignOutClick} >Se déconnecter</NavDropdown.Item>
-                    </NavDropdown>
                 </Collapse>
+                <NavDropdown title={auth.currentUser.displayName}>
+                    <NavDropdown.Item onClick={handleSignOutClick} >Se déconnecter</NavDropdown.Item>
+                </NavDropdown>
             </Navbar>
 
             <div className="px-3 m-auto w-75 my-2 text-center">
