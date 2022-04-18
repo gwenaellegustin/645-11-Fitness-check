@@ -6,7 +6,7 @@ import {MyModal} from "./MyModal";
 import {AdminContext} from "./Admin";
 
 /**
- * Component to display a question and answers with button to edit/delete
+ * Component to display a question and answers (in questions management) with button to edit/delete
  *
  * @param question to display (contains answers)
  *

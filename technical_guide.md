@@ -5,7 +5,10 @@
 ### Components
 #### Form
 #### History
-#### Admin
+#### Form management
+Administrator account:
+- user: admin@fitnesscheck.test
+- password: k4e0nf72030
 #### Login
 
 ### Configuration
