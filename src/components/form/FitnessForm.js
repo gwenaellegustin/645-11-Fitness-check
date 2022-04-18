@@ -151,8 +151,7 @@ export function FitnessForm(){
             completedForm.answeredQuestions.push({
                 question: questionRef,
                 answers: [answerRef],
-                points: answerPoint,
-                category: categoryId
+                points: answerPoint
             })
         }
     }
@@ -274,6 +273,7 @@ export function FitnessForm(){
 
         //Calculating final point for the chart in %
         completedForm.pointsByCategory.forEach(objectCategory => {
+            console.log(objectCategory.label)
             let result = 0;
             try {
                 result = objectCategory.points / objectCategory.maxPoints * 100;
