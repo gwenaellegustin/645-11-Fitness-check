@@ -213,7 +213,7 @@ export function MyModal({questionExisting, handleModal}){
                </div>
                <FormGroup check>
                    <Label check>
-                       <Input type="checkbox" value={questionEdited ? questionEdited.uniqueAnswer : false} onChange={e => changeUniqueAnswer(e.target.checked)} />{' '}
+                       <Input type="checkbox" checked={questionEdited ? questionEdited.uniqueAnswer : false} onChange={e => changeUniqueAnswer(e.target.checked)} />{' '}
                         Réponse unique (radio button)
                    </Label>
                </FormGroup>
