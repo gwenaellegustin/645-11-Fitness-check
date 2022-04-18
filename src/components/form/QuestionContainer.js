@@ -19,7 +19,7 @@ export function QuestionContainer({question, isDisplayMode, completedAnswersId})
 
     return (
         <FormGroup>
-            <Label>{question.label}</Label>
+            <Label tag="h6">{question.label}</Label>
             {invalidQuestionId === question.id && <div className={"text-danger"}>Please complete this question.</div>}
             {<AnswersContainer question={question}
                               uniqueAnswer={question.uniqueAnswer}

@@ -15,8 +15,9 @@ export function CategoryContainer({category, questions, isDisplayMode, completed
 
     //Return a question container with the question object (containing the label, answers, isUniqueAnswer)
     return (
-        <FormGroup>
+        <FormGroup className="text-start">
             <legend>{category.label}</legend>
+            <hr/>
             {questions
                 .sort((a, b) => a.label.localeCompare(b.label)) //Sort alphabetically by label
                 .map(question => (
