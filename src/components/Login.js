@@ -16,6 +16,9 @@ const uiConfig = {
     },
 };
 
+/**
+ * Login component
+ */
 function Login(){
     return (
         <StyledFirebaseAuth
