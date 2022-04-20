@@ -21,8 +21,20 @@ You can log off in top right menu by clicking on your name:
 ![img.png](img/logoff.png)
 
 ## Home
+From the home page, you can navigate 
+- To a new form
+- To your history
+
+![home page](img/home.png)
 
 ## Form
+Navigating to `/form` allows you to fill in a new form concerning your fitness health.
+
+Questions are sorted by category and order alphabetically.
+<br>Each question allows either a unique answer or multiple ones.
+<br>All questions need to be completed in order to submit the form.
+
+![new form page](img/newForm.png)
 
 ## History
 
@@ -35,5 +47,3 @@ With an admin account, you can edit the form on this page. (Contact us if you ne
 - Question must have at least one answer.
 
 ![img.png](img/addquestion.png)
-
-
