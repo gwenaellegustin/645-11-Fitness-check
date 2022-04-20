@@ -1,7 +1,7 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import {Timestamp} from "firebase/firestore";
 import {CategoryContainer} from "./CategoryContainer";
-import {addCompletedFormToFirestore, getCategories, getForm, getQuestionsWithIds} from "../../config/initFirebase";
+import {addCompletedFormToFirestore, getCategories, getForm, getQuestionsByIds} from "../../config/initFirebase";
 import {FormError} from "./FormError";
 import {useNavigate} from "react-router-dom";
 import {Button, Form} from 'reactstrap';
@@ -51,7 +51,7 @@ export function FitnessForm(){
                     questionsIds.push(questionDoc.id)
                 })
 
-                getQuestionsWithIds(questionsIds).then(r => {
+                getQuestionsByIds(questionsIds).then(r => {
                     setQuestions(r);
                 })
             }
@@ -96,14 +96,12 @@ export function FitnessForm(){
 
         let questionRef;
         let answerRef;
-        let categoryId;
         let answerPoint;
 
         //As we have all info from the questions, we can set our variables
         questions.every(question => {
             if(question.id === questionId){
                 questionRef = question.questionRef;
-                categoryId = question.categoryId;
                 question.answers.every(answer => {
                     if(answer.id === answerId){
                         answerRef = answer.answerRef;

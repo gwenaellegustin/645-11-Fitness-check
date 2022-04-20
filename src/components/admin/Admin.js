@@ -1,5 +1,5 @@
 import React, {createContext, useEffect, useState} from "react"
-import {getCategories, getForm, getQuestionsWithIds} from "../../config/initFirebase";
+import {getCategories, getForm, getQuestionsByIds} from "../../config/initFirebase";
 import {NewQuestionContainer} from "./NewQuestionContainer";
 import {EditCategoryContainer} from "./EditCategoryContainer";
 import {Loading} from "../Loading";
@@ -39,7 +39,7 @@ export function Admin(){
                 form.questions.forEach(questionDoc => {
                     questionsIds.push(questionDoc.id)
                 })
-                getQuestionsWithIds(questionsIds).then(r => {
+                getQuestionsByIds(questionsIds).then(r => {
                     setQuestions(r);
                 })
             } else {

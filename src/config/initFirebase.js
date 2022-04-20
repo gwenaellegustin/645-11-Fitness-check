@@ -20,7 +20,7 @@ import {getAuth} from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Db path
+// Db path TODO
 const dbForm = "testform" // change in testfrom for test data
 const dbQuestions = "testquestions" // change in testquestions for test data
 
@@ -37,7 +37,8 @@ export const firebaseApp = firebase.initializeApp(firebaseConfig);
 export const db = getFirestore();
 export const auth = getAuth();
 
-function addAnswers(questionRef, answers){
+//Get the answered answers from a question
+function getAnswers(questionRef, answers){
     let updatedAnswers = [];
 
     // Add Answers to new question
@@ -69,6 +70,7 @@ function addAnswers(questionRef, answers){
     return null;
 }
 
+//Get asynchronously all answers for a question from Firestore
 async function getAnswersByQuestion(questionRef){
     console.log("Firestore called getAnswers");
 
@@ -82,6 +84,7 @@ async function getAnswersByQuestion(questionRef){
     }));
 }
 
+//Get asynchronously user data from Firestore
 export async function getUserByUID(userUID){
     console.log("Firestore called getUserByUID");
 
@@ -93,6 +96,7 @@ export async function getUserByUID(userUID){
     };
 }
 
+//Get asynchronously form from Firestore - There's only one in our DB
 export async function getForm(){
     console.log("Firestore called getForm");
 
@@ -109,6 +113,7 @@ export async function getForm(){
     return formArray[0];
 }
 
+//Get asynchronously categories from Firestore
 export async function getCategories(){
     console.log("Firestore called getCategories");
 
@@ -122,25 +127,9 @@ export async function getCategories(){
     }));
 }
 
-export async function getCategoriesWithIds(categoriesId){
-    console.log("Firestore called getCategoriesWithIds");
-
-    const categories = [];
-
-    for (const categoryId of categoriesId){
-        let categoryDoc = await getDoc(doc(db, "categories", categoryId));
-        let category = {
-            ...categoryDoc.data(),
-            id: categoryDoc.id
-        }
-        categories.push(category);
-    }
-
-    return categories;
-}
-
-export async function getQuestionsWithIds(questionsId){
-    console.log("Firestore called getQuestionsWithIds");
+//Get asynchronously questions by id from Firestore
+export async function getQuestionsByIds(questionsId){
+    console.log("Firestore called getQuestionsByIds");
     const questions = [];
     for (const questionId of questionsId) {
         let questionDoc = await getDoc(doc(db, dbQuestions, questionId));
@@ -158,6 +147,7 @@ export async function getQuestionsWithIds(questionsId){
     return questions;
 }
 
+//Get asynchronously completed forms for the connected user from Firestore
 export async function getCompletedForms(userRef){
     console.log("Firestore called getCompletedForms");
 
@@ -165,13 +155,14 @@ export async function getCompletedForms(userRef){
     return completedFormsCollection.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
-    })).sort((a, b) => a.dateTime - b.dateTime);
+    })).sort((a, b) => a.dateTime - b.dateTime); //Sorted by dates
 }
 
 export async function addCompletedFormToFirestore(userRef, completedForm){
     return await addDoc(collection(userRef, "completedForms"), completedForm);
 }
 
+//Delete asynchronously a question in Firestore
 export async function deleteQuestionFirestore(question){
     console.log("Firestore called deleteQuestion");
 
@@ -183,6 +174,8 @@ export async function deleteQuestionFirestore(question){
     return docRef;
 }
 
+//Add asynchronously a question in Firestore
+//Add the reference in the form
 export async function addQuestionFirestore(newQuestion, answers){
     console.log("Firestore called addQuestionFirestore");
 
@@ -199,7 +192,7 @@ export async function addQuestionFirestore(newQuestion, answers){
     let updatedQuestion = null;
 
     if(questionRef != null){
-        let updatedAnswers = addAnswers(questionRef, answers);
+        let updatedAnswers = getAnswers(questionRef, answers);
 
         if(updatedAnswers != null){
             // Add the new reference in Form collection
@@ -224,6 +217,9 @@ export async function addQuestionFirestore(newQuestion, answers){
     return updatedQuestion;
 }
 
+//Edit asynchronously a question in Firestore
+//Add the new question with answers
+//Replace reference in the form from old to new question with answers
 export async function editQuestionFirestore(editedQuestion, answers){
     console.log("Firestore called editQuestion");
     const editedQuestionRef = doc(db, dbQuestions, editedQuestion.id);
@@ -241,7 +237,7 @@ export async function editQuestionFirestore(editedQuestion, answers){
     let updatedQuestion = null;
 
     if(questionRef != null){
-        let updatedAnswers = addAnswers(questionRef, answers);
+        let updatedAnswers = getAnswers(questionRef, answers);
 
         if(updatedAnswers != null){
             // Add the new reference in Form collection
@@ -271,6 +267,7 @@ export async function editQuestionFirestore(editedQuestion, answers){
     return updatedQuestion;
 }
 
+//Add asynchronously a user in Firestore
 export async function createUserFirestore(uid){
     // If a user is connected (so exist in Authentication), get the UID
     const docRef = doc(db, "users", uid);
