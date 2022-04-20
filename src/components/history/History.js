@@ -88,12 +88,7 @@ export function History(){
                     <div className="col-lg-12 col-md-12">
                         <DateDropdown/>
                     </div>
-                        <FormCompletedContainer className="col-lg-12 col-md-12" key={selectedForm.id} completedForm={selectedForm}/>
-                    {/*formIsReady ?
-                    <div className="col-lg-6 col-md-12">
-                        <ChartContainer pointsByCategory={selectedForm.pointsByCategory}/>
-                    </div>
-                    : <Loading/>*/}
+                    <FormCompletedContainer className="col-lg-12 col-md-12" key={selectedForm.id} completedForm={selectedForm}/>
                 </div>
             </HistoryContext.Provider>
         )
