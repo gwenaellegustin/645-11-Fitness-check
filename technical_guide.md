@@ -57,3 +57,16 @@ Technically speaking, changing a question is like this:
 ## External libraries
 
 ## Docker deployment
+Docker allows the application to be deployed on a server. 
+
+The container contains files belonging to the git master branch.
+
+The application is deployed on : [https://grp11.p645.hevs.ch/](https://grp11.p645.hevs.ch/)
+
+To deploy the last version of the master on the container, you have to follow those steps :
+1. You need to have `.env` and `.env.local` files in the server side containing all the sensitive information to connect to the backend (Firestore) and configure Traefik parameters.
+2. Connect in ssh with `ssh grp11@vlhprj645docker.hevs.ch`
+3. Navigate to application folder with `cd 645-11-fitness-check`
+4. Pull the master with `git pull`
+5. Build the container with `docker-compose build`
+6. Run the container with `docker-compose up -d`
