@@ -11,30 +11,27 @@ export function FormCompletedContainer({completedForm}){
     const [formIsReady, setFormIsReady] = useState(false);
     const { categories} = useContext(HistoryContext);
 
-    //Answered questions
+    //Answered questions with checked answers
     useEffect(() => {
         setFormReady(false);
         const questionsId = [];
-            completedForm.answeredQuestions.forEach(answeredQuestion => (
-                questionsId.push(answeredQuestion.question.id)
-            ))
+        completedForm.answeredQuestions.forEach(answeredQuestion => (
+            questionsId.push(answeredQuestion.question.id)
+        ))
 
-            getQuestionsByIds(questionsId).then(r => {
-                setAnsweredQuestions(r);
-                setFormReady(true);
-            })
-    }, [completedForm.answeredQuestions.length > 0])
+        getQuestionsByIds(questionsId).then(r => {
+            setAnsweredQuestions(r);
+            setFormReady(true);
+        })
 
-    //Answered answers
-    useEffect(() => {
         const answersId = [];
-            completedForm.answeredQuestions.forEach(answeredQuestion => (
-                answeredQuestion.answers.forEach(answer => (
-                    answersId.push(answer.id)
-                ))
-            ))
-            setAnsweredAnswersIds(answersId);
-    }, [completedForm.answeredQuestions])
+        completedForm.answeredQuestions.forEach(answeredQuestion => (
+            answeredQuestion.answers.forEach(answer => {
+                answersId.push(answer.id)
+            })
+        ))
+        setAnsweredAnswersIds(answersId)
+    }, [completedForm])
 
     const setFormReady = (value) => {
         setFormIsReady(value);
