@@ -111,7 +111,7 @@ function App() {
                             <DropdownToggle caret nav >
                                 {auth.currentUser.displayName}
                             </DropdownToggle>
-                            <DropdownMenu>
+                            <DropdownMenu className="end-0">
                                 <DropdownItem onClick={handleSignOutClick}>
                                     Se déconnecter
                                 </DropdownItem>
