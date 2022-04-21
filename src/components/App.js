@@ -22,6 +22,9 @@ import {Footer} from "./Footer";
 
 export const UserContext = React.createContext();
 
+/**
+ * Main component of the app
+ */
 function App() {
     const [user, setUser] = useState();
     const [collapse, isCollapse] = useState(true);
@@ -66,10 +69,10 @@ function App() {
         await firebaseApp.auth().signOut();
     };
 
+    // For responsive navbar, display hamburger
     const toggleNavbar = () => {
         isCollapse(!collapse);
     }
-
 
     // Signed in - Render app
     return (

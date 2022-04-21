@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {getQuestionsWithIds} from "../../config/initFirebase";
+import {getQuestionsByIds} from "../../config/initFirebase";
 import {CategoryContainer} from "../form/CategoryContainer";
 import {HistoryContext} from "./History";
 import {ChartContainer} from "./ChartContainer";
@@ -19,7 +19,7 @@ export function FormCompletedContainer({completedForm}){
                 questionsId.push(answeredQuestion.question.id)
             ))
 
-            getQuestionsWithIds(questionsId).then(r => {
+            getQuestionsByIds(questionsId).then(r => {
                 setAnsweredQuestions(r);
                 setFormReady(true);
             })
