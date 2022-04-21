@@ -77,16 +77,23 @@ export function FitnessForm(){
     useEffect(() => {
         completedForm.pointsByCategory = [];
         categories.forEach(category => {
-            completedForm.pointsByCategory.push({
-                category: category.categoryRef,
-                categoryLabel: category.label,
-                finalPoints: 0.0,
-                points: 0,
-                maxPoints: 0,
-                highIsGood: category.highIsGood
+            //Check if the category exists in the questions
+           questions.every(question => {
+                if(question.categoryId === category.id){
+                    completedForm.pointsByCategory.push({
+                        category: category.categoryRef,
+                        categoryLabel: category.label,
+                        finalPoints: 0.0,
+                        points: 0,
+                        maxPoints: 0,
+                        highIsGood: category.highIsGood
+                    })
+                    return false; //Category exist, test ok
+                }
+                return true; //Continue the loop
             })
         })
-    }, [categories, completedForm])
+    }, [questions])
 
     //Event handler on input change
     const handleFormInputChange = async e => {
