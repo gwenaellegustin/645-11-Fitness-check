@@ -2,7 +2,7 @@ import {QuestionContainer} from "./QuestionContainer";
 import {FormGroup} from "reactstrap";
 
 /**
- * Component concerning a specific category
+ * Component to display a specific category
  *
  * @param category linked to this container
  * @param questions linked to this category

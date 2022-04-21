@@ -46,13 +46,47 @@ Technically speaking, changing a question is like this:
   Deletion only removes the question reference from the form collection
 
 ## Files structure
+Our code is located mostly in the `src` folder. This folder contains some folders :
+- [components](src/components) : contain all React components
+- [config](src/config) : contain the main configuration files
 ### Components
+This `components` folder contains all React components. It contains sub-folders :
+- [`admin`](src/components/admin)
+- [`form`](src/components/form)
+- [`history`](src/components/history)
+
+But also other components :
+- [`App.js`](src/components/App.js)
+  <br>Main component of the app
+- [`AppWrapper.js`](src/components/AppWrapper.js)
+  <br>Component enclosing the app component use for routes browsing
+- [`Footer.js`](src/components/Footer.js)
+  <br>Footer component
+- [`Home.js`](src/components/Home.js)
+  <br>Component to display the Home page
+- [`Loading.js`](src/components/Loading.js)
+  <br>Loading component use before displaying any data
+- [`Login.js`](src/components/Login.js)
+  <br>Login component
 #### Form
+This `form` folder contains all components concerning the form :
+- [`AnswersContainer.js`](src/components/form/AnswersContainer.js)
+  <br>Component to display all answers concerning a question
+- [`CategoryContainer.js`](src/components/form/CategoryContainer.js)
+  <br>Component to display a specific category
+- [`FitnessForm.js`](src/components/form/FitnessForm.js)
+  <br>Component to display the form sorted by categories
+- [`FormError.js`](src/components/form/FormError.js)
+  <br>Component to display a red message if the form hasn't all its questions answered
+- [`QuestionContainer.js`](src/components/form/QuestionContainer.js)
+  <br>Component to display a question with the answers
 #### History
 #### Form management
 #### Login
 
 ### Configuration
+
+### Other files
 
 ## External libraries
 
