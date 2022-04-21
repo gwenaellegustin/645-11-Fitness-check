@@ -50,6 +50,12 @@ Questions are sorted by category and order alphabetically.
 ![new form page](attachments/img/newForm.png)
 
 ## History
+When a form is completed, or via the "historique" link, the page shows all the answers of a selected form.
+There is in addition the chart who shows graphically the results in each category.
+
+The original chart has been slightly modified in order to have a "bigger is better" chart.
+Originally there were two categories which were inverted. We also changed the names to match this difference.
+![](attachments/img/History.png)
 
 ## Form management
 With an admin account, you can edit the form on this page. (Contact us if you need an admin account)
