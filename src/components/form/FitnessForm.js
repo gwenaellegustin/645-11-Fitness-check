@@ -104,15 +104,17 @@ export function FitnessForm(){
         let questionRef;
         let answerRef;
         let answerPoint;
+        let categoryId;
 
         //As we have all info from the questions, we can set our variables
         questions.every(question => {
             if(question.id === questionId){
                 questionRef = question.questionRef;
+                categoryId = question.categoryId;
                 question.answers.every(answer => {
                     if(answer.id === answerId){
                         answerRef = answer.answerRef;
-                        answerPoint = answer.point
+                        answerPoint = answer.point;
                         return false; //No need to continue the loop
                     }
                     return true;
@@ -156,7 +158,8 @@ export function FitnessForm(){
             completedForm.answeredQuestions.push({
                 question: questionRef,
                 answers: [answerRef],
-                points: answerPoint
+                points: answerPoint,
+                category: categoryId
             })
         }
     }
@@ -270,6 +273,7 @@ export function FitnessForm(){
             completedForm.pointsByCategory.every(objectCategory => {
                 if(answeredQuestion.category === objectCategory.category.id){
                     objectCategory.points += answeredQuestion.points;
+                    delete answeredQuestion.category;
                     return false; //No need to continue the loop
                 }
                 return true; //Continue the loop
@@ -278,7 +282,6 @@ export function FitnessForm(){
 
         //Calculating final point for the chart in %
         completedForm.pointsByCategory.forEach(objectCategory => {
-            console.log(objectCategory.label)
             let result = 0;
             try {
                 result = objectCategory.points / objectCategory.maxPoints * 100;
