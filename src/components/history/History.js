@@ -8,14 +8,16 @@ import {Loading} from "../Loading";
 
 export const HistoryContext = createContext("");
 
+/**
+ * Componant to display the History page
+ */
 export function History(){
     const [completedForms, setCompletedForms] = useState("")
     const [selectedForm, setSelectedForm] = useState(null);
     const [categories, setCategories] = useState([]);
-
     const user = useContext(UserContext);
 
-    //Categories
+    //Set Categories
     useEffect(() => {
         getCategories().then(r => {
             setCategories(r)
@@ -58,7 +60,8 @@ export function History(){
         );
     }
 
-    if(completedForms !== "" && completedForms.length === 0){ // No history screen
+    // Page to display if there is no completed form for the user
+    if(completedForms !== "" && completedForms.length === 0){
         return (
             <div className="History">
                 <p>Pas d'historique</p>

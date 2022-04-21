@@ -1,13 +1,12 @@
-import {
-    Radar,
-    RadarChart,
-    PolarGrid,
-    PolarAngleAxis,
-    PolarRadiusAxis, ResponsiveContainer
-} from "recharts";
+import {PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer} from "recharts";
 import {useContext} from "react";
 import {HistoryContext} from "./History";
 
+/**
+ * Componant to draw a chart showing the result of the selected form
+ *
+ * @param pointsByCategory who contains the final points in each category and their names
+ */
 export function ChartContainer({pointsByCategory}) {
     const { categories} = useContext(HistoryContext);
 

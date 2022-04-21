@@ -5,13 +5,19 @@ import {HistoryContext} from "./History";
 import {ChartContainer} from "./ChartContainer";
 import {Loading} from "../Loading";
 
+/**
+ * Take the references in a completed form to reconstruct and show the original answered form
+ * We use CategoryContainer with the generated arrays to display the form
+ *
+ * @param completedForm
+ */
 export function FormCompletedContainer({completedForm}){
     const [answeredQuestions, setAnsweredQuestions] = useState([]);
     const [answeredAnswersIds, setAnsweredAnswersIds] = useState([]);
     const [formIsReady, setFormIsReady] = useState(false);
-    const { categories} = useContext(HistoryContext);
+    const {categories} = useContext(HistoryContext);
 
-    //Answered questions with checked answers
+    //Request the questions and their completed answer
     useEffect(() => {
         setFormReady(false);
         const questionsId = [];
