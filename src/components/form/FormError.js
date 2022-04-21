@@ -5,6 +5,6 @@
  */
 export function FormError(){
     return (
-        <p className={"text-danger"}>Please complete all questions before submitting the form.</p>
+        <p className={"text-danger"}>Veuillez remplir toutes les questions avant de valider votre questionnaire.</p>
     )
 }

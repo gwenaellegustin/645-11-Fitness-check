@@ -78,7 +78,7 @@ function App() {
     return (
         <UserContext.Provider value={user}>
         <div>
-            <Navbar color="light" light  expand="md" animation="false">
+            <Navbar color="light" light  expand="md">
                 <NavbarBrand href="/">
                    Fitness check
                 </NavbarBrand>
