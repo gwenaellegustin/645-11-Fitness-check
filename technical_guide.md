@@ -36,8 +36,7 @@ Simple user test account:
       - int _points_ addition of each answer checked
       - reference _question_ 
     - array _pointsByCategory_:
-      - reference _category_ to display in FormCompleted
-      - string _categoryLabel_ to display in Chart
+      - reference _category_ to display in FormCompleted and Chart
       - int _finalPoints_  addition of points in a category
       
 ### Delete and edit logic

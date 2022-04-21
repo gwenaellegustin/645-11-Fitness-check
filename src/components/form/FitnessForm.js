@@ -298,6 +298,7 @@ export function FitnessForm(){
 
             //Remove the calculation variables who don't need to be store in the database
             delete objectCategory.points;
+            delete objectCategory.categoryLabel
             delete objectCategory.highIsGood;
             delete objectCategory.maxPoints;
         })

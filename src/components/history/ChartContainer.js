@@ -5,17 +5,27 @@ import {
     PolarAngleAxis,
     PolarRadiusAxis, ResponsiveContainer
 } from "recharts";
+import {useContext} from "react";
+import {HistoryContext} from "./History";
 
 export function ChartContainer({pointsByCategory}) {
+    const { categories} = useContext(HistoryContext);
 
     // Array construction to build the radar chart
     let data = [];
-    pointsByCategory.forEach(category => {
-        data.push ({
-            subject: category.categoryLabel,
-            A: category.finalPoints,
-            fullMark: 100
-        })
+    pointsByCategory.forEach(categoryPoint => {
+        categories.every(category => {
+            if (categoryPoint.category.id === category.id){
+                data.push ({
+                    subject: category.label,
+                    A: categoryPoint.finalPoints,
+                    fullMark: 100
+                })
+                return false
+            }
+            return true
+            }
+        )
     })
 
     return (
