@@ -2,6 +2,11 @@
 Administrator account:
 - **user**: admin@fitnesscheck.test
 - **password**: k4e0nf72030
+
+Simple user test account:
+- **user**: test@test.com
+- **password**: testtest
+
 ## Database
 ### 4 collections:
 - **categories** : contains 1 document by category which contains 
@@ -30,7 +35,7 @@ Administrator account:
       - array _answers_ of answers' reference (in case of check boxes)
       - int _points_ addition of each answer checked
       - reference _question_ 
-    - array _pointsByCategory:
+    - array _pointsByCategory_:
       - reference _category_ to display in FormCompleted
       - string _categoryLabel_ to display in Chart
       - int _finalPoints_  addition of points in a category
@@ -39,11 +44,12 @@ Administrator account:
 
 The database has been designed to preserve user data. Therefore, once a questionnaire is completed, it is not possible to modify it.
 If an administrator edits a question on the questionnaire, the user will always see the question they answered.
-Technically speaking, changing a question is like this:
-- Create a copy of the question with the changes made
-- Removal of the reference question in the form collection
-- Added question referencing created in the form collection
-  Deletion only removes the question reference from the form collection
+Technically speaking, editing a question is like this:
+- Creation of a copy of the question with the changes made
+- Removal of the question's reference in the form collection
+- Addition of question's reference created in the form collection
+
+Deletion only removes the question reference from the form collection
 
 ## Files structure
 Our code is located mostly in the `src` folder. This folder contains some folders :

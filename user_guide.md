@@ -25,6 +25,7 @@ There exist different routes where you can navigate to :
 
 ## Login
 - If you are not logged, you will be redirect to login.
+
 ![img.png](attachments/img/login.png)
 - Enter your email:
   - If you have already an account, it will ask your password
