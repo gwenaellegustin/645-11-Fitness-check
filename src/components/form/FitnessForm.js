@@ -20,11 +20,8 @@ export function FitnessForm(){
     const [isValidForm, setIsValidForm] = useState(true);
     const [completedForm] = useState({dateTime: null, answeredQuestions : []})
     const [isLoading, setIsLoading] = useState(true);
-
     const [invalidQuestionId, setInvalidQuestionId] = useState();
-
     const navigate = useNavigate();
-
     const user = useContext(UserContext);
 
     //Categories

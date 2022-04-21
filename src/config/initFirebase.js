@@ -21,8 +21,8 @@ import {getAuth} from "firebase/auth";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Db path TODO
-const dbForm = "testform" // change in testfrom for test data
-const dbQuestions = "testquestions" // change in testquestions for test data
+const dbForm = "form" // change in testfrom for test data
+const dbQuestions = "questions" // change in testquestions for test data
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -72,7 +72,6 @@ function getAnswers(questionRef, answers){
 
 //Get asynchronously all answers for a question from Firestore
 async function getAnswersByQuestion(questionRef){
-    console.log("Firestore called getAnswers");
 
     //Get all answers for that question from database
     let answersCollection = await getDocs(query(collection(questionRef, "answers")));
@@ -86,7 +85,6 @@ async function getAnswersByQuestion(questionRef){
 
 //Get asynchronously user data from Firestore
 export async function getUserByUID(userUID){
-    console.log("Firestore called getUserByUID");
 
     let userDoc = await getDoc(doc(db, "users", userUID));
     return {
@@ -98,7 +96,6 @@ export async function getUserByUID(userUID){
 
 //Get asynchronously form from Firestore - There's only one in our DB
 export async function getForm(){
-    console.log("Firestore called getForm");
 
     let formCollection = await getDocs(query(collection(db, dbForm)));
     let formArray = formCollection.docs.map(doc => ({
@@ -107,15 +104,11 @@ export async function getForm(){
         formRef: doc.ref
     }))
 
-    //There's only 1 form
-    //console.log(formArray[0])
-
     return formArray[0];
 }
 
 //Get asynchronously categories from Firestore
 export async function getCategories(){
-    console.log("Firestore called getCategories");
 
     //Get all categories from database
     let categoriesCollection = await getDocs(query(collection(db, "categories")));
@@ -129,7 +122,7 @@ export async function getCategories(){
 
 //Get asynchronously questions by id from Firestore
 export async function getQuestionsByIds(questionsId){
-    console.log("Firestore called getQuestionsByIds");
+
     const questions = [];
     for (const questionId of questionsId) {
         let questionDoc = await getDoc(doc(db, dbQuestions, questionId));
@@ -149,7 +142,6 @@ export async function getQuestionsByIds(questionsId){
 
 //Get asynchronously completed forms for the connected user from Firestore
 export async function getCompletedForms(userRef){
-    console.log("Firestore called getCompletedForms");
 
     let completedFormsCollection = await getDocs(query(collection(userRef, "completedForms")));
     return completedFormsCollection.docs.map((doc) => ({
@@ -164,7 +156,6 @@ export async function addCompletedFormToFirestore(userRef, completedForm){
 
 //Delete asynchronously a question in Firestore
 export async function deleteQuestionFirestore(question){
-    console.log("Firestore called deleteQuestion");
 
     const docRef = doc(db, dbQuestions, question.id);
     const form = (await getForm()).formRef;
@@ -177,7 +168,6 @@ export async function deleteQuestionFirestore(question){
 //Add asynchronously a question in Firestore
 //Add the reference in the form
 export async function addQuestionFirestore(newQuestion, answers){
-    console.log("Firestore called addQuestionFirestore");
 
     // Get only information required for Firestore
     let questionToCreate = {
@@ -221,7 +211,7 @@ export async function addQuestionFirestore(newQuestion, answers){
 //Add the new question with answers
 //Replace reference in the form from old to new question with answers
 export async function editQuestionFirestore(editedQuestion, answers){
-    console.log("Firestore called editQuestion");
+
     const editedQuestionRef = doc(db, dbQuestions, editedQuestion.id);
 
     // Get data form reference question and edit label
