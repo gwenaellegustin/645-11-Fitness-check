@@ -28,11 +28,11 @@ export function ChartContainer({pointsByCategory}) {
     })
 
     return (
-        <ResponsiveContainer width="100%" height={400} className="border rounded mb-0">
-            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data} margin={{ top: 0, left: 150, right: 150, bottom: 0 }}>
+        <ResponsiveContainer width="100%" height={400}>
+            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data} margin={{ top: 0, left: 90, right: 90, bottom: 0 }}>
                 <PolarGrid />
-                <PolarAngleAxis dataKey="subject" />
-                <PolarRadiusAxis angle={30} domain={[0, 100]} />
+                <PolarAngleAxis dataKey="subject" fontSize="12"/>
+                <PolarRadiusAxis angle={30} domain={[0, 100]}/>
                 <Radar name="Check1" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
             </RadarChart>
         </ResponsiveContainer>
