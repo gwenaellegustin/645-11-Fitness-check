@@ -51,9 +51,9 @@ export function History(){
                 {completedForms
                     .map(o => (
                     <option key={o.id} value={o.id}>
-                        {o.dateTime.toDate().toLocaleDateString()
+                        {o.dateTime.toDate().toLocaleDateString('fr', {year: 'numeric', month: 'long', day: 'numeric' })
                             + " " +
-                        o.dateTime.toDate().toLocaleTimeString()}
+                        o.dateTime.toDate().toLocaleTimeString('fr',{hour: '2-digit', minute: '2-digit'})}
                     </option>
                 ))}
             </select>

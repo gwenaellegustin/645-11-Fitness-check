@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 import AppWrapper from "./components/AppWrapper";
 
-// Importing the Bootstrap CSS
+// Importing CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './login.css';
 
 //Display our application in a root element
 ReactDOM.render(
