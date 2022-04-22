@@ -29,7 +29,7 @@ There exist different routes where you can navigate to :
 
 ![img.png](attachments/img/login.png)
 - Enter your email:
-  - If you have already an account, it will ask your password
+  - If you already have an account, it will ask your password
   - If not, you have to create an account: enter your name and a password
 
 You can log off in top right menu by clicking on your name:
@@ -52,11 +52,11 @@ Questions are sorted by category and order alphabetically.
 ![new form page](attachments/img/newForm.png)
 
 ## History
-When a form is completed, or via `/history`, the page shows all the answers of a selected form.
-There is in addition the chart that shows graphically the results in each category.
+When a form is completed, or via `/history`, the page shows all the completed answers of a selected form.
+There is in addition the chart that shows graphically the result of each category.
 
 The original chart has been slightly modified in order to have a "bigger is better" chart.
-Originally there were two categories which were inverted. We also changed the names to match this difference.
+Originally, there were two categories which were inverted. We also changed the names to match this difference.
 
 ![](attachments/img/History.png)
 
@@ -65,8 +65,8 @@ With an admin account, you can edit the form on this page. (Contact us if you ne
 
 ![img.png](attachments/img/admin.png)
 - If you edit a question, forms already completed by users won't be impacted.
-- You can't edit attributes of a category (like `highIsGood`), but the logic of category calculation can be found in parentheses.
-- You have to complete all field.
-- Question must have at least one answer.
+- You can't edit attributes of a category (like `highIsGood`), but the logic of each category calculation can be found in parentheses.
+- In the modal view, you have to complete all fields.
+- The question must have at least one answer.
 
 ![img.png](attachments/img/addquestion.png)
