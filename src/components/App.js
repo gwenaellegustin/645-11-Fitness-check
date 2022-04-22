@@ -125,7 +125,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/form" element={<FitnessForm />} />
                     <Route path="/history" element={<History />} />
-                    <Route path="/admin" element={<Admin />} />
+                    {user && user.admin ? <Route path="/admin" element={<Admin />} />: null}
                     <Route path="*" element={<Home />} />
                 </Routes>
             </div>
