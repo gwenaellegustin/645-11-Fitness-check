@@ -95,16 +95,16 @@ export function MyModal({questionExisting, handleModal}){
     // Handle submit
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-        console.log("FORM VALID ?")
+        console.debug("FORM VALID ?")
         if (checkFormValid()){
-            console.log("YES !")
+            console.debug("YES !")
 
             questionEdited.answers = answersEdited;
 
             if (questionExisting.id) {
                 editQuestionFirestore(questionEdited, answersEdited).then(updatedQuestion => {
                     if(updatedQuestion != null){
-                        console.log("EDIT QUESTION SUCCESSFUL, id : " + updatedQuestion.id);
+                        console.debug("EDIT QUESTION SUCCESSFUL, id : " + updatedQuestion.id);
                         updatedQuestion.category = questionEdited.category;
                         editQuestion(updatedQuestion, questionExisting.id);
                         handleModal();
@@ -113,7 +113,7 @@ export function MyModal({questionExisting, handleModal}){
             } else {
                 addQuestionFirestore(questionEdited, answersEdited).then(addedQuestion => {
                     if(addedQuestion != null){
-                        console.log("ADD QUESTION SUCCESSFUL, id : " + addedQuestion.id);
+                        console.debug("ADD QUESTION SUCCESSFUL, id : " + addedQuestion.id);
                         addedQuestion.category = questionEdited.category;
                         addQuestion(addedQuestion);
                         handleModal();
@@ -127,14 +127,14 @@ export function MyModal({questionExisting, handleModal}){
 
         // Validation of field category
         if (!questionEdited.category) {
-            console.log("NO: categorie invalid")
+            console.debug("NO: categorie invalid")
             setCategoryInvalid(true)
             return false
         }
 
         // Validation of field label
         if (!questionEdited.label || questionEdited.label.trim() === '') {
-            console.log("NO: label invalid")
+            console.debug("NO: label invalid")
             setLabelInvalid(true)
             return false
         }
@@ -149,7 +149,7 @@ export function MyModal({questionExisting, handleModal}){
 
         // Check if there is at least one answer
         if (answersEdited.length === 0) {
-            console.log("NO: answers invalid - empty answers")
+            console.debug("NO: answers invalid - empty answers")
             setAnswerInvalid(true);
             return false
         }
@@ -159,7 +159,7 @@ export function MyModal({questionExisting, handleModal}){
             return (answer.label.trim() !== '' && answer.point !== ''); //Return false if one answer has empty label or empty point
         })) {
             setAnswerInvalid(true)
-            console.log("NO: answers invalid - point or label empty")
+            console.debug("NO: answers invalid - point or label empty")
             return false
         }
 

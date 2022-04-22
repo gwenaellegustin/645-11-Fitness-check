@@ -286,7 +286,7 @@ export function FitnessForm(){
             try {
                 result = objectCategory.points / objectCategory.maxPoints * 100;
             } catch (e){
-                console.log("Can't divide by 0. Final points will be 0.")
+                console.debug("Can't divide by 0. Final points will be 0.")
                 objectCategory.finalPoints = 0;
             }
 

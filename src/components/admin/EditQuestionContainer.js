@@ -21,7 +21,7 @@ export function EditQuestionContainer({question}) {
     const handleDelete = (deletedQuestion) => {
          deleteQuestionFirestore(deletedQuestion).then(questionRef => {
             if(questionRef != null){
-                console.log("DELETE QUESTION SUCCESSFUL, id : " + questionRef.id);
+                console.debug("DELETE QUESTION SUCCESSFUL, id : " + questionRef.id);
                 deletedQuestion.id = questionRef.id;
                 deleteQuestion(deletedQuestion);
             }}
