@@ -3,7 +3,7 @@ import {useContext} from "react";
 import {HistoryContext} from "./History";
 
 /**
- * Componant to draw a chart showing the result of the selected form
+ * Component to draw a chart showing the result of the selected form
  *
  * @param pointsByCategory who contains the final points in each category and their names
  */

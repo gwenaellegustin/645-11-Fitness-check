@@ -88,11 +88,11 @@ This `form` folder contains all components concerning the form :
 #### History
 This `history` folder contains all components concerning the history :
 - [`ChartContainer.js`](src/components/history/ChartContainer.js)
-  <br>TODO
+  <br>Component to draw a chart showing the result of the selected form
 - [`FormCompletedContainer.js`](src/components/history/FormCompletedContainer.js)
-  <br>TODO
+  <br>Take the references in a completed form to reconstruct and show the original answered form
 - [`History.js`](src/components/history/History.js)
-  <br>TODO
+  <br>Component to display the History page
 #### Form management
 This `admin` folder contains all components concerning the form management :
 - [`Admin.js`](src/components/admin/Admin.js)
@@ -112,11 +112,11 @@ This `config` folder contains all information used to the configuration :
 
 ### Other files
 - [`index.js`](src/index.js)
-  <br>TODO
+  <br>Display our application in a root element
 - [`reportWebVitals.js`](src/reportWebVitals.js)
-  <br>TODO
+  <br>Display web performances
 - [`setupTests.js`](src/setupTests.js)
-  <br>TODO
+  <br>Setup the test cases
 
 ## External libraries
 

@@ -9,7 +9,7 @@ import {Loading} from "../Loading";
 export const HistoryContext = createContext("");
 
 /**
- * Componant to display the History page
+ * Component to display the History page
  */
 export function History(){
     const [completedForms, setCompletedForms] = useState("")
