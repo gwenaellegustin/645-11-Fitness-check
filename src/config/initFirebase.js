@@ -16,13 +16,9 @@ import {
 } from "firebase/firestore";
 import {getAuth} from "firebase/auth";
 
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Db path TODO
-const dbForm = "testform" // change in testfrom for test data
-const dbQuestions = "testquestions" // change in testquestions for test data
+// Db path
+const dbForm = "form"
+const dbQuestions = "questions"
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
