@@ -1,18 +1,33 @@
 import {auth, createUserFirestore, firebaseApp, getUserByUID} from "../config/initFirebase";
 import {Route, Routes} from "react-router-dom";
-import {Nav,Navbar,NavbarBrand,NavLink} from 'reactstrap';
+import {
+    Collapse,
+    Nav,
+    Navbar,
+    NavItem,
+    NavbarBrand,
+    NavbarToggler,
+    NavLink,
+    UncontrolledDropdown,
+    DropdownMenu, DropdownToggle, DropdownItem
+} from 'reactstrap';
 import React, {useEffect, useState} from "react";
 import {FitnessForm} from "./form/FitnessForm";
 import Login from "./Login";
 import Home from "./Home";
 import {History} from "./history/History";
-import {NavDropdown} from "react-bootstrap";
-import {Admin} from "./Admin";
+import {Admin} from "./admin/Admin";
+import {Loading} from "./Loading";
+import {Footer} from "./Footer";
 
 export const UserContext = React.createContext();
 
+/**
+ * Main component of the app
+ */
 function App() {
     const [user, setUser] = useState();
+    const [collapse, isCollapse] = useState(true);
 
     // Local signed-in state.
     const [isSignedIn, setIsSignedIn] = useState(null);
@@ -36,9 +51,7 @@ function App() {
     // Not initialized yet - Render loading message
     if (isSignedIn === null) {
         return (
-            <div className="App">
-                <p>Chargement...</p>
-            </div>
+            <Loading/>
         );
     }
 
@@ -56,45 +69,67 @@ function App() {
         await firebaseApp.auth().signOut();
     };
 
+    // For responsive navbar, display hamburger
+    const toggleNavbar = () => {
+        isCollapse(!collapse);
+    }
 
     // Signed in - Render app
     return (
         <UserContext.Provider value={user}>
-        <div className="col-md-12" >
+        <div>
             <Navbar color="light" light  expand="md">
                 <NavbarBrand href="/">
                    Fitness check
                 </NavbarBrand>
-                <Nav
-                    className="me-auto"
-                    navbar
-                >
-                    <NavLink href="/Form">
-                        Nouveau formulaire
-                    </NavLink>
-
-                    <NavLink href="/History">
-                        Historique
-                    </NavLink>
-                    {user && user.admin ?
-                        <NavLink href="/Admin">
-                            Gestion
-                        </NavLink> : null}
-                </Nav>
-                <NavDropdown title={auth.currentUser.displayName}>
-                    <NavDropdown.Item onClick={handleSignOutClick}>Se déconnecter</NavDropdown.Item>
-                </NavDropdown>
+                <NavbarToggler onClick={toggleNavbar} />
+                <Collapse isOpen={!collapse} navbar className="float-end text-end">
+                    <Nav
+                        className="me-auto px-3"
+                        navbar
+                    >
+                        <NavItem>
+                            <NavLink href="/Form">
+                                Questionnaire
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink href="/History">
+                                Historique
+                            </NavLink>
+                        </NavItem>
+                        {user && user.admin ?
+                            <NavItem>
+                                <NavLink href="/Admin">
+                                    Gestion
+                                </NavLink>
+                            </NavItem>
+                        : null}
+                    </Nav>
+                    <Nav className="float-end">
+                        <UncontrolledDropdown inNavbar nav>
+                            <DropdownToggle caret nav >
+                                {auth.currentUser.displayName}
+                            </DropdownToggle>
+                            <DropdownMenu className="end-0">
+                                <DropdownItem onClick={handleSignOutClick}>
+                                    Se déconnecter
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </Nav>
+                </Collapse>
             </Navbar>
-
-            <div className="px-3 m-3 text-center">
+            <div className="px-3 m-auto w-75 my-2 text-center">
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/form" element={<FitnessForm />} />
                     <Route path="/history" element={<History />} />
-                    {user && user.admin ?
-                        <Route path="/admin" element={<Admin />} /> : null}
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="*" element={<Home />} />
                 </Routes>
             </div>
+            <Footer/>
         </div>
         </UserContext.Provider>
     );

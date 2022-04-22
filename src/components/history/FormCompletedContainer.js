@@ -1,60 +1,58 @@
-import {useEffect, useState} from "react";
-import {getCategoriesWithIds, getQuestionsWithIds} from "../../config/initFirebase";
+import React, {useContext, useEffect, useState} from "react";
+import {getQuestionsByIds} from "../../config/initFirebase";
 import {CategoryContainer} from "../form/CategoryContainer";
+import {HistoryContext} from "./History";
+import {ChartContainer} from "./ChartContainer";
+import {Loading} from "../Loading";
 
+/**
+ * Take the references in a completed form to reconstruct and show the original answered form
+ * We use CategoryContainer with the generated arrays to display the form
+ *
+ * @param completedForm
+ */
 export function FormCompletedContainer({completedForm}){
     const [answeredQuestions, setAnsweredQuestions] = useState([]);
-    const [answeredCategories, setAnsweredCategories] = useState([]);
     const [answeredAnswersIds, setAnsweredAnswersIds] = useState([]);
+    const [formIsReady, setFormIsReady] = useState(false);
+    const {categories} = useContext(HistoryContext);
 
-    //Answered questions
+    //Request the questions and their completed answer
     useEffect(() => {
+        setFormReady(false);
         const questionsId = [];
-        if(completedForm.answeredQuestions && completedForm.answeredQuestions.length > 0){
-            completedForm.answeredQuestions.forEach(answeredQuestion => (
-                questionsId.push(answeredQuestion.question.id)
-            ))
+        completedForm.answeredQuestions.forEach(answeredQuestion => (
+            questionsId.push(answeredQuestion.question.id)
+        ))
 
-            getQuestionsWithIds(questionsId).then(r => {
-                setAnsweredQuestions(r);
-            })
-        }
-    }, [completedForm.answeredQuestions])
-
-    //Answered categories
-    // TODO: move in history or context ? (getCategoriesWithIds is call 2 times)
-    useEffect(() => {
-        const categoriesId = [];
-        answeredQuestions.forEach(question => {
-            if (!categoriesId.includes(question.category.id)) {
-                categoriesId.push(question.category.id);
-            }
+        getQuestionsByIds(questionsId).then(r => {
+            setAnsweredQuestions(r);
+            setFormReady(true);
         })
 
-        getCategoriesWithIds(categoriesId).then(r => {
-            setAnsweredCategories(r);
-        })
-    }, [answeredQuestions])
-
-    //Answered answers
-    useEffect(() => {
         const answersId = [];
+        completedForm.answeredQuestions.forEach(answeredQuestion => (
+            answeredQuestion.answers.forEach(answer => {
+                answersId.push(answer.id)
+            })
+        ))
+        setAnsweredAnswersIds(answersId)
+    }, [completedForm])
 
-        if(completedForm.answeredQuestions){
-            completedForm.answeredQuestions.forEach(answeredQuestion => (
-                answeredQuestion.answers.forEach(answer => (
-                    answersId.push(answer.id)
-                ))
-            ))
-            setAnsweredAnswersIds(answersId);
-        }
-    }, [completedForm.answeredQuestions])
+    const setFormReady = (value) => {
+        setFormIsReady(value);
+    }
 
     return (
-        <form>
-            {answeredCategories.map(category => (
-                <CategoryContainer key={category.id} category={category} questions={answeredQuestions.filter(question => question.category.id === category.id)} isDisplayMode={true} completedAnswersId={answeredAnswersIds}/>
-            ))}
-        </form>
+        <>
+            {formIsReady ?
+                <>
+                    <ChartContainer pointsByCategory={completedForm.pointsByCategory}/>
+                    {categories.map(category => (
+                        <CategoryContainer key={category.id} category={category} questions={answeredQuestions.filter(question => question.category.id === category.id)} isDisplayMode={true} completedAnswersId={answeredAnswersIds}/>
+                    ))}
+                </>
+                : <Loading/>}
+        </>
     )
 }
