@@ -41,8 +41,8 @@ Simple user test account:
       
 ### Delete and edit logic
 
-The database has been designed to preserve user data. Therefore, once a questionnaire is completed, it is not possible to modify it.
-If an administrator edits a question on the questionnaire, the user will always see the question they answered.
+The database has been designed to preserve user data. Therefore, once a form is completed, it is not possible to modify it.
+If an administrator edits a question on the form, the user will always see the questions they answered.
 Technically speaking, editing a question is like this:
 - Creation of a copy of the question with the changes made
 - Removal of the question's reference in the form collection
@@ -88,11 +88,11 @@ This `form` folder contains all components concerning the form :
 #### History
 This `history` folder contains all components concerning the history :
 - [`ChartContainer.js`](src/components/history/ChartContainer.js)
-  <br>TODO
+  <br>Component to draw a chart showing the result of the selected form
 - [`FormCompletedContainer.js`](src/components/history/FormCompletedContainer.js)
-  <br>TODO
+  <br>Take the references in a completed form to reconstruct and show the original answered form
 - [`History.js`](src/components/history/History.js)
-  <br>TODO
+  <br>Component to display the History page
 #### Form management
 This `admin` folder contains all components concerning the form management :
 - [`Admin.js`](src/components/admin/Admin.js)
@@ -112,13 +112,24 @@ This `config` folder contains all information used to the configuration :
 
 ### Other files
 - [`index.js`](src/index.js)
-  <br>TODO
+  <br>Display our application in a root element
 - [`reportWebVitals.js`](src/reportWebVitals.js)
-  <br>TODO
+  <br>Display web performances
 - [`setupTests.js`](src/setupTests.js)
-  <br>TODO
+  <br>Setup the test cases
 
 ## External libraries
+This project uses those external libraries :
+- `bootstrap` : Use for CSS
+- `firebase` : Use for authentication and database
+- `react`
+- `react-dom` : Use for React rendering
+- `react-firebaseui` : Use for the Firebase connexion UI
+- `react-router-dom` : Use for routes browsing
+- `react-scripts` : Use for React configuration and scripts
+- `reactstrap` : Use for interaction and UI components
+- `recharts` : Use to draw the chart
+- `web-vitals` : Use to evaluate web performances
 
 ## Docker deployment
 Docker allows the application to be deployed on a server. 
