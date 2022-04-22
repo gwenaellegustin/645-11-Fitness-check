@@ -119,6 +119,17 @@ This `config` folder contains all information used to the configuration :
   <br>Setup the test cases
 
 ## External libraries
+This project uses those external libraries :
+- `bootstrap` : Use for CSS
+- `firebase` : Use for authentication and database
+- `react`
+- `react-dom` : Use for React rendering
+- `react-firebaseui` : Use for the Firebase connexion UI
+- `react-router-dom` : Use for routes browsing
+- `react-scripts` : Use for React configuration and scripts
+- `reactstrap` : Use for interaction and UI components
+- `recharts` : Use to draw the chart
+- `web-vitals` : Use to evaluate web performances
 
 ## Docker deployment
 Docker allows the application to be deployed on a server. 
