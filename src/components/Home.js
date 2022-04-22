@@ -11,7 +11,7 @@ export default function Home() {
                 <p>
                     <Link to="/form">
                         <Button color="primary">
-                            Nouveau formulaire
+                            Nouveau questionnaire
                         </Button>
                     </Link>
                 </p>
