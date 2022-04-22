@@ -41,8 +41,8 @@ Simple user test account:
       
 ### Delete and edit logic
 
-The database has been designed to preserve user data. Therefore, once a questionnaire is completed, it is not possible to modify it.
-If an administrator edits a question on the questionnaire, the user will always see the question they answered.
+The database has been designed to preserve user data. Therefore, once a form is completed, it is not possible to modify it.
+If an administrator edits a question on the form, the user will always see the questions they answered.
 Technically speaking, editing a question is like this:
 - Creation of a copy of the question with the changes made
 - Removal of the question's reference in the form collection
