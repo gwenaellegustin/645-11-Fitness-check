@@ -33,7 +33,7 @@ export function ChartContainer({pointsByCategory}) {
                 <PolarGrid />
                 <PolarAngleAxis dataKey="subject" fontSize="12"/>
                 <PolarRadiusAxis angle={30} domain={[0, 100]}/>
-                <Radar name="Check1" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                <Radar name="Check1" dataKey="A" stroke="#0d6efd" fill="#0d6efd" fillOpacity={0.6} />
             </RadarChart>
         </ResponsiveContainer>
     )
