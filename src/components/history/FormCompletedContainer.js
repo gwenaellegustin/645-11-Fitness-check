@@ -46,12 +46,12 @@ export function FormCompletedContainer({completedForm}){
     return (
         <>
             {formIsReady ? <>
-                <div className="col-lg-6 col-md-12">
+                <div className="col-lg-5 col-md-12">
                     {categories.map(category => (
                         <CategoryContainer key={category.id} category={category} questions={answeredQuestions.filter(question => question.category.id === category.id)} isDisplayMode={true} completedAnswersId={answeredAnswersIds}/>
                     ))}
                 </div>
-                <div className="col-lg-6 col-md-12">
+                <div className="col-lg-7 col-md-12">
                     <ChartContainer pointsByCategory={completedForm.pointsByCategory}/>
                 </div>
             </>
