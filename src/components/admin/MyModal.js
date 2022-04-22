@@ -82,10 +82,17 @@ export function MyModal({questionExisting, handleModal}){
         setQuestionEdited({...questionEdited, uniqueAnswer: e.target.checked})
     }
 
+    const createUUID = () => {
+        return 'xxxxxxxx'.replace(/[xy]/g, (c) => {
+            let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
     // Handle adding a new answer
     const handleAddAnswer = () =>{
         let emptyAnswer = {
-            id: answersEdited.length,
+            id: createUUID(),
             label: "",
             point: ""
         }
