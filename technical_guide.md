@@ -1,11 +1,11 @@
 # Technical guide
 Administrator account:
-- **user**: admin@fitnesscheck.test
-- **password**: k4e0nf72030
+- **User**: admin@fitnesscheck.test
+- **Password**: k4e0nf72030
 
 Simple user test account:
-- **user**: test@test.com
-- **password**: testtest
+- **User**: test@test.com
+- **Password**: testtest
 
 ## Database
 ### 4 collections:
@@ -14,26 +14,28 @@ Simple user test account:
   - boolean _highIsGood_ for the chart's calculation
 
 
-- **form**: contains only 1 document which has an array of reference to questions, use to stock the actual form
+- **form**: contains only 1 document which has an array of reference to questions use in the actual form
 
 
 - **questions** : contains 1 document by question which contains
   - reference _category_
   - string _label_ (the question)
   - boolean _uniqueAnswer_ (false for check boxes and true radio buttons)
-  - collection _answers_. Each documents has
+  - collection _answers_. 
+    <br>Each answers document has
     - string _label_ (the answer)
     - int _point_
     
   
-- **users**: contains 1 document by recorded use in Firebase Authentication. Each has
+- **users**: contains 1 document by recorded user in Firebase Authentication which contains
   - string _name_ of the user
   - boolean _admin_ to access or not to form management
-  - collection _completedForms_ if the user already complete a form. Each document has:
+  - collection _completedForms_ if the user already completed a form. 
+    <br>Each document has:
     - timestamp _dateTime_ when form had been completed
     - array _answeredQuestions_ :
-      - array _answers_ of answers' reference (in case of check boxes)
-      - int _points_ addition of each answer checked
+      - array _answers_ of answers' reference
+      - int _points_ addition of each checked answer's points
       - reference _question_ 
     - array _pointsByCategory_:
       - reference _category_ to display in FormCompleted and Chart
@@ -80,7 +82,7 @@ This `form` folder contains all components concerning the form :
 - [`CategoryContainer.js`](src/components/form/CategoryContainer.js)
   <br>Component to display a specific category
 - [`FitnessForm.js`](src/components/form/FitnessForm.js)
-  <br>Component to display the form sorted by categories
+  <br>Component to display the form sorted by category
 - [`FormError.js`](src/components/form/FormError.js)
   <br>Component to display a red message if the form hasn't all its questions answered
 - [`QuestionContainer.js`](src/components/form/QuestionContainer.js)
@@ -122,7 +124,7 @@ This `config` folder contains all information used to the configuration :
 This project uses those external libraries :
 - `bootstrap` : Use for CSS
 - `firebase` : Use for authentication and database
-- `react`
+- `react` : A JavaScript library for building user interfaces
 - `react-dom` : Use for React rendering
 - `react-firebaseui` : Use for the Firebase connexion UI
 - `react-router-dom` : Use for routes browsing

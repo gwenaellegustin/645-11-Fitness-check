@@ -12,7 +12,7 @@ import {Loading} from "../Loading";
 export const FormContext = createContext("");
 
 /**
- * Component to display the form sorted by categories
+ * Component to display the form sorted by category
  */
 export function FitnessForm(){
     const [categories, setCategories] = useState([]);
