@@ -19,7 +19,7 @@ yarn start
 
 ## Build for github
 check that PUBLIC_URL=/645-11-fitness-check is set in .env
-`yarn build`
+`yarn build-ghpage`
 (correspond to `set \"BUILD_PATH=docs\" && react-scripts build`)
 push to github
 

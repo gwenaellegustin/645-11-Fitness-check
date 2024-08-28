@@ -9,14 +9,14 @@ export default function Home() {
         <>
                 <h1>Bienvenue !</h1>
                 <p>
-                    <Link to={process.env.PUBLIC_URL +"/form"}>
+                    <Link to="/form">
                         <Button color="primary">
                             Nouveau questionnaire
                         </Button>
                     </Link>
                 </p>
                 <p>
-                    <Link to={process.env.PUBLIC_URL +"/history"}>
+                    <Link to="/history">
                         <Button color="primary">
                             Historique
                         </Button>

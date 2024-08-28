@@ -1,5 +1,5 @@
 import {auth, createUserFirestore, firebaseApp, getUserByUID} from "../config/initFirebase";
-import {Route, Routes} from "react-router-dom";
+import {Route, Routes, Link} from "react-router-dom";
 import {
     Collapse,
     Nav,
@@ -7,7 +7,7 @@ import {
     NavItem,
     NavbarBrand,
     NavbarToggler,
-    NavLink,
+    NavLink, 
     UncontrolledDropdown,
     DropdownMenu, DropdownToggle, DropdownItem
 } from 'reactstrap';
@@ -89,19 +89,19 @@ function App() {
                         navbar
                     >
                         <NavItem>
-                            <NavLink href="/Form">
-                                Questionnaire
+                            <NavLink> 
+                            <Link to="/form"> Questionnaire</Link> 
                             </NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/History">
-                                Historique
+                            <NavLink>
+                                <Link to="/history"> Historique</Link> 
                             </NavLink>
                         </NavItem>
                         {user && user.admin ?
                             <NavItem>
-                                <NavLink href="/Admin">
-                                    Gestion
+                                <NavLink>
+                                    <Link to="/admin"> Gestion</Link> 
                                 </NavLink>
                             </NavItem>
                         : null}
