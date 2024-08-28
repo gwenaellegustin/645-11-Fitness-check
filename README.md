@@ -18,6 +18,8 @@ Some documentations can be found here :
 yarn start
 
 ## Build for github
-yarn --cwd ~/docs build
+yarn build
+copy paste content of build folder in ghpage branch
+change path in index.html to refer to github link
 
 
