@@ -9,3 +9,15 @@
 Some documentations can be found here :
 - [User guide](user_guide.md)
 - [Technical guide](technical_guide.md)
+
+# Simple user test account:
+- user: test@test.com
+- password: testtest
+
+## Run locally
+yarn start
+
+## Build for github
+yarn --cwd ~/docs build
+
+
