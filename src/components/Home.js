@@ -9,14 +9,14 @@ export default function Home() {
         <>
                 <h1>Bienvenue !</h1>
                 <p>
-                    <Link to="./form">
+                    <Link to="%PUBLIC_URL%/form">
                         <Button color="primary">
                             Nouveau questionnaire
                         </Button>
                     </Link>
                 </p>
                 <p>
-                    <Link to="./history">
+                    <Link to="%PUBLIC_URL%/history">
                         <Button color="primary">
                             Historique
                         </Button>
