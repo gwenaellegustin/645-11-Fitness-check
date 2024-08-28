@@ -18,8 +18,8 @@ Some documentations can be found here :
 yarn start
 
 ## Build for github
-yarn build
-copy paste content of build folder in ghpage branch
-change path in index.html to refer to github link
-
+check that PUBLIC_URL=/645-11-fitness-check is set in .env
+`yarn build`
+(correspond to `set \"BUILD_PATH=docs\" && react-scripts build`)
+push to github
 
